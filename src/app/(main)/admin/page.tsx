@@ -18,7 +18,7 @@ export default async function AdminPage() {
 
   if (!profile?.is_admin) notFound()
 
-  const { data: reports } = await supabase
+  const { data: reportsRaw } = await supabase
     .from('reports')
     .select(`
       id, reason, created_at,
@@ -27,6 +27,12 @@ export default async function AdminPage() {
     `)
     .order('created_at', { ascending: false })
     .limit(50)
+
+  const reports = (reportsRaw ?? []).map(r => ({
+    ...r,
+    reporter: Array.isArray(r.reporter) ? r.reporter[0] ?? null : r.reporter,
+    post: Array.isArray(r.post) ? r.post[0] ?? null : r.post,
+  }))
 
   return (
     <div>

@@ -61,7 +61,7 @@ export default function ContactPage() {
 
         <div className="space-y-1.5">
           <Label>カテゴリ</Label>
-          <Select value={category} onValueChange={setCategory} required>
+          <Select value={category} onValueChange={v => setCategory(v ?? '')} required>
             <SelectTrigger>
               <SelectValue placeholder="選択してください" />
             </SelectTrigger>
