@@ -8,10 +8,12 @@ import { toast } from 'sonner'
 interface Props {
   targetUserId: string
   initialFollowing: boolean
+  initialRequestPending?: boolean
 }
 
-export function FollowButton({ targetUserId, initialFollowing }: Props) {
+export function FollowButton({ targetUserId, initialFollowing, initialRequestPending = false }: Props) {
   const [following, setFollowing] = useState(initialFollowing)
+  const [requested, setRequested] = useState(initialRequestPending)
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
@@ -21,18 +23,17 @@ export function FollowButton({ targetUserId, initialFollowing }: Props) {
         toast.error(result.error)
       } else {
         setFollowing(result.following ?? false)
+        setRequested(result.requested ?? false)
       }
     })
   }
 
+  const label = following ? 'フォロー中' : requested ? 'リクエスト中' : 'フォロー'
+  const variant = following || requested ? 'outline' : 'default'
+
   return (
-    <Button
-      size="sm"
-      variant={following ? 'outline' : 'default'}
-      onClick={handleClick}
-      disabled={isPending}
-    >
-      {following ? 'フォロー中' : 'フォロー'}
+    <Button size="sm" variant={variant} onClick={handleClick} disabled={isPending}>
+      {label}
     </Button>
   )
 }

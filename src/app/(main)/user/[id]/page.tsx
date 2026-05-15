@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { Lock } from 'lucide-react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/actions/user'
 import { getFollowStats } from '@/lib/actions/follow'
@@ -26,11 +27,7 @@ export default async function UserProfilePage({ params }: Props) {
   const supabase = await createClient()
 
   const [{ data: profile }, currentUser, followStats] = await Promise.all([
-    supabase
-      .from('users')
-      .select('*, universities(id, name)')
-      .eq('id', id)
-      .single(),
+    supabase.from('users').select('*, universities(id, name)').eq('id', id).single(),
     getCurrentUser(),
     getFollowStats(id),
   ])
@@ -64,6 +61,7 @@ export default async function UserProfilePage({ params }: Props) {
               <FollowButton
                 targetUserId={id}
                 initialFollowing={followStats.isFollowing}
+                initialRequestPending={followStats.hasPendingRequest}
               />
             </div>
           )}
@@ -73,6 +71,10 @@ export default async function UserProfilePage({ params }: Props) {
           <h1 className="font-bold text-lg">{profile.nickname}</h1>
           {profile.is_private && <Lock className="h-4 w-4 text-muted-foreground" />}
         </div>
+
+        {profile.bio && (
+          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{profile.bio}</p>
+        )}
 
         <div className="flex flex-wrap gap-2 mt-2">
           {(profile as { universities?: { name: string } }).universities?.name && (
@@ -95,14 +97,14 @@ export default async function UserProfilePage({ params }: Props) {
               <span className="text-muted-foreground ml-1">投稿</span>
             </div>
           )}
-          <div>
+          <Link href={`/user/${id}/followers`} className="hover:underline">
             <span className="font-bold">{followStats.followersCount}</span>
             <span className="text-muted-foreground ml-1">フォロワー</span>
-          </div>
-          <div>
+          </Link>
+          <Link href={`/user/${id}/following`} className="hover:underline">
             <span className="font-bold">{followStats.followingCount}</span>
             <span className="text-muted-foreground ml-1">フォロー中</span>
-          </div>
+          </Link>
         </div>
       </div>
 
@@ -120,9 +122,7 @@ export default async function UserProfilePage({ params }: Props) {
           {posts && posts.length > 0 ? (
             posts.map(post => <PostCard key={post.id} post={post as never} />)
           ) : (
-            <p className="text-center py-10 text-sm text-muted-foreground">
-              まだ投稿がありません
-            </p>
+            <p className="text-center py-10 text-sm text-muted-foreground">まだ投稿がありません</p>
           )}
         </div>
       )}

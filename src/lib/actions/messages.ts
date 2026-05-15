@@ -88,16 +88,17 @@ export async function getMessages(conversationId: string) {
   return { messages: messages ?? [], conversation, currentUserId: user.id }
 }
 
-export async function sendMessage(conversationId: string, content: string) {
+export async function sendMessage(conversationId: string, content: string, imageUrl?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '認証が必要です' }
-  if (!content.trim()) return { error: 'メッセージを入力してください' }
+  if (!content.trim() && !imageUrl) return { error: 'メッセージを入力してください' }
 
   const { error } = await supabase.from('messages').insert({
     conversation_id: conversationId,
     sender_id: user.id,
     content: content.trim(),
+    ...(imageUrl ? { image_url: imageUrl } : {}),
   })
 
   if (error) return { error: error.message }

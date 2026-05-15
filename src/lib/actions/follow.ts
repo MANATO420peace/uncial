@@ -10,6 +10,7 @@ export async function toggleFollow(targetUserId: string) {
   if (!user) return { error: '認証が必要です' }
   if (user.id === targetUserId) return { error: '自分はフォローできません' }
 
+  // すでにフォロー中なら解除
   const { data: existing } = await supabase
     .from('follows')
     .select('id')
@@ -20,13 +21,42 @@ export async function toggleFollow(targetUserId: string) {
   if (existing) {
     await supabase.from('follows').delete().eq('id', existing.id)
     revalidatePath(`/user/${targetUserId}`)
-    return { following: false }
-  } else {
-    await supabase.from('follows').insert({ follower_id: user.id, following_id: targetUserId })
-    await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow' })
-    revalidatePath(`/user/${targetUserId}`)
-    return { following: true }
+    return { following: false, requested: false }
   }
+
+  // リクエスト中なら取り消し
+  const { data: existingRequest } = await supabase
+    .from('follow_requests')
+    .select('id')
+    .eq('requester_id', user.id)
+    .eq('target_id', targetUserId)
+    .maybeSingle()
+
+  if (existingRequest) {
+    await supabase.from('follow_requests').delete().eq('id', existingRequest.id)
+    revalidatePath(`/user/${targetUserId}`)
+    return { following: false, requested: false }
+  }
+
+  // 非公開アカウントならリクエスト
+  const { data: targetProfile } = await supabase
+    .from('users')
+    .select('is_private')
+    .eq('id', targetUserId)
+    .single()
+
+  if (targetProfile?.is_private) {
+    await supabase.from('follow_requests').insert({ requester_id: user.id, target_id: targetUserId })
+    await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow_request' })
+    revalidatePath(`/user/${targetUserId}`)
+    return { following: false, requested: true }
+  }
+
+  // 通常フォロー
+  await supabase.from('follows').insert({ follower_id: user.id, following_id: targetUserId })
+  await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow' })
+  revalidatePath(`/user/${targetUserId}`)
+  return { following: true, requested: false }
 }
 
 export async function getFollowStats(userId: string) {
@@ -39,17 +69,23 @@ export async function getFollowStats(userId: string) {
 
   const { data: { user } } = await supabase.auth.getUser()
   let isFollowing = false
+  let hasPendingRequest = false
+
   if (user && user.id !== userId) {
-    const { data } = await supabase
-      .from('follows')
-      .select('id')
-      .eq('follower_id', user.id)
-      .eq('following_id', userId)
-      .maybeSingle()
-    isFollowing = !!data
+    const [{ data: followData }, { data: requestData }] = await Promise.all([
+      supabase.from('follows').select('id').eq('follower_id', user.id).eq('following_id', userId).maybeSingle(),
+      supabase.from('follow_requests').select('id').eq('requester_id', user.id).eq('target_id', userId).maybeSingle(),
+    ])
+    isFollowing = !!followData
+    hasPendingRequest = !!requestData
   }
 
-  return { followersCount: followersCount ?? 0, followingCount: followingCount ?? 0, isFollowing }
+  return {
+    followersCount: followersCount ?? 0,
+    followingCount: followingCount ?? 0,
+    isFollowing,
+    hasPendingRequest,
+  }
 }
 
 export async function getFollowingPosts() {
@@ -74,4 +110,44 @@ export async function getFollowingPosts() {
     .limit(30)
 
   return { posts: data ?? [] }
+}
+
+export async function getFollowRequests() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data } = await supabase
+    .from('follow_requests')
+    .select('id, created_at, requester:users!requester_id(id, nickname, avatar_url)')
+    .eq('target_id', user.id)
+    .order('created_at', { ascending: false })
+
+  return data ?? []
+}
+
+export async function handleFollowRequest(requestId: string, accept: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  const { data: request } = await supabase
+    .from('follow_requests')
+    .select('requester_id, target_id')
+    .eq('id', requestId)
+    .eq('target_id', user.id)
+    .single()
+
+  if (!request) return { error: 'リクエストが見つかりません' }
+
+  if (accept) {
+    await supabase.from('follows').insert({
+      follower_id: request.requester_id,
+      following_id: request.target_id,
+    })
+  }
+
+  await supabase.from('follow_requests').delete().eq('id', requestId)
+  revalidatePath('/profile')
+  return { error: null }
 }

@@ -50,6 +50,7 @@ export interface User {
   grade: string | null
   avatar_url?: string | null
   is_private?: boolean
+  bio?: string | null
   created_at: string
   universities?: University
 }

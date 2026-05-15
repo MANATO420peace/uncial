@@ -1,13 +1,15 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getCurrentUser } from '@/lib/actions/user'
+import { getCurrentUser, getLikedPosts } from '@/lib/actions/user'
 import { getBookmarkedPosts } from '@/lib/actions/bookmarks'
+import { getFollowRequests } from '@/lib/actions/follow'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PostCard } from '@/components/posts/PostCard'
-import Link from 'next/link'
-import { Settings } from 'lucide-react'
+import { FollowRequestList } from '@/components/users/FollowRequestList'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -18,7 +20,7 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, bookmarkedPosts] = await Promise.all([
+  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
@@ -26,6 +28,8 @@ export default async function ProfilePage() {
       .order('created_at', { ascending: false })
       .limit(20),
     getBookmarkedPosts(),
+    getLikedPosts(),
+    user.is_private ? getFollowRequests() : Promise.resolve([]),
   ])
 
   return (
@@ -45,6 +49,10 @@ export default async function ProfilePage() {
         </div>
 
         <h1 className="font-bold text-lg">{user.nickname}</h1>
+
+        {user.bio && (
+          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{user.bio}</p>
+        )}
 
         <div className="flex flex-wrap gap-2 mt-2">
           {(user as { universities?: { name: string } }).universities?.name && (
@@ -68,17 +76,28 @@ export default async function ProfilePage() {
             <span className="font-bold">{posts?.length ?? 0}</span>
             <span className="text-muted-foreground ml-1">投稿</span>
           </div>
-          <div>
-            <span className="font-bold">{bookmarkedPosts.length}</span>
-            <span className="text-muted-foreground ml-1">保存済み</span>
-          </div>
+          <Link href={`/user/${user.id}/followers`} className="hover:underline">
+            <span className="font-bold">{0}</span>
+            <span className="text-muted-foreground ml-1">フォロワー</span>
+          </Link>
+          <Link href={`/user/${user.id}/following`} className="hover:underline">
+            <span className="font-bold">{0}</span>
+            <span className="text-muted-foreground ml-1">フォロー中</span>
+          </Link>
         </div>
       </div>
+
+      {followRequests.length > 0 && (
+        <FollowRequestList requests={followRequests as never} />
+      )}
 
       <Tabs defaultValue="posts" className="w-full">
         <TabsList className="w-full rounded-none border-b h-10 bg-transparent px-4 justify-start gap-6">
           <TabsTrigger value="posts" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
             投稿
+          </TabsTrigger>
+          <TabsTrigger value="liked" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
+            いいね
           </TabsTrigger>
           <TabsTrigger value="bookmarks" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
             保存済み
@@ -89,19 +108,23 @@ export default async function ProfilePage() {
           {posts && posts.length > 0 ? (
             posts.map(post => <PostCard key={post.id} post={post as never} />)
           ) : (
-            <p className="text-center py-10 text-sm text-muted-foreground">
-              まだ投稿がありません
-            </p>
+            <p className="text-center py-10 text-sm text-muted-foreground">まだ投稿がありません</p>
+          )}
+        </TabsContent>
+
+        <TabsContent value="liked" className="mt-0">
+          {likedPosts.length > 0 ? (
+            likedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={post as never} />)
+          ) : (
+            <p className="text-center py-10 text-sm text-muted-foreground">いいねした投稿がありません</p>
           )}
         </TabsContent>
 
         <TabsContent value="bookmarks" className="mt-0">
           {bookmarkedPosts.length > 0 ? (
-            bookmarkedPosts.map(post => post && <PostCard key={post.id} post={{ ...post as never, bookmarked: true }} />)
+            bookmarkedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={{ ...post as never, bookmarked: true }} />)
           ) : (
-            <p className="text-center py-10 text-sm text-muted-foreground">
-              保存した投稿はありません
-            </p>
+            <p className="text-center py-10 text-sm text-muted-foreground">保存した投稿はありません</p>
           )}
         </TabsContent>
       </Tabs>

@@ -3,6 +3,39 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
+export async function getLikedPosts() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data } = await supabase
+    .from('likes')
+    .select('posts(*, users(id, nickname), universities(id, name))')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  return data?.map(l => l.posts).filter(Boolean) ?? []
+}
+
+export async function getFollowList(userId: string, type: 'followers' | 'following') {
+  const supabase = await createClient()
+
+  if (type === 'followers') {
+    const { data } = await supabase
+      .from('follows')
+      .select('users!follower_id(id, nickname, avatar_url, universities(name))')
+      .eq('following_id', userId)
+    return data?.map(f => f.users).filter(Boolean) ?? []
+  } else {
+    const { data } = await supabase
+      .from('follows')
+      .select('users!following_id(id, nickname, avatar_url, universities(name))')
+      .eq('follower_id', userId)
+    return data?.map(f => f.users).filter(Boolean) ?? []
+  }
+}
+
 export async function getUniversities() {
   const supabase = await createClient()
   const { data } = await supabase
@@ -33,6 +66,7 @@ export async function updateProfile(formData: FormData) {
 
   const avatarUrl = formData.get('avatar_url') as string | null
   const isPrivate = formData.get('is_private') === 'true'
+  const bio = (formData.get('bio') as string) || null
 
   const { error } = await supabase
     .from('users')
@@ -42,6 +76,7 @@ export async function updateProfile(formData: FormData) {
       faculty: (formData.get('faculty') as string) || null,
       grade: (formData.get('grade') as string) || null,
       is_private: isPrivate,
+      bio,
       ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
     })
     .eq('id', user.id)

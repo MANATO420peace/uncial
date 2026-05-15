@@ -106,6 +106,19 @@ export function SettingsForm({ user, universities }: Props) {
         </div>
 
         <div className="space-y-1.5">
+          <Label htmlFor="bio">プロフィール文</Label>
+          <textarea
+            id="bio"
+            name="bio"
+            defaultValue={user.bio ?? ''}
+            maxLength={160}
+            rows={3}
+            placeholder="自己紹介を入力（160文字以内）"
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
+
+        <div className="space-y-1.5">
           <Label>大学</Label>
           <Select value={universityId} onValueChange={setUniversityId}>
             <SelectTrigger>

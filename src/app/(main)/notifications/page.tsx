@@ -11,12 +11,14 @@ const TYPE_ICON = {
   like: Heart,
   comment: MessageSquare,
   follow: UserPlus,
+  follow_request: UserPlus,
 }
 
 const TYPE_TEXT = {
   like: 'があなたの投稿にいいねしました',
   comment: 'があなたの投稿にコメントしました',
   follow: 'があなたをフォローしました',
+  follow_request: 'からフォローリクエストが届きました',
 }
 
 export default async function NotificationsPage() {
@@ -36,36 +38,43 @@ export default async function NotificationsPage() {
         </div>
       ) : (
         <ul>
-          {notifications.map((n: any) => {
-            const Icon = TYPE_ICON[n.type as keyof typeof TYPE_ICON] ?? Bell
-            const text = TYPE_TEXT[n.type as keyof typeof TYPE_TEXT] ?? ''
-            const actor = n.actor as { id: string; nickname: string } | null
-            const href = n.type === 'follow' && actor
-              ? `/user/${actor.id}`
-              : n.post?.id
-              ? `/post/${n.post.id}`
+          {notifications.map((n: never) => {
+            const notif = n as {
+              id: string
+              type: keyof typeof TYPE_ICON
+              read_at: string | null
+              created_at: string
+              actor: { id: string; nickname: string } | null
+              post: { id: string; title: string } | null
+            }
+            const Icon = TYPE_ICON[notif.type] ?? Bell
+            const text = TYPE_TEXT[notif.type] ?? ''
+            const href = (notif.type === 'follow' || notif.type === 'follow_request') && notif.actor
+              ? `/user/${notif.actor.id}`
+              : notif.post?.id
+              ? `/post/${notif.post.id}`
               : '#'
 
             return (
-              <li key={n.id}>
+              <li key={notif.id}>
                 <Link
                   href={href}
-                  className={`flex items-start gap-3 px-4 py-4 border-b transition-colors hover:bg-muted/50 ${!n.read_at ? 'bg-blue-50 dark:bg-blue-950/20' : ''}`}
+                  className={`flex items-start gap-3 px-4 py-4 border-b transition-colors hover:bg-muted/50 ${!notif.read_at ? 'bg-blue-50 dark:bg-blue-950/20' : ''}`}
                 >
                   <Avatar className="h-9 w-9 shrink-0">
                     <AvatarFallback className="text-xs bg-muted">
-                      {actor?.nickname?.[0]?.toUpperCase() ?? '?'}
+                      {notif.actor?.nickname?.[0]?.toUpperCase() ?? '?'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm">
-                      <span className="font-semibold">{actor?.nickname}</span>
+                      <span className="font-semibold">{notif.actor?.nickname}</span>
                       {text}
                     </p>
-                    {n.post?.title && (
-                      <p className="text-xs text-muted-foreground mt-0.5 truncate">「{n.post.title}」</p>
+                    {notif.post?.title && (
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">「{notif.post.title}」</p>
                     )}
-                    <p className="text-xs text-muted-foreground mt-1">{timeAgo(n.created_at)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{timeAgo(notif.created_at)}</p>
                   </div>
                   <Icon className="h-4 w-4 shrink-0 mt-1 text-muted-foreground" />
                 </Link>
