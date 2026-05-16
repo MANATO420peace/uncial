@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Search, Plus, Settings, User, LogOut } from 'lucide-react'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { NewPostDialog } from '@/components/posts/NewPostDialog'
@@ -25,7 +25,6 @@ interface Props {
 
 export function Header({ user }: Props) {
   const pathname = usePathname()
-  const router = useRouter()
   const isHome = pathname === '/home'
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -71,17 +70,21 @@ export function Header({ user }: Props) {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44 z-[60]">
-                <DropdownMenuItem onSelect={() => router.push('/profile')}>
-                  <User className="h-4 w-4 mr-2" />
-                  プロフィール
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center cursor-pointer">
+                    <User className="h-4 w-4 mr-2" />
+                    プロフィール
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => router.push('/settings')}>
-                  <Settings className="h-4 w-4 mr-2" />
-                  設定
+                <DropdownMenuItem asChild>
+                  <Link href="/settings" className="flex items-center cursor-pointer">
+                    <Settings className="h-4 w-4 mr-2" />
+                    設定
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
+                  className="text-destructive focus:text-destructive cursor-pointer"
                   onSelect={() => signOut()}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
