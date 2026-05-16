@@ -34,7 +34,7 @@ export function usePushNotifications() {
   const [supported, setSupported] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { isIOS, isStandalone } = useIsIOS()
+  const { isIOS, isStandalone, iosVersion } = useIsIOS()
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
