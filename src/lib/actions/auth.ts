@@ -106,6 +106,31 @@ export async function signInWithGoogle() {
   }
 }
 
+export async function sendPasswordResetEmail(formData: FormData) {
+  const supabase = await createClient()
+  const email = formData.get('email') as string
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://uncial-2026.vercel.app'
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
+  })
+
+  if (error) return { error: error.message }
+  return { error: null }
+}
+
+export async function updatePassword(formData: FormData) {
+  const supabase = await createClient()
+  const password = formData.get('password') as string
+
+  const { error } = await supabase.auth.updateUser({ password })
+  if (error) return { error: error.message }
+
+  revalidatePath('/', 'layout')
+  redirect('/home')
+}
+
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()

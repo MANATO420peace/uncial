@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import Link from 'next/link'
 import { signInWithEmail, signInWithGoogle } from '@/lib/actions/auth'
 
 interface Props {
@@ -63,7 +64,12 @@ export function LoginForm({ disabled }: Props) {
           <Input id="email" name="email" type="email" placeholder="student@university.ac.jp" required />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="password">パスワード</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">パスワード</Label>
+            <Link href="/forgot-password" className="text-xs text-muted-foreground hover:underline">
+              パスワードを忘れた方
+            </Link>
+          </div>
           <Input id="password" name="password" type="password" placeholder="6文字以上" required minLength={6} />
         </div>
         <Button type="submit" className="w-full" disabled={loading || disabled}>
