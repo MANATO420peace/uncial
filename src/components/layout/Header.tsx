@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Search, Plus } from 'lucide-react'
+import { Search, Plus, Settings, User, LogOut } from 'lucide-react'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { NewPostDialog } from '@/components/posts/NewPostDialog'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,7 @@ import { signOut } from '@/lib/actions/auth'
 import type { User } from '@/types'
 
 interface Props {
-  user: (User & { universities?: { id: string; name: string } }) | null
+  user: (User & { universities?: { id: string; name: string }; avatar_url?: string | null }) | null
 }
 
 export function Header({ user }: Props) {
@@ -57,18 +57,26 @@ export function Header({ user }: Props) {
             </button>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="ml-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <Avatar className="h-7 w-7">
-                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                    {user?.nickname?.[0]?.toUpperCase() ?? '?'}
-                  </AvatarFallback>
-                </Avatar>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="ml-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring touch-manipulation"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
+                >
+                  <Avatar className="h-7 w-7">
+                    {user?.avatar_url && <AvatarImage src={user.avatar_url} />}
+                    <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                      {user?.nickname?.[0]?.toUpperCase() ?? '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuContent align="end" className="w-44 z-[60]">
                 <DropdownMenuItem onSelect={() => router.push('/profile')}>
+                  <User className="h-4 w-4 mr-2" />
                   プロフィール
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => router.push('/settings')}>
+                  <Settings className="h-4 w-4 mr-2" />
                   設定
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -76,6 +84,7 @@ export function Header({ user }: Props) {
                   className="text-destructive focus:text-destructive"
                   onSelect={() => signOut()}
                 >
+                  <LogOut className="h-4 w-4 mr-2" />
                   ログアウト
                 </DropdownMenuItem>
               </DropdownMenuContent>
