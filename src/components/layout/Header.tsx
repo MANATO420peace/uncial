@@ -47,14 +47,18 @@ export function Header({ user }: Props) {
               <Plus className="h-4 w-4" />
             </button>
 
-            <Link href="/profile" className="ml-1">
+            <button
+              onClick={() => { window.location.href = '/profile' }}
+              className="ml-1 rounded-full"
+              aria-label="プロフィール"
+            >
               <Avatar className="h-7 w-7">
                 {user?.avatar_url && <AvatarImage src={user.avatar_url} />}
                 <AvatarFallback className="text-xs bg-primary text-primary-foreground">
                   {user?.nickname?.[0]?.toUpperCase() ?? '?'}
                 </AvatarFallback>
               </Avatar>
-            </Link>
+            </button>
           </div>
         </div>
       </header>
