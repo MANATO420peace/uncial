@@ -15,7 +15,7 @@ import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import type { User, University } from '@/types'
 
-const GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D']
+const GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D', 'OB・OG']
 
 interface Props {
   user: User

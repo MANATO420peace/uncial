@@ -13,7 +13,10 @@
       "Bash(mkdir -p \"/Users/hasuoto/Downloads/大学掲示板作成/src/app/\\(main\\)/user/[id]\")",
       "Bash(npx tsc *)",
       "Bash(curl -s http://localhost:3001/post/new)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }

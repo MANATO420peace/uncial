@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { signUpWithEmail, signInWithGoogle } from '@/lib/actions/auth'
 import type { University } from '@/types'
 
-const GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D']
+const GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D', 'OB・OG']
 
 interface Props {
   universities: University[]
