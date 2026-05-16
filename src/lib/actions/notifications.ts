@@ -1,6 +1,14 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { sendPushToUser } from './push'
+
+const PUSH_MESSAGES: Record<string, { title: string; body: (actor: string) => string }> = {
+  like: { title: 'いいね', body: (a) => `${a}さんがあなたの投稿にいいねしました` },
+  comment: { title: 'コメント', body: (a) => `${a}さんがコメントしました` },
+  follow: { title: 'フォロー', body: (a) => `${a}さんにフォローされました` },
+  follow_request: { title: 'フォローリクエスト', body: (a) => `${a}さんからフォローリクエストが届きました` },
+}
 
 export async function createNotification({
   userId,
@@ -17,6 +25,7 @@ export async function createNotification({
 }) {
   if (userId === actorId) return
   const supabase = await createClient()
+
   await supabase.from('notifications').insert({
     user_id: userId,
     actor_id: actorId,
@@ -24,6 +33,13 @@ export async function createNotification({
     post_id: postId ?? null,
     comment_id: commentId ?? null,
   })
+
+  // プッシュ通知を送信
+  const { data: actor } = await supabase.from('users').select('nickname').eq('id', actorId).single()
+  const msg = PUSH_MESSAGES[type]
+  if (msg && actor) {
+    await sendPushToUser(userId, msg.title, msg.body(actor.nickname), '/notifications')
+  }
 }
 
 export async function getNotifications() {

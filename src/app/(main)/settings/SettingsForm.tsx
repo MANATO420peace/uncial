@@ -13,6 +13,7 @@ import { updateProfile } from '@/lib/actions/user'
 import { signOut } from '@/lib/actions/auth'
 import { uploadAvatar } from '@/lib/uploadAvatar'
 import { Separator } from '@/components/ui/separator'
+import { PushNotificationToggle } from '@/components/notifications/PushNotificationToggle'
 import Link from 'next/link'
 import type { User, University } from '@/types'
 
@@ -179,6 +180,13 @@ export function SettingsForm({ user, universities, email }: Props) {
           {loading ? '保存中...' : '変更を保存'}
         </Button>
       </form>
+
+      <Separator />
+
+      <div className="space-y-3">
+        <h2 className="font-semibold text-sm">通知</h2>
+        <PushNotificationToggle />
+      </div>
 
       <Separator />
 
