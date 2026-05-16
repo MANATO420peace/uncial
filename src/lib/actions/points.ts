@@ -1,23 +1,12 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-
-const BADGE_THRESHOLDS = [
-  { id: 'newcomer', label: '新入生', points: 0 },
-  { id: 'active', label: 'アクティブ', points: 50 },
-  { id: 'contributor', label: '貢献者', points: 200 },
-  { id: 'expert', label: 'エキスパート', points: 500 },
-  { id: 'legend', label: 'レジェンド', points: 1000 },
-]
-
-export function getBadgeForPoints(points: number) {
-  return [...BADGE_THRESHOLDS].reverse().find(b => points >= b.points) ?? BADGE_THRESHOLDS[0]
-}
+import { getBadgeForPoints } from '@/lib/badges'
 
 export async function getMyPoints() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { points: 0, badge: BADGE_THRESHOLDS[0] }
+  if (!user) return { points: 0, badge: getBadgeForPoints(0) }
 
   const { data } = await supabase
     .from('users')
