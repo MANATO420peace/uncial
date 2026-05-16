@@ -47,9 +47,9 @@ export function Header({ user }: Props) {
               <Plus className="h-4 w-4" />
             </button>
 
-            <button
-              onClick={() => { window.location.href = '/profile' }}
-              className="ml-1 rounded-full"
+            <Link
+              href="/profile"
+              className="ml-1 flex items-center justify-center min-w-[44px] min-h-[44px]"
               aria-label="プロフィール"
             >
               <Avatar className="h-7 w-7">
@@ -58,7 +58,7 @@ export function Header({ user }: Props) {
                   {user?.nickname?.[0]?.toUpperCase() ?? '?'}
                 </AvatarFallback>
               </Avatar>
-            </button>
+            </Link>
           </div>
         </div>
       </header>

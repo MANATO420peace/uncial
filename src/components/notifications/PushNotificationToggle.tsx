@@ -4,7 +4,7 @@ import { Bell, BellOff, Share } from 'lucide-react'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
 
 export function PushNotificationToggle() {
-  const { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone } = usePushNotifications()
+  const { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone, iosVersion } = usePushNotifications()
 
   // iOSでPWAとしてインストールされていない場合
   if (isIOS && !isStandalone) {
@@ -24,7 +24,26 @@ export function PushNotificationToggle() {
     )
   }
 
-  // ブラウザが非対応
+  // iOSのPWA状態だが16.4未満
+  if (isIOS && isStandalone && !supported) {
+    return (
+      <div className="rounded-lg border p-3 space-y-2 bg-muted/30">
+        <div className="flex items-center gap-2">
+          <BellOff className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <p className="text-sm font-medium">プッシュ通知</p>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          iOSのプッシュ通知にはiOS 16.4以上が必要です。
+          現在のバージョン: iOS {iosVersion || '不明'}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          設定アプリ → 一般 → ソフトウェアアップデート から更新できます。
+        </p>
+      </div>
+    )
+  }
+
+  // その他のブラウザで非対応
   if (!supported) {
     return (
       <div className="flex items-center justify-between py-2 border rounded-lg px-3 opacity-50">

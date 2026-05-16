@@ -14,15 +14,20 @@ function urlBase64ToUint8Array(base64String: string) {
 export function useIsIOS() {
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
+  const [iosVersion, setIosVersion] = useState(0)
 
   useEffect(() => {
-    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as never as { MSStream: unknown }).MSStream
+    const ua = navigator.userAgent
+    const ios = /iPad|iPhone|iPod/.test(ua) && !(window as never as { MSStream: unknown }).MSStream
     const standalone = window.navigator.standalone === true
+    const match = ua.match(/OS (\d+)_/)
+    const version = match ? parseInt(match[1]) : 0
     setIsIOS(ios)
     setIsStandalone(standalone)
+    setIosVersion(version)
   }, [])
 
-  return { isIOS, isStandalone }
+  return { isIOS, isStandalone, iosVersion }
 }
 
 export function usePushNotifications() {
@@ -87,5 +92,5 @@ export function usePushNotifications() {
     setLoading(false)
   }
 
-  return { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone }
+  return { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone, iosVersion }
 }
