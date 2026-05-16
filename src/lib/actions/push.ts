@@ -3,11 +3,14 @@
 import webpush from 'web-push'
 import { createClient } from '@/lib/supabase/server'
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-)
+function initVapid() {
+  const subject = process.env.VAPID_SUBJECT
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  const privateKey = process.env.VAPID_PRIVATE_KEY
+  if (!subject || !publicKey || !privateKey) return false
+  webpush.setVapidDetails(subject, publicKey, privateKey)
+  return true
+}
 
 export async function subscribeToPush(subscription: PushSubscriptionJSON) {
   const supabase = await createClient()
@@ -35,6 +38,7 @@ export async function unsubscribeFromPush(endpoint: string) {
 }
 
 export async function sendPushToUser(userId: string, title: string, body: string, url = '/notifications') {
+  if (!initVapid()) return
   const supabase = await createClient()
 
   const { data: subs } = await supabase
