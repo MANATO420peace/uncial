@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   },
   description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
   keywords: ['大学', '楽単', 'テスト', 'サークル', '大学生', 'コミュニティ'],
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
