@@ -146,9 +146,7 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
                           <p className="font-semibold text-[10px] leading-tight line-clamp-2">{entry.course_name}</p>
                           {entry.room && <p className="text-[9px] text-muted-foreground">{entry.room}</p>}
                           {taskCount > 0 && (
-                            <span className="absolute top-0.5 left-0.5 text-[8px] bg-destructive text-destructive-foreground rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">
-                              {taskCount}
-                            </span>
+                            <span className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-destructive" />
                           )}
                           {isOwn && (
                             <button
