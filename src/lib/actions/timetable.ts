@@ -56,6 +56,55 @@ export async function deleteTimetableEntry(id: string) {
   return { error: null }
 }
 
+export async function getCourseTasks(userId?: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const targetId = userId ?? user?.id
+  if (!targetId) return []
+
+  const { data } = await supabase
+    .from('course_tasks')
+    .select('*')
+    .eq('user_id', targetId)
+    .order('created_at')
+
+  return data ?? []
+}
+
+export async function addCourseTask(entryId: string, content: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  const { error } = await supabase.from('course_tasks').insert({
+    user_id: user.id,
+    timetable_entry_id: entryId,
+    content: content.trim(),
+  })
+
+  if (error) return { error: error.message }
+  revalidatePath('/timetable')
+  return { error: null }
+}
+
+export async function toggleCourseTask(taskId: string, completed: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  await supabase.from('course_tasks').update({ is_completed: completed }).eq('id', taskId).eq('user_id', user.id)
+  revalidatePath('/timetable')
+}
+
+export async function deleteCourseTask(taskId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  await supabase.from('course_tasks').delete().eq('id', taskId).eq('user_id', user.id)
+  revalidatePath('/timetable')
+}
+
 export async function findUsersWithSameCourse(courseName: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

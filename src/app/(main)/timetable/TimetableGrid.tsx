@@ -1,13 +1,16 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useOptimistic } from 'react'
 import { toast } from 'sonner'
-import { Plus, X, Users } from 'lucide-react'
+import { Plus, X, Users, CheckSquare, Square, Trash2, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { upsertTimetableEntry, deleteTimetableEntry, findUsersWithSameCourse } from '@/lib/actions/timetable'
+import {
+  upsertTimetableEntry, deleteTimetableEntry, findUsersWithSameCourse,
+  addCourseTask, toggleCourseTask, deleteCourseTask,
+} from '@/lib/actions/timetable'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -23,33 +26,54 @@ interface Entry {
   room: string | null
 }
 
+interface Task {
+  id: string
+  timetable_entry_id: string
+  content: string
+  is_completed: boolean
+  created_at: string
+}
+
 interface Props {
   entries: Entry[]
+  tasks: Task[]
   isOwn: boolean
 }
 
-export function TimetableGrid({ entries, isOwn }: Props) {
+export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
   const [selected, setSelected] = useState<{ day: number; period: number } | null>(null)
+  const [focusedEntryId, setFocusedEntryId] = useState<string | null>(null)
   const [matchUsers, setMatchUsers] = useState<{ id: string; nickname: string; avatar_url?: string | null; universities?: { name: string } | null }[] | null>(null)
   const [matchCourse, setMatchCourse] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [newTaskText, setNewTaskText] = useState('')
+  const [tasks, setTasks] = useOptimistic(initialTasks)
 
   const entryMap = new Map(entries.map(e => [`${e.day_of_week}-${e.period}`, e]))
+  const focusedEntry = focusedEntryId ? entries.find(e => e.id === focusedEntryId) ?? null : null
+  const focusedTasks = tasks.filter(t => t.timetable_entry_id === focusedEntryId)
 
   function handleCellClick(day: number, period: number) {
     if (!isOwn) return
-    setSelected({ day, period })
+    const entry = entryMap.get(`${day}-${period}`)
+    if (entry) {
+      setFocusedEntryId(prev => prev === entry.id ? null : entry.id)
+    } else {
+      setSelected({ day, period })
+    }
   }
 
   function handleDelete(e: React.MouseEvent, id: string) {
     e.stopPropagation()
     startTransition(async () => {
       await deleteTimetableEntry(id)
+      if (focusedEntryId === id) setFocusedEntryId(null)
       toast.success('削除しました')
     })
   }
 
-  function handleFindUsers(courseName: string) {
+  function handleFindUsers(e: React.MouseEvent, courseName: string) {
+    e.stopPropagation()
     setMatchCourse(courseName)
     startTransition(async () => {
       const users = await findUsersWithSameCourse(courseName)
@@ -57,7 +81,38 @@ export function TimetableGrid({ entries, isOwn }: Props) {
     })
   }
 
+  async function handleAddTask(e: React.FormEvent) {
+    e.preventDefault()
+    if (!focusedEntryId || !newTaskText.trim()) return
+    const text = newTaskText.trim()
+    setNewTaskText('')
+    startTransition(async () => {
+      const tempId = crypto.randomUUID()
+      setTasks(prev => [...prev, { id: tempId, timetable_entry_id: focusedEntryId, content: text, is_completed: false, created_at: new Date().toISOString() }])
+      const result = await addCourseTask(focusedEntryId, text)
+      if (result?.error) toast.error(result.error)
+    })
+  }
+
+  async function handleToggleTask(task: Task) {
+    startTransition(async () => {
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, is_completed: !t.is_completed } : t))
+      await toggleCourseTask(task.id, !task.is_completed)
+    })
+  }
+
+  async function handleDeleteTask(taskId: string) {
+    startTransition(async () => {
+      setTasks(prev => prev.filter(t => t.id !== taskId))
+      await deleteCourseTask(taskId)
+    })
+  }
+
   const selectedEntry = selected ? entryMap.get(`${selected.day}-${selected.period}`) : null
+
+  // 全タスクをエントリごとにグループ化（タスクパネル用）
+  const allPendingTasks = tasks.filter(t => !t.is_completed)
+  const entryById = new Map(entries.map(e => [e.id, e]))
 
   return (
     <>
@@ -78,16 +133,23 @@ export function TimetableGrid({ entries, isOwn }: Props) {
                 {DAYS.map((_, dayIdx) => {
                   const day = dayIdx + 1
                   const entry = entryMap.get(`${day}-${period}`)
+                  const isFocused = entry && focusedEntryId === entry.id
+                  const taskCount = entry ? tasks.filter(t => t.timetable_entry_id === entry.id && !t.is_completed).length : 0
                   return (
                     <td
                       key={day}
-                      className={`border min-w-[60px] h-14 relative ${isOwn ? 'cursor-pointer hover:bg-muted/40' : ''} transition-colors`}
+                      className={`border min-w-[60px] h-14 relative ${isOwn ? 'cursor-pointer hover:bg-muted/40' : ''} transition-colors ${isFocused ? 'ring-2 ring-inset ring-primary' : ''}`}
                       onClick={() => handleCellClick(day, period)}
                     >
                       {entry ? (
                         <div className="p-1 h-full bg-primary/10 relative group">
                           <p className="font-semibold text-[10px] leading-tight line-clamp-2">{entry.course_name}</p>
                           {entry.room && <p className="text-[9px] text-muted-foreground">{entry.room}</p>}
+                          {taskCount > 0 && (
+                            <span className="absolute top-0.5 left-0.5 text-[8px] bg-destructive text-destructive-foreground rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">
+                              {taskCount}
+                            </span>
+                          )}
                           {isOwn && (
                             <button
                               onClick={e => handleDelete(e, entry.id)}
@@ -97,7 +159,7 @@ export function TimetableGrid({ entries, isOwn }: Props) {
                             </button>
                           )}
                           <button
-                            onClick={e => { e.stopPropagation(); handleFindUsers(entry.course_name) }}
+                            onClick={e => handleFindUsers(e, entry.course_name)}
                             className="absolute bottom-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <Users className="h-3 w-3 text-muted-foreground" />
@@ -116,6 +178,100 @@ export function TimetableGrid({ entries, isOwn }: Props) {
           </tbody>
         </table>
       </div>
+
+      {/* タスクパネル */}
+      {isOwn && (
+        <div className="mt-4 space-y-4">
+          {focusedEntry ? (
+            /* 授業選択時: その授業のタスク */
+            <div className="border rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  <h2 className="font-semibold text-sm">{focusedEntry.course_name}</h2>
+                </div>
+                <button
+                  onClick={() => setSelected({ day: focusedEntry.day_of_week, period: focusedEntry.period })}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  授業を編集
+                </button>
+              </div>
+
+              {/* タスク一覧 */}
+              <ul className="space-y-1.5">
+                {focusedTasks.length === 0 && (
+                  <p className="text-xs text-muted-foreground text-center py-2">タスクはありません</p>
+                )}
+                {focusedTasks.map(task => (
+                  <li key={task.id} className="flex items-center gap-2 group">
+                    <button onClick={() => handleToggleTask(task)} className="flex-shrink-0 text-primary">
+                      {task.is_completed
+                        ? <CheckSquare className="h-4 w-4" />
+                        : <Square className="h-4 w-4 text-muted-foreground" />
+                      }
+                    </button>
+                    <span className={`flex-1 text-sm ${task.is_completed ? 'line-through text-muted-foreground' : ''}`}>
+                      {task.content}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteTask(task.id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              {/* タスク追加 */}
+              <form onSubmit={handleAddTask} className="flex gap-2">
+                <Input
+                  value={newTaskText}
+                  onChange={e => setNewTaskText(e.target.value)}
+                  placeholder="タスク・メモを追加..."
+                  className="text-sm h-8"
+                />
+                <Button type="submit" size="sm" className="h-8 px-3" disabled={!newTaskText.trim() || isPending}>
+                  追加
+                </Button>
+              </form>
+            </div>
+          ) : (
+            /* 未選択時: 全授業の未完了タスク一覧 */
+            allPendingTasks.length > 0 && (
+              <div className="border rounded-xl p-4 space-y-3">
+                <h2 className="font-semibold text-sm flex items-center gap-2">
+                  <CheckSquare className="h-4 w-4 text-primary" />
+                  未完了のタスク
+                </h2>
+                <ul className="space-y-2">
+                  {allPendingTasks.map(task => {
+                    const entry = entryById.get(task.timetable_entry_id)
+                    return (
+                      <li key={task.id} className="flex items-center gap-2 group">
+                        <button onClick={() => handleToggleTask(task)} className="flex-shrink-0">
+                          <Square className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm truncate">{task.content}</p>
+                          {entry && <p className="text-[10px] text-muted-foreground">{entry.course_name}</p>}
+                        </div>
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            )
+          )}
+        </div>
+      )}
 
       {/* 授業追加ダイアログ */}
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>

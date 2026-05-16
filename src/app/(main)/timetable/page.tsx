@@ -1,12 +1,12 @@
 import { Metadata } from 'next'
-import { getTimetable } from '@/lib/actions/timetable'
+import { getTimetable, getCourseTasks } from '@/lib/actions/timetable'
 import { getCurrentUser } from '@/lib/actions/user'
 import { TimetableGrid } from './TimetableGrid'
 
 export const metadata: Metadata = { title: '時間割' }
 
 export default async function TimetablePage() {
-  const [user, entries] = await Promise.all([getCurrentUser(), getTimetable()])
+  const [user, entries, tasks] = await Promise.all([getCurrentUser(), getTimetable(), getCourseTasks()])
 
   return (
     <div>
@@ -15,7 +15,7 @@ export default async function TimetablePage() {
         <p className="text-xs text-muted-foreground mt-0.5">セルをタップして授業を登録・編集。👥アイコンで同じ授業の人を探せます</p>
       </div>
       <div className="p-2">
-        <TimetableGrid entries={entries} isOwn={!!user} />
+        <TimetableGrid entries={entries} tasks={tasks} isOwn={!!user} />
       </div>
     </div>
   )
