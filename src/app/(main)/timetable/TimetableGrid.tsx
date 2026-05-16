@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useOptimistic } from 'react'
+import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { Plus, X, Users, CheckSquare, Square, Trash2, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -47,7 +47,7 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
   const [matchCourse, setMatchCourse] = useState('')
   const [isPending, startTransition] = useTransition()
   const [newTaskText, setNewTaskText] = useState('')
-  const [tasks, setTasks] = useOptimistic(initialTasks)
+  const [tasks, setTasks] = useState(initialTasks)
 
   const entryMap = new Map(entries.map(e => [`${e.day_of_week}-${e.period}`, e]))
   const focusedEntry = focusedEntryId ? entries.find(e => e.id === focusedEntryId) ?? null : null
@@ -182,6 +182,11 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
       {/* タスクパネル */}
       {isOwn && (
         <div className="mt-4 space-y-4">
+          {!focusedEntry && allPendingTasks.length === 0 && (
+            <p className="text-xs text-muted-foreground text-center py-2">
+              授業セルをタップするとタスク・メモを追加できます
+            </p>
+          )}
           {focusedEntry ? (
             /* 授業選択時: その授業のタスク */
             <div className="border rounded-xl p-4 space-y-3">
