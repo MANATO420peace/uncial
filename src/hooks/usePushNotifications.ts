@@ -42,12 +42,13 @@ export function usePushNotifications() {
   }, [])
 
   useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      setSupported(true)
-      navigator.serviceWorker.ready.then(reg => {
+    if (!('serviceWorker' in navigator)) return
+    navigator.serviceWorker.ready.then(reg => {
+      if ('pushManager' in reg) {
+        setSupported(true)
         reg.pushManager.getSubscription().then(sub => setSubscribed(!!sub))
-      })
-    }
+      }
+    }).catch(() => {})
   }, [])
 
   async function subscribe() {
