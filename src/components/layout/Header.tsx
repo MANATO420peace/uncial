@@ -3,20 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Plus, Settings, User, LogOut } from 'lucide-react'
+import { Search, Plus } from 'lucide-react'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { NewPostDialog } from '@/components/posts/NewPostDialog'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { signOut } from '@/lib/actions/auth'
 import type { User } from '@/types'
 
 interface Props {
@@ -55,43 +47,14 @@ export function Header({ user }: Props) {
               <Plus className="h-4 w-4" />
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="ml-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring touch-manipulation"
-                  style={{ WebkitTapHighlightColor: 'transparent' }}
-                >
-                  <Avatar className="h-7 w-7">
-                    {user?.avatar_url && <AvatarImage src={user.avatar_url} />}
-                    <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                      {user?.nickname?.[0]?.toUpperCase() ?? '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44 z-[60]">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center cursor-pointer">
-                    <User className="h-4 w-4 mr-2" />
-                    プロフィール
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="flex items-center cursor-pointer">
-                    <Settings className="h-4 w-4 mr-2" />
-                    設定
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive cursor-pointer"
-                  onSelect={() => signOut()}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  ログアウト
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link href="/profile" className="ml-1">
+              <Avatar className="h-7 w-7">
+                {user?.avatar_url && <AvatarImage src={user.avatar_url} />}
+                <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                  {user?.nickname?.[0]?.toUpperCase() ?? '?'}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           </div>
         </div>
       </header>
