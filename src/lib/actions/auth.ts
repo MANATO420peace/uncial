@@ -131,6 +131,16 @@ export async function updatePassword(formData: FormData) {
   redirect('/home')
 }
 
+export async function resendVerificationEmail() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) return { error: 'ユーザーが見つかりません' }
+
+  const { error } = await supabase.auth.resend({ type: 'signup', email: user.email })
+  if (error) return { error: error.message }
+  return { error: null }
+}
+
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()

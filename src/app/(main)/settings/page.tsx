@@ -1,11 +1,17 @@
 import { Metadata } from 'next'
+import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser, getUniversities } from '@/lib/actions/user'
 import { SettingsForm } from './SettingsForm'
 
 export const metadata: Metadata = { title: '設定' }
 
 export default async function SettingsPage() {
-  const [user, universities] = await Promise.all([getCurrentUser(), getUniversities()])
+  const supabase = await createClient()
+  const [user, universities, { data: { user: authUser } }] = await Promise.all([
+    getCurrentUser(),
+    getUniversities(),
+    supabase.auth.getUser(),
+  ])
   if (!user) return null
 
   return (
@@ -14,7 +20,7 @@ export default async function SettingsPage() {
         <h1 className="font-bold text-lg">プロフィール設定</h1>
         <p className="text-sm text-muted-foreground">表示情報を変更できます</p>
       </div>
-      <SettingsForm user={user} universities={universities} />
+      <SettingsForm user={user} universities={universities} email={authUser?.email ?? ''} />
     </div>
   )
 }

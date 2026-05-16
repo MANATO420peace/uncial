@@ -41,6 +41,17 @@ export async function createPost(formData: FormData) {
     return { error: 'プロフィールで大学を設定してください' }
   }
 
+  // レート制限: 60秒に1投稿まで
+  const { data: recentPost } = await supabase
+    .from('posts')
+    .select('id')
+    .eq('user_id', user.id)
+    .gte('created_at', new Date(Date.now() - 60_000).toISOString())
+    .limit(1)
+    .maybeSingle()
+
+  if (recentPost) return { error: '投稿は1分に1回までです。少し待ってから再度お試しください。' }
+
   const category = formData.get('category') as PostCategory
 
   if (category === 'buy_sell') {

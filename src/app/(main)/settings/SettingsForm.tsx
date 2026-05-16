@@ -16,28 +16,40 @@ import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import type { User, University } from '@/types'
 
-const GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D', 'OB・OG']
+const STUDENT_GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D']
+const MAX_AVATAR_SIZE = 5 * 1024 * 1024
 
 interface Props {
   user: User
   universities: University[]
+  email: string
 }
 
-export function SettingsForm({ user, universities }: Props) {
+export function SettingsForm({ user, universities, email }: Props) {
   const { theme, setTheme } = useTheme()
   const [loading, setLoading] = useState(false)
   const [universityId, setUniversityId] = useState(user.university_id ?? '')
-  const [grade, setGrade] = useState(user.grade ?? '')
+  const [grade, setGrade] = useState(user.grade === 'OB・OG' ? '' : (user.grade ?? ''))
   const [isPrivate, setIsPrivate] = useState(user.is_private ?? false)
   const [avatarUrl, setAvatarUrl] = useState(user.avatar_url ?? '')
   const [avatarUploading, setAvatarUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const isUniversityEmail = email.toLowerCase().endsWith('.ac.jp')
+  const effectiveGrade = isUniversityEmail ? grade : 'OB・OG'
   const universityName = universities.find(u => u.id === universityId)?.name
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (file.size > MAX_AVATAR_SIZE) {
+      toast.error('アイコン画像は5MB以下にしてください')
+      return
+    }
+    if (!file.type.startsWith('image/')) {
+      toast.error('画像ファイルを選択してください')
+      return
+    }
     setAvatarUploading(true)
     const url = await uploadAvatar(file)
     setAvatarUploading(false)
@@ -50,10 +62,11 @@ export function SettingsForm({ user, universities }: Props) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (!universityId) { toast.error('大学を選択してください'); return }
     setLoading(true)
     const formData = new FormData(e.currentTarget)
     formData.set('university_id', universityId)
-    formData.set('grade', grade)
+    formData.set('grade', effectiveGrade)
     formData.set('is_private', String(isPrivate))
     if (avatarUrl) formData.set('avatar_url', avatarUrl)
     const result = await updateProfile(formData)
@@ -86,25 +99,13 @@ export function SettingsForm({ user, universities }: Props) {
               <Camera className="h-3.5 w-3.5" />
             </button>
           </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleAvatarChange}
-          />
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
           {avatarUploading && <p className="text-xs text-muted-foreground">アップロード中...</p>}
         </div>
 
         <div className="space-y-1.5">
           <Label htmlFor="nickname">ニックネーム</Label>
-          <Input
-            id="nickname"
-            name="nickname"
-            defaultValue={user.nickname}
-            maxLength={20}
-            required
-          />
+          <Input id="nickname" name="nickname" defaultValue={user.nickname} maxLength={20} required />
         </div>
 
         <div className="space-y-1.5">
@@ -121,7 +122,7 @@ export function SettingsForm({ user, universities }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <Label>大学</Label>
+          <Label>大学 *</Label>
           <Select value={universityId} onValueChange={setUniversityId}>
             <SelectTrigger>
               <SelectValue placeholder="大学を選択">{universityName ?? ''}</SelectValue>
@@ -137,29 +138,29 @@ export function SettingsForm({ user, universities }: Props) {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label htmlFor="faculty">学部</Label>
-            <Input
-              id="faculty"
-              name="faculty"
-              defaultValue={user.faculty ?? ''}
-              placeholder="工学部"
-            />
+            <Input id="faculty" name="faculty" defaultValue={user.faculty ?? ''} placeholder="工学部" />
           </div>
           <div className="space-y-1.5">
             <Label>学年</Label>
-            <Select value={grade} onValueChange={setGrade}>
-              <SelectTrigger>
-                <SelectValue placeholder="学年" />
-              </SelectTrigger>
-              <SelectContent>
-                {GRADES.map(g => (
-                  <SelectItem key={g} value={g}>{g}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {isUniversityEmail ? (
+              <Select value={grade} onValueChange={setGrade}>
+                <SelectTrigger>
+                  <SelectValue placeholder="学年を選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  {STUDENT_GRADES.map(g => (
+                    <SelectItem key={g} value={g}>{g}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <div className="h-10 rounded-md border bg-muted/50 px-3 flex items-center text-sm text-muted-foreground">
+                OB・OG
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Private account toggle */}
         <div className="flex items-center justify-between py-2 border rounded-lg px-3">
           <div>
             <p className="text-sm font-medium">非公開アカウント</p>
@@ -170,9 +171,7 @@ export function SettingsForm({ user, universities }: Props) {
             onClick={() => setIsPrivate(v => !v)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isPrivate ? 'bg-primary' : 'bg-muted-foreground/30'}`}
           >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isPrivate ? 'translate-x-6' : 'translate-x-1'}`}
-            />
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isPrivate ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>
         </div>
 
@@ -213,11 +212,7 @@ export function SettingsForm({ user, universities }: Props) {
 
       <div>
         <h2 className="font-semibold text-sm mb-3">アカウント</h2>
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={() => signOut()}
-        >
+        <Button variant="destructive" className="w-full" onClick={() => signOut()}>
           ログアウト
         </Button>
       </div>

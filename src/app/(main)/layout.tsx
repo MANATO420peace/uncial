@@ -9,6 +9,12 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
   if (!user) redirect('/login')
 
+  // メールアドレス未確認のEmailユーザーはverify-emailへ
+  const isEmailProvider = (user.app_metadata?.provider ?? 'email') === 'email'
+  if (isEmailProvider && !user.email_confirmed_at) {
+    redirect('/verify-email')
+  }
+
   const { data: profile } = await supabase
     .from('users')
     .select('*, universities(id, name)')
