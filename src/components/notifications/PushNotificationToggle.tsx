@@ -6,7 +6,19 @@ import { usePushNotifications } from '@/hooks/usePushNotifications'
 export function PushNotificationToggle() {
   const { supported, subscribed, loading, subscribe, unsubscribe } = usePushNotifications()
 
-  if (!supported) return null
+  if (!supported) {
+    return (
+      <div className="flex items-center justify-between py-2 border rounded-lg px-3 opacity-50">
+        <div className="flex items-center gap-2">
+          <BellOff className="h-4 w-4 text-muted-foreground" />
+          <div>
+            <p className="text-sm font-medium">プッシュ通知</p>
+            <p className="text-xs text-muted-foreground">このブラウザでは利用できません</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center justify-between py-2 border rounded-lg px-3">
@@ -15,7 +27,7 @@ export function PushNotificationToggle() {
         <div>
           <p className="text-sm font-medium">プッシュ通知</p>
           <p className="text-xs text-muted-foreground">
-            {subscribed ? '有効 — いいね・コメント・フォローを通知' : 'オフ'}
+            {subscribed ? '有効 — いいね・コメント・フォローを通知' : 'オフ — タップして許可する'}
           </p>
         </div>
       </div>
