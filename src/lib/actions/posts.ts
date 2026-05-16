@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { PostCategory, PostFilter } from '@/types'
 import { createNotification } from './notifications'
+import { awardPoints } from './points'
 
 export async function getBuySellEligibility() {
   const supabase = await createClient()
@@ -66,6 +67,8 @@ export async function createPost(formData: FormData) {
   const imagesJson = formData.get('images') as string | null
   const images = imagesJson ? JSON.parse(imagesJson) : []
 
+  const location = (formData.get('location') as string) || null
+
   const { data, error } = await supabase.from('posts').insert({
     user_id: user.id,
     university_id: profile.university_id,
@@ -75,9 +78,12 @@ export async function createPost(formData: FormData) {
     tags,
     anonymous: formData.get('anonymous') === 'true',
     images,
+    location,
   }).select().single()
 
   if (error) return { error: error.message }
+
+  await awardPoints(user.id, 10)
 
   revalidatePath('/home')
   redirect(`/post/${data.id}`)

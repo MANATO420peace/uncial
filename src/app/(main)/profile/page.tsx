@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser, getLikedPosts } from '@/lib/actions/user'
 import { getBookmarkedPosts } from '@/lib/actions/bookmarks'
 import { getFollowRequests } from '@/lib/actions/follow'
+import { getMyPoints } from '@/lib/actions/points'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -20,7 +21,7 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests] = await Promise.all([
+  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests, { points, badge }] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
@@ -30,6 +31,7 @@ export default async function ProfilePage() {
     getBookmarkedPosts(),
     getLikedPosts(),
     user.is_private ? getFollowRequests() : Promise.resolve([]),
+    getMyPoints(),
   ])
 
   return (
@@ -69,7 +71,12 @@ export default async function ProfilePage() {
           {user.is_private && (
             <Badge variant="outline" className="text-xs">非公開</Badge>
           )}
+          <Badge variant="outline" className="text-xs gap-1">
+            <span>🏅</span>{badge.label}
+          </Badge>
         </div>
+
+        <p className="text-xs text-muted-foreground mt-2">{points} ポイント</p>
 
         <div className="mt-4 flex gap-6 text-sm">
           <div>

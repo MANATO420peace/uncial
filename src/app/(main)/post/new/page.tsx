@@ -135,6 +135,11 @@ export default function NewPostPage() {
         </div>
 
         <div className="space-y-1.5">
+          <Label htmlFor="location">場所（任意）</Label>
+          <Input id="location" name="location" placeholder="例: A棟前、図書館" />
+        </div>
+
+        <div className="space-y-1.5">
           <Label htmlFor="tags">タグ（カンマ区切り）</Label>
           <Input id="tags" name="tags" placeholder="例: 数学, 試験対策" />
         </div>

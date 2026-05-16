@@ -2,14 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Search, ShoppingBag, MessageCircle, User } from 'lucide-react'
+import { Home, Search, CalendarDays, BookOpen, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/home', icon: Home, label: 'ホーム' },
   { href: '/search', icon: Search, label: '検索' },
-  { href: '/buy-sell', icon: ShoppingBag, label: '販売・購入' },
-  { href: '/messages', icon: MessageCircle, label: 'メッセージ' },
+  { href: '/timetable', icon: CalendarDays, label: '時間割' },
+  { href: '/study-rooms', icon: BookOpen, label: '対策部屋' },
   { href: '/profile', icon: User, label: 'マイページ' },
 ]
 

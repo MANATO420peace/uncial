@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Heart, MessageSquare } from 'lucide-react'
+import { Heart, MessageSquare, MapPin } from 'lucide-react'
 import { ReportButton } from './ReportButton'
 import { BookmarkButton } from './BookmarkButton'
 import { ShareButton } from './ShareButton'
@@ -57,6 +57,13 @@ export function PostCard({ post }: Props) {
           <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
             {truncate(post.content, 120)}
           </p>
+
+          {(post as never as { location?: string | null }).location && (
+            <span className="flex items-center gap-0.5 text-[11px] text-muted-foreground">
+              <MapPin className="h-2.5 w-2.5" />
+              {(post as never as { location?: string }).location}
+            </span>
+          )}
 
           <div className="flex items-center gap-3 pt-0.5">
             {!post.anonymous && post.user_id ? (
