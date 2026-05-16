@@ -11,25 +11,36 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)))
 }
 
+export function useIsIOS() {
+  const [isIOS, setIsIOS] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
+
+  useEffect(() => {
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as never as { MSStream: unknown }).MSStream
+    const standalone = window.navigator.standalone === true
+    setIsIOS(ios)
+    setIsStandalone(standalone)
+  }, [])
+
+  return { isIOS, isStandalone }
+}
+
 export function usePushNotifications() {
   const [supported, setSupported] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(false)
+  const { isIOS, isStandalone } = useIsIOS()
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
-    navigator.serviceWorker.register('/sw.js').catch(err => {
-      console.error('SW registration failed:', err)
-    })
+    navigator.serviceWorker.register('/sw.js').catch(() => {})
   }, [])
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setSupported(true)
       navigator.serviceWorker.ready.then(reg => {
-        reg.pushManager.getSubscription().then(sub => {
-          setSubscribed(!!sub)
-        })
+        reg.pushManager.getSubscription().then(sub => setSubscribed(!!sub))
       })
     }
   }, [])
@@ -40,33 +51,22 @@ export function usePushNotifications() {
     try {
       const permission = await Notification.requestPermission()
       if (permission !== 'granted') {
-        toast.error('通知の許可が必要です。ブラウザの設定から許可してください。')
+        toast.error('通知の許可が必要です')
         setLoading(false)
         return
       }
-
       const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-      if (!vapidKey) {
-        toast.error('設定エラーが発生しました')
-        setLoading(false)
-        return
-      }
+      if (!vapidKey) { toast.error('設定エラー'); setLoading(false); return }
 
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidKey),
       })
-
       const result = await subscribeToPush(sub.toJSON())
-      if (result?.error) {
-        toast.error(result.error)
-      } else {
-        setSubscribed(true)
-        toast.success('プッシュ通知を有効にしました')
-      }
+      if (result?.error) toast.error(result.error)
+      else { setSubscribed(true); toast.success('プッシュ通知を有効にしました') }
     } catch (err) {
-      console.error('Push subscribe error:', err)
       toast.error('通知の設定に失敗しました: ' + (err instanceof Error ? err.message : String(err)))
     }
     setLoading(false)
@@ -83,12 +83,9 @@ export function usePushNotifications() {
         setSubscribed(false)
         toast.success('プッシュ通知をオフにしました')
       }
-    } catch (err) {
-      toast.error('設定の変更に失敗しました')
-      console.error(err)
-    }
+    } catch { toast.error('設定の変更に失敗しました') }
     setLoading(false)
   }
 
-  return { supported, subscribed, loading, subscribe, unsubscribe }
+  return { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone }
 }
