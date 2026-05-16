@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Heart, MessageSquare } from 'lucide-react'
 import { ReportButton } from './ReportButton'
 import { BookmarkButton } from './BookmarkButton'
+import { ShareButton } from './ShareButton'
 import { Badge } from '@/components/ui/badge'
 import { cn, timeAgo, truncate } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
@@ -81,6 +82,7 @@ export function PostCard({ post }: Props) {
               <span onClick={(e) => e.stopPropagation()}>
                 <BookmarkButton postId={post.id} initialBookmarked={post.bookmarked ?? false} />
               </span>
+              <ShareButton postId={post.id} title={post.title} />
               <span onClick={(e) => e.stopPropagation()}>
                 <ReportButton postId={post.id} />
               </span>

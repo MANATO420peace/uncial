@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/components/layout/ThemeProvider'
 
 export const metadata: Metadata = {
   title: {
@@ -9,6 +10,12 @@ export const metadata: Metadata = {
   },
   description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
   keywords: ['大学', '楽単', 'テスト', 'サークル', '大学生', 'コミュニティ'],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ユニキャン',
+  },
 }
 
 export const viewport: Viewport = {
@@ -25,8 +32,10 @@ export default function RootLayout({
   return (
     <html lang="ja" className="h-full" suppressHydrationWarning>
       <body className="min-h-full bg-background antialiased">
-        {children}
-        <Toaster position="top-center" richColors />
+        <ThemeProvider>
+          {children}
+          <Toaster position="top-center" richColors />
+        </ThemeProvider>
       </body>
     </html>
   )

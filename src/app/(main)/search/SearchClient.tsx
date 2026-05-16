@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation'
 import { Search } from 'lucide-react'
 import Link from 'next/link'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { PostCard } from '@/components/posts/PostCard'
 import { ReviewCard } from '@/components/reviews/ReviewCard'
-import type { Post, CourseReview } from '@/types'
+import type { Post, CourseReview, University } from '@/types'
 
 interface Props {
   query: string
@@ -18,24 +19,44 @@ interface Props {
     reviews: CourseReview[]
     users: { id: string; nickname: string; universities?: { name: string } | null }[]
   }
+  universities: University[]
+  selectedUniversityId: string
 }
 
-export function SearchClient({ query, results }: Props) {
+export function SearchClient({ query, results, universities, selectedUniversityId }: Props) {
   const router = useRouter()
   const [input, setInput] = useState(query)
+  const [universityId, setUniversityId] = useState(selectedUniversityId)
   const [isPending, startTransition] = useTransition()
+
+  function buildUrl(q: string, uid: string) {
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    if (uid) params.set('university_id', uid)
+    return `/search?${params.toString()}`
+  }
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     if (!input.trim()) return
     startTransition(() => {
-      router.push(`/search?q=${encodeURIComponent(input.trim())}`)
+      router.push(buildUrl(input.trim(), universityId))
     })
+  }
+
+  function handleUniversityChange(value: string) {
+    const uid = value === 'all' ? '' : value
+    setUniversityId(uid)
+    if (input.trim()) {
+      startTransition(() => {
+        router.push(buildUrl(input.trim(), uid))
+      })
+    }
   }
 
   return (
     <div>
-      <div className="sticky top-14 z-10 bg-background border-b px-4 py-3">
+      <div className="sticky top-14 z-10 bg-background border-b px-4 py-3 space-y-2">
         <form onSubmit={handleSearch}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -48,6 +69,17 @@ export function SearchClient({ query, results }: Props) {
             />
           </div>
         </form>
+        <Select value={universityId || 'all'} onValueChange={handleUniversityChange}>
+          <SelectTrigger className="h-8 text-xs">
+            <SelectValue placeholder="大学で絞り込み" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">すべての大学</SelectItem>
+            {universities.map(u => (
+              <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {!query ? (

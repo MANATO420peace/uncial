@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useTheme } from 'next-themes'
 import { toast } from 'sonner'
-import { Camera } from 'lucide-react'
+import { Camera, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export function SettingsForm({ user, universities }: Props) {
+  const { theme, setTheme } = useTheme()
   const [loading, setLoading] = useState(false)
   const [universityId, setUniversityId] = useState(user.university_id ?? '')
   const [grade, setGrade] = useState(user.grade ?? '')
@@ -178,6 +180,25 @@ export function SettingsForm({ user, universities }: Props) {
           {loading ? '保存中...' : '変更を保存'}
         </Button>
       </form>
+
+      <Separator />
+
+      <div className="space-y-3">
+        <h2 className="font-semibold text-sm">表示</h2>
+        <div className="flex items-center justify-between py-2 border rounded-lg px-3">
+          <div className="flex items-center gap-2">
+            {theme === 'dark' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            <p className="text-sm font-medium">ダークモード</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${theme === 'dark' ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${theme === 'dark' ? 'translate-x-6' : 'translate-x-1'}`} />
+          </button>
+        </div>
+      </div>
 
       <Separator />
 
