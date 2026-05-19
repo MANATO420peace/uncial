@@ -35,15 +35,24 @@ export function PostCard({ post }: Props) {
     if (isLiking) return
     setIsLiking(true)
     // 楽観的更新：即座に反映
+    const prevLiked = liked
+    const prevCount = likesCount
     const newLiked = !liked
     setLiked(newLiked)
-    setLikesCount(c => c + (newLiked ? 1 : -1))
+    setLikesCount(c => Math.max(0, c + (newLiked ? 1 : -1)))
     try {
-      await toggleLike(post.id)
+      const result = await toggleLike(post.id)
+      if (result && 'likesCount' in result && result.likesCount != null) {
+        // DBの正確なカウントに同期
+        setLikesCount(result.likesCount)
+      }
+      if (result && 'liked' in result) {
+        setLiked(result.liked)
+      }
     } catch {
       // 失敗時は元に戻す
-      setLiked(!newLiked)
-      setLikesCount(c => c + (newLiked ? -1 : 1))
+      setLiked(prevLiked)
+      setLikesCount(prevCount)
     } finally {
       setIsLiking(false)
     }
