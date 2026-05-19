@@ -4,7 +4,7 @@ import { Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser, getLikedPosts } from '@/lib/actions/user'
 import { getBookmarkedPosts } from '@/lib/actions/bookmarks'
-import { getFollowRequests } from '@/lib/actions/follow'
+import { getFollowRequests, getFollowStats } from '@/lib/actions/follow'
 import { getMyPoints } from '@/lib/actions/points'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -21,7 +21,7 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests, { points, badge }] = await Promise.all([
+  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests, { points, badge }, followStats] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
@@ -32,6 +32,7 @@ export default async function ProfilePage() {
     getLikedPosts(),
     user.is_private ? getFollowRequests() : Promise.resolve([]),
     getMyPoints(),
+    getFollowStats(user.id),
   ])
 
   return (
@@ -84,11 +85,11 @@ export default async function ProfilePage() {
             <span className="text-muted-foreground ml-1">投稿</span>
           </div>
           <Link href={`/user/${user.id}/followers`} className="hover:underline">
-            <span className="font-bold">{0}</span>
+            <span className="font-bold">{followStats.followersCount}</span>
             <span className="text-muted-foreground ml-1">フォロワー</span>
           </Link>
           <Link href={`/user/${user.id}/following`} className="hover:underline">
-            <span className="font-bold">{0}</span>
+            <span className="font-bold">{followStats.followingCount}</span>
             <span className="text-muted-foreground ml-1">フォロー中</span>
           </Link>
         </div>
@@ -113,7 +114,7 @@ export default async function ProfilePage() {
 
         <TabsContent value="posts" className="mt-0">
           {posts && posts.length > 0 ? (
-            posts.map(post => <PostCard key={post.id} post={post as never} />)
+            posts.map(post => <PostCard key={post.id} post={post as never} isOwner={true} />)
           ) : (
             <p className="text-center py-10 text-sm text-muted-foreground">まだ投稿がありません</p>
           )}
@@ -129,7 +130,7 @@ export default async function ProfilePage() {
 
         <TabsContent value="bookmarks" className="mt-0">
           {bookmarkedPosts.length > 0 ? (
-            bookmarkedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={{ ...post as never, bookmarked: true }} />)
+            bookmarkedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={Object.assign({}, post, { bookmarked: true }) as never} />)
           ) : (
             <p className="text-center py-10 text-sm text-muted-foreground">保存した投稿はありません</p>
           )}

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createNotification } from './notifications'
 
 export async function toggleFollow(targetUserId: string) {
@@ -10,8 +11,15 @@ export async function toggleFollow(targetUserId: string) {
   if (!user) return { error: '認証が必要です' }
   if (user.id === targetUserId) return { error: '自分はフォローできません' }
 
+  let admin: ReturnType<typeof createAdminClient>
+  try {
+    admin = createAdminClient()
+  } catch {
+    return { error: 'サーバー設定エラー' }
+  }
+
   // すでにフォロー中なら解除
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from('follows')
     .select('id')
     .eq('follower_id', user.id)
@@ -19,13 +27,14 @@ export async function toggleFollow(targetUserId: string) {
     .maybeSingle()
 
   if (existing) {
-    await supabase.from('follows').delete().eq('id', existing.id)
+    await admin.from('follows').delete().eq('id', existing.id)
     revalidatePath(`/user/${targetUserId}`)
+    revalidatePath('/profile')
     return { following: false, requested: false }
   }
 
   // リクエスト中なら取り消し
-  const { data: existingRequest } = await supabase
+  const { data: existingRequest } = await admin
     .from('follow_requests')
     .select('id')
     .eq('requester_id', user.id)
@@ -33,29 +42,44 @@ export async function toggleFollow(targetUserId: string) {
     .maybeSingle()
 
   if (existingRequest) {
-    await supabase.from('follow_requests').delete().eq('id', existingRequest.id)
+    await admin.from('follow_requests').delete().eq('id', existingRequest.id)
     revalidatePath(`/user/${targetUserId}`)
+    revalidatePath('/profile')
     return { following: false, requested: false }
   }
 
   // 非公開アカウントならリクエスト
-  const { data: targetProfile } = await supabase
+  const { data: targetProfile } = await admin
     .from('users')
     .select('is_private')
     .eq('id', targetUserId)
     .single()
 
   if (targetProfile?.is_private) {
-    await supabase.from('follow_requests').insert({ requester_id: user.id, target_id: targetUserId })
+    const { error: reqErr } = await admin
+      .from('follow_requests')
+      .insert({ requester_id: user.id, target_id: targetUserId })
+    if (reqErr) {
+      console.error('[toggleFollow] follow_request insert error:', reqErr.message)
+      return { error: 'フォローリクエストに失敗しました' }
+    }
     await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow_request' })
     revalidatePath(`/user/${targetUserId}`)
+    revalidatePath('/profile')
     return { following: false, requested: true }
   }
 
   // 通常フォロー
-  await supabase.from('follows').insert({ follower_id: user.id, following_id: targetUserId })
+  const { error: followErr } = await admin
+    .from('follows')
+    .insert({ follower_id: user.id, following_id: targetUserId })
+  if (followErr) {
+    console.error('[toggleFollow] follows insert error:', followErr.message)
+    return { error: 'フォローに失敗しました' }
+  }
   await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow' })
   revalidatePath(`/user/${targetUserId}`)
+  revalidatePath('/profile')
   return { following: true, requested: false }
 }
 
