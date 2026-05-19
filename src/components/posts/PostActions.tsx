@@ -30,8 +30,12 @@ export function PostActions({ postId }: Props) {
 
   function handleDelete() {
     startTransition(async () => {
-      await deletePost(postId)
-      toast.success('投稿を削除しました')
+      const result = await deletePost(postId)
+      if (result?.error) {
+        toast.error(result.error)
+        return
+      }
+      // deletePost が成功すると redirect('/home') が走るのでここには来ない
     })
   }
 

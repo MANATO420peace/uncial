@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Heart, MessageSquare, MapPin, MoreVertical, Pencil, Trash2, ChevronRight } from 'lucide-react'
@@ -28,6 +28,7 @@ interface Props {
 
 export function PostCard({ post, isOwner = false }: Props) {
   const router = useRouter()
+  const [isDeleting, startDeleteTransition] = useTransition()
   const isAnon = post.anonymous
   const authorName = isAnon ? '匿名の学生' : (post.users?.nickname ?? '不明')
   const initial = isAnon ? '匿' : (post.users?.nickname?.[0]?.toUpperCase() ?? '?')
@@ -133,10 +134,14 @@ export function PostCard({ post, isOwner = false }: Props) {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-red-600 focus:text-red-600"
-                    onSelect={async () => {
+                    disabled={isDeleting}
+                    onSelect={() => {
                       if (!confirm('この投稿を削除しますか？')) return
-                      await deletePost(post.id)
-                      toast.success('投稿を削除しました')
+                      startDeleteTransition(async () => {
+                        const result = await deletePost(post.id)
+                        if (result?.error) toast.error(result.error)
+                        // 成功時は deletePost 内の redirect('/home') が走る
+                      })
                     }}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />

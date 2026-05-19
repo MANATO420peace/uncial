@@ -216,23 +216,35 @@ export async function updatePost(postId: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '認証が必要です' }
 
+  // 管理者クライアントでRLSを回避（自分の投稿のみ）
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  let admin: ReturnType<typeof createAdminClient>
+  try { admin = createAdminClient() } catch { return { error: 'サーバー設定エラー' } }
+
+  // 所有権確認
+  const { data: post } = await admin.from('posts').select('user_id').eq('id', postId).single()
+  if (!post || post.user_id !== user.id) return { error: '権限がありません' }
+
   const tagsRaw = formData.get('tags') as string
   const manualTags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : []
   const editContent = formData.get('content') as string
   const hashtagsFromContent = (editContent.match(/#[\p{L}\p{N}_]+/gu) ?? []).map(t => t.slice(1))
   const tags = [...new Set([...manualTags, ...hashtagsFromContent])]
 
-  const { error } = await supabase.from('posts')
+  const { error } = await admin.from('posts')
     .update({
       title: formData.get('title') as string,
       content: editContent,
       tags,
     })
     .eq('id', postId)
-    .eq('user_id', user.id)
 
-  if (error) return { error: error.message }
+  if (error) {
+    console.error('[updatePost] error:', error.message)
+    return { error: error.message }
+  }
   revalidatePath(`/post/${postId}`)
+  revalidatePath('/home')
   redirect(`/post/${postId}`)
 }
 
@@ -241,14 +253,23 @@ export async function deletePost(postId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '認証が必要です' }
 
-  const { error } = await supabase
-    .from('posts')
-    .delete()
-    .eq('id', postId)
-    .eq('user_id', user.id)
+  // 管理者クライアントでRLSを回避（自分の投稿のみ）
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  let admin: ReturnType<typeof createAdminClient>
+  try { admin = createAdminClient() } catch { return { error: 'サーバー設定エラー' } }
 
-  if (error) return { error: error.message }
+  // 所有権確認
+  const { data: post } = await admin.from('posts').select('user_id').eq('id', postId).single()
+  if (!post || post.user_id !== user.id) return { error: '権限がありません' }
+
+  const { error } = await admin.from('posts').delete().eq('id', postId)
+
+  if (error) {
+    console.error('[deletePost] error:', error.message)
+    return { error: error.message }
+  }
 
   revalidatePath('/home')
+  revalidatePath('/profile')
   redirect('/home')
 }
