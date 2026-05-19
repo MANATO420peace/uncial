@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Heart, MessageSquare, MapPin } from 'lucide-react'
@@ -10,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn, timeAgo, truncate } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
+import { toggleLike } from '@/lib/actions/posts'
 import type { Post } from '@/types'
 
 interface Props {
@@ -22,6 +24,30 @@ export function PostCard({ post }: Props) {
   const authorName = isAnon ? '匿名の学生' : (post.users?.nickname ?? '不明')
   const initial = isAnon ? '匿' : (post.users?.nickname?.[0]?.toUpperCase() ?? '?')
   const universityName = (post.users as never as { universities?: { name: string } | null })?.universities?.name
+
+  // 楽観的いいね状態（即時UI反映）
+  const [liked, setLiked] = useState(post.liked ?? false)
+  const [likesCount, setLikesCount] = useState(post.likes_count ?? 0)
+  const [isLiking, setIsLiking] = useState(false)
+
+  async function handleLike(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (isLiking) return
+    setIsLiking(true)
+    // 楽観的更新：即座に反映
+    const newLiked = !liked
+    setLiked(newLiked)
+    setLikesCount(c => c + (newLiked ? 1 : -1))
+    try {
+      await toggleLike(post.id)
+    } catch {
+      // 失敗時は元に戻す
+      setLiked(!newLiked)
+      setLikesCount(c => c + (newLiked ? -1 : 1))
+    } finally {
+      setIsLiking(false)
+    }
+  }
 
   return (
     <article
@@ -123,17 +149,23 @@ export function PostCard({ post }: Props) {
         {/* ── フッター: いいね / コメント / アクション ── */}
         <div className="flex items-center gap-5 mt-3 pt-3 border-t border-border/50">
           {/* いいね */}
-          <span className="flex items-center gap-1.5 text-muted-foreground">
+          <button
+            className={cn(
+              'flex items-center gap-1.5 transition-colors',
+              liked ? 'text-rose-500' : 'text-muted-foreground hover:text-rose-400'
+            )}
+            onClick={handleLike}
+            disabled={isLiking}
+            aria-label="いいね"
+          >
             <Heart
               className={cn(
-                'h-4 w-4 transition-colors',
-                post.liked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'
+                'h-4 w-4 transition-all',
+                liked ? 'fill-rose-500 text-rose-500 scale-110' : ''
               )}
             />
-            <span className={cn('text-xs font-semibold', post.liked ? 'text-rose-500' : '')}>
-              {post.likes_count}
-            </span>
-          </span>
+            <span className="text-xs font-semibold">{likesCount}</span>
+          </button>
 
           {/* コメント */}
           <span className="flex items-center gap-1.5 text-muted-foreground">
