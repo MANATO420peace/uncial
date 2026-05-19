@@ -27,7 +27,14 @@ export async function createNotification({
   if (userId === actorId) return
 
   // サービスロールクライアント（RLS無視）で他ユーザーへの通知を書き込む
-  const admin = createAdminClient()
+  let admin: ReturnType<typeof createAdminClient>
+  try {
+    admin = createAdminClient()
+  } catch (e) {
+    console.error('[createNotification] admin client unavailable (SUPABASE_SERVICE_ROLE_KEY not set):', e)
+    return
+  }
+
   const { error } = await admin.from('notifications').insert({
     user_id: userId,
     actor_id: actorId,
@@ -42,7 +49,7 @@ export async function createNotification({
   }
 
   // アクター名を取得してプッシュ通知を送信
-  const { data: actor } = await admin.from('users').select('nickname').eq('id', actorId).single()
+  const { data: actor } = await admin!.from('users').select('nickname').eq('id', actorId).single()
   const msg = PUSH_MESSAGES[type]
   if (msg && actor) {
     await sendPushToUser(userId, msg.title, msg.body(actor.nickname), '/notifications')
