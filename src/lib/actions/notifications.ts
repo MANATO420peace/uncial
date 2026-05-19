@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendPushToUser } from './push'
 
 const PUSH_MESSAGES: Record<string, { title: string; body: (actor: string) => string }> = {
@@ -24,9 +25,10 @@ export async function createNotification({
   commentId?: string
 }) {
   if (userId === actorId) return
-  const supabase = await createClient()
 
-  await supabase.from('notifications').insert({
+  // サービスロールクライアント（RLS無視）で他ユーザーへの通知を書き込む
+  const admin = createAdminClient()
+  const { error } = await admin.from('notifications').insert({
     user_id: userId,
     actor_id: actorId,
     type,
@@ -34,8 +36,13 @@ export async function createNotification({
     comment_id: commentId ?? null,
   })
 
-  // プッシュ通知を送信
-  const { data: actor } = await supabase.from('users').select('nickname').eq('id', actorId).single()
+  if (error) {
+    console.error('[createNotification] insert error:', error.message)
+    return
+  }
+
+  // アクター名を取得してプッシュ通知を送信
+  const { data: actor } = await admin.from('users').select('nickname').eq('id', actorId).single()
   const msg = PUSH_MESSAGES[type]
   if (msg && actor) {
     await sendPushToUser(userId, msg.title, msg.body(actor.nickname), '/notifications')
