@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
-import { Plus, X, Users, CheckSquare, Square, Trash2, BookOpen } from 'lucide-react'
+import { Plus, Users, CheckSquare, Square, Trash2, BookOpen, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,6 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const DAYS = ['月', '火', '水', '木', '金', '土']
 const PERIODS = [1, 2, 3, 4, 5, 6]
+// 一般的な大学の時間割
+const PERIOD_TIMES = ['8:50', '10:30', '13:00', '14:40', '16:20', '18:00']
 
 interface Entry {
   id: string
@@ -53,6 +55,10 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
   const focusedEntry = focusedEntryId ? entries.find(e => e.id === focusedEntryId) ?? null : null
   const focusedTasks = tasks.filter(t => t.timetable_entry_id === focusedEntryId)
 
+  // ① 土曜に授業がなければ列を非表示
+  const hasSaturday = entries.some(e => e.day_of_week === 6)
+  const displayedDays = hasSaturday ? DAYS : DAYS.slice(0, 5)
+
   function handleCellClick(day: number, period: number) {
     if (!isOwn) return
     const entry = entryMap.get(`${day}-${period}`)
@@ -63,8 +69,7 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
     }
   }
 
-  function handleDelete(e: React.MouseEvent, id: string) {
-    e.stopPropagation()
+  function handleDelete(id: string) {
     startTransition(async () => {
       await deleteTimetableEntry(id)
       if (focusedEntryId === id) setFocusedEntryId(null)
@@ -72,8 +77,7 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
     })
   }
 
-  function handleFindUsers(e: React.MouseEvent, courseName: string) {
-    e.stopPropagation()
+  function handleFindUsers(courseName: string) {
     setMatchCourse(courseName)
     startTransition(async () => {
       const users = await findUsersWithSameCourse(courseName)
@@ -109,62 +113,87 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
   }
 
   const selectedEntry = selected ? entryMap.get(`${selected.day}-${selected.period}`) : null
-
-  // 全タスクをエントリごとにグループ化（タスクパネル用）
   const allPendingTasks = tasks.filter(t => !t.is_completed)
   const entryById = new Map(entries.map(e => [e.id, e]))
 
   return (
     <>
+      {/* ── グリッド ── */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-xs">
           <thead>
             <tr>
-              <th className="w-8 border bg-muted/50 py-1"></th>
-              {DAYS.map(d => (
-                <th key={d} className="border bg-muted/50 py-1 font-medium text-center">{d}</th>
+              {/* ② 時限列ヘッダー */}
+              <th className="w-12 border bg-muted/50 py-1.5" />
+              {displayedDays.map(d => (
+                <th key={d} className="border bg-muted/50 py-2 font-bold text-center text-xs tracking-wide">
+                  {d}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {PERIODS.map(period => (
+            {PERIODS.map((period, pIdx) => (
               <tr key={period}>
-                <td className="border bg-muted/30 text-center text-[10px] text-muted-foreground py-2 font-medium">{period}</td>
-                {DAYS.map((_, dayIdx) => {
+                {/* ④ 時限番号 + 開始時間 */}
+                <td className="border bg-muted/30 text-center py-2 w-12 select-none">
+                  <div className="text-xs font-bold text-foreground leading-none">{period}</div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5">{PERIOD_TIMES[pIdx]}</div>
+                </td>
+
+                {displayedDays.map((_, dayIdx) => {
                   const day = dayIdx + 1
                   const entry = entryMap.get(`${day}-${period}`)
-                  const isFocused = entry && focusedEntryId === entry.id
-                  const taskCount = entry ? tasks.filter(t => t.timetable_entry_id === entry.id && !t.is_completed).length : 0
+                  const isFocused = !!(entry && focusedEntryId === entry.id)
+                  // ⑥ タスク数バッジ
+                  const taskCount = entry
+                    ? tasks.filter(t => t.timetable_entry_id === entry.id && !t.is_completed).length
+                    : 0
+
                   return (
                     <td
                       key={day}
-                      className={`border min-w-[60px] h-14 relative ${isOwn ? 'cursor-pointer hover:bg-muted/40' : ''} transition-colors ${isFocused ? 'ring-2 ring-inset ring-primary' : ''}`}
+                      className={[
+                        'border min-w-[56px] h-20 relative transition-colors',
+                        isOwn ? 'cursor-pointer' : '',
+                        isFocused ? 'ring-2 ring-inset ring-primary' : '',
+                        !entry && isOwn ? 'hover:bg-muted/30' : '',
+                      ].join(' ')}
                       onClick={() => handleCellClick(day, period)}
                     >
                       {entry ? (
-                        <div className="p-1 h-full bg-primary/10 relative group">
-                          <p className="font-semibold text-[10px] leading-tight line-clamp-2">{entry.course_name}</p>
-                          {entry.room && <p className="text-[9px] text-muted-foreground">{entry.room}</p>}
+                        // ③ 授業セル：左ボーダーアクセント + 少し濃い背景
+                        <div className={[
+                          'p-1.5 h-full relative border-l-[3px] flex flex-col',
+                          isFocused
+                            ? 'bg-primary/20 border-primary'
+                            : 'bg-primary/10 border-primary/50',
+                        ].join(' ')}>
+                          {/* 授業名 */}
+                          <p className="font-semibold text-[11px] leading-tight line-clamp-2">
+                            {entry.course_name}
+                          </p>
+                          {/* ① 教授名をセルに表示 */}
+                          {entry.professor_name && (
+                            <p className="text-[9px] text-muted-foreground mt-0.5 truncate">
+                              {entry.professor_name}
+                            </p>
+                          )}
+                          {/* 教室 */}
+                          {entry.room && (
+                            <p className="text-[9px] text-muted-foreground truncate">
+                              {entry.room}
+                            </p>
+                          )}
+                          {/* ⑥ タスク数バッジ（数字付き） */}
                           {taskCount > 0 && (
-                            <span className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-destructive" />
+                            <span className="absolute bottom-1 right-1 min-w-[15px] h-[15px] rounded-full bg-destructive text-white text-[8px] font-bold flex items-center justify-center px-1 leading-none">
+                              {taskCount}
+                            </span>
                           )}
-                          {isOwn && (
-                            <button
-                              onClick={e => handleDelete(e, entry.id)}
-                              className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="h-3 w-3 text-destructive" />
-                            </button>
-                          )}
-                          <button
-                            onClick={e => handleFindUsers(e, entry.course_name)}
-                            className="absolute bottom-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Users className="h-3 w-3 text-muted-foreground" />
-                          </button>
                         </div>
                       ) : isOwn ? (
-                        <div className="flex items-center justify-center h-full opacity-0 hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-center h-full opacity-0 hover:opacity-50 transition-opacity">
                           <Plus className="h-4 w-4 text-muted-foreground" />
                         </div>
                       ) : null}
@@ -177,28 +206,59 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
         </table>
       </div>
 
-      {/* タスクパネル */}
+      {/* ── タスクパネル ── */}
       {isOwn && (
-        <div className="mt-4 space-y-4">
+        <div className="mt-4 space-y-4 px-1">
           {!focusedEntry && allPendingTasks.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-2">
+            <p className="text-xs text-muted-foreground text-center py-3">
               授業セルをタップするとタスク・メモを追加できます
             </p>
           )}
+
           {focusedEntry ? (
-            /* 授業選択時: その授業のタスク */
             <div className="border rounded-xl p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                  <h2 className="font-semibold text-sm">{focusedEntry.course_name}</h2>
+              {/* ヘッダー：授業名 + ⑤ アクションボタン（常時表示でスマホ対応） */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <BookOpen className="h-4 w-4 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-sm leading-tight">{focusedEntry.course_name}</h2>
+                    {focusedEntry.professor_name && (
+                      <p className="text-xs text-muted-foreground">{focusedEntry.professor_name}</p>
+                    )}
+                    {focusedEntry.room && (
+                      <p className="text-xs text-muted-foreground">{focusedEntry.room}</p>
+                    )}
+                  </div>
                 </div>
-                <button
-                  onClick={() => setSelected({ day: focusedEntry.day_of_week, period: focusedEntry.period })}
-                  className="text-xs text-muted-foreground hover:text-foreground"
-                >
-                  授業を編集
-                </button>
+
+                {/* ⑤ 常時表示のアクションボタン（スマホでも操作可能） */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => handleFindUsers(focusedEntry.course_name)}
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors py-1 px-1.5 rounded-lg hover:bg-primary/10"
+                    title="同じ授業の人を探す"
+                  >
+                    <Users className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">同じ授業</span>
+                  </button>
+                  <button
+                    onClick={() => setSelected({ day: focusedEntry.day_of_week, period: focusedEntry.period })}
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors py-1 px-1.5 rounded-lg hover:bg-muted"
+                    title="授業を編集"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">編集</span>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(focusedEntry.id)}
+                    className="flex items-center gap-1 text-xs text-destructive hover:text-destructive/80 transition-colors py-1 px-1.5 rounded-lg hover:bg-destructive/10"
+                    title="授業を削除"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">削除</span>
+                  </button>
+                </div>
               </div>
 
               {/* タスク一覧 */}
@@ -219,34 +279,34 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
                     </span>
                     <button
                       onClick={() => handleDeleteTask(task.id)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                      className="shrink-0 text-muted-foreground hover:text-destructive transition-colors opacity-50 group-hover:opacity-100"
                     >
-                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                      <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </li>
                 ))}
               </ul>
 
-              {/* タスク追加 */}
+              {/* タスク追加フォーム */}
               <form onSubmit={handleAddTask} className="flex gap-2">
                 <Input
                   value={newTaskText}
                   onChange={e => setNewTaskText(e.target.value)}
                   placeholder="タスク・メモを追加..."
-                  className="text-sm h-8"
+                  className="text-sm h-9"
                 />
-                <Button type="submit" size="sm" className="h-8 px-3" disabled={!newTaskText.trim() || isPending}>
+                <Button type="submit" size="sm" className="h-9 px-3 shrink-0" disabled={!newTaskText.trim() || isPending}>
                   追加
                 </Button>
               </form>
             </div>
           ) : (
-            /* 未選択時: 全授業の未完了タスク一覧 */
             allPendingTasks.length > 0 && (
               <div className="border rounded-xl p-4 space-y-3">
                 <h2 className="font-semibold text-sm flex items-center gap-2">
                   <CheckSquare className="h-4 w-4 text-primary" />
                   未完了のタスク
+                  <span className="ml-auto text-xs font-normal text-muted-foreground">{allPendingTasks.length}件</span>
                 </h2>
                 <ul className="space-y-2">
                   {allPendingTasks.map(task => {
@@ -262,9 +322,9 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
                         </div>
                         <button
                           onClick={() => handleDeleteTask(task.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                          className="opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0 text-muted-foreground hover:text-destructive"
                         >
-                          <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                          <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </li>
                     )
@@ -276,7 +336,7 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
         </div>
       )}
 
-      {/* 授業追加ダイアログ */}
+      {/* ── 授業追加 / 編集ダイアログ ── */}
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
         <DialogContent>
           <DialogHeader>
@@ -317,7 +377,7 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
         </DialogContent>
       </Dialog>
 
-      {/* 授業マッチングダイアログ */}
+      {/* ── 授業マッチングダイアログ ── */}
       <Dialog open={matchUsers !== null} onOpenChange={() => setMatchUsers(null)}>
         <DialogContent>
           <DialogHeader>
@@ -331,10 +391,16 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
             <ul className="divide-y">
               {matchUsers?.map(u => (
                 <li key={u.id}>
-                  <Link href={`/user/${u.id}`} className="flex items-center gap-3 py-3 hover:bg-muted/50 transition-colors rounded-lg px-2" onClick={() => setMatchUsers(null)}>
+                  <Link
+                    href={`/user/${u.id}`}
+                    className="flex items-center gap-3 py-3 hover:bg-muted/50 transition-colors rounded-lg px-2"
+                    onClick={() => setMatchUsers(null)}
+                  >
                     <Avatar className="h-9 w-9">
                       {u.avatar_url && <AvatarImage src={u.avatar_url} />}
-                      <AvatarFallback className="text-sm bg-primary text-primary-foreground">{u.nickname[0]?.toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="text-sm bg-primary text-primary-foreground">
+                        {u.nickname[0]?.toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="text-sm font-medium">{u.nickname}</p>
