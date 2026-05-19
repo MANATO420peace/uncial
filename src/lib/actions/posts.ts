@@ -197,8 +197,7 @@ export async function toggleLike(postId: string) {
     const { count } = await supabase
       .from('likes').select('*', { count: 'exact', head: true }).eq('post_id', postId)
     await supabase.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
-    revalidatePath('/home')
-    revalidatePath(`/post/${postId}`)
+    // revalidatePath は呼ばない（楽観的更新と競合してUIがリセットされるため）
     return { liked: false, likesCount: count ?? 0 }
   } else {
     await supabase.from('likes').insert({ user_id: user.id, post_id: postId })
@@ -207,8 +206,7 @@ export async function toggleLike(postId: string) {
     await supabase.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
     const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
     if (post) await createNotification({ userId: post.user_id, actorId: user.id, type: 'like', postId })
-    revalidatePath('/home')
-    revalidatePath(`/post/${postId}`)
+    // revalidatePath は呼ばない（楽観的更新と競合してUIがリセットされるため）
     return { liked: true, likesCount: count ?? 0 }
   }
 }
