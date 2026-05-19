@@ -77,39 +77,41 @@ export function PostCard({ post, isOwner = false }: Props) {
         {/* ── ヘッダー: アバター + 投稿者情報 + カテゴリバッジ ── */}
         <div className="flex items-center gap-2.5 mb-3">
           {!isAnon && post.user_id ? (
+            /* 投稿者エリア全体をタップ可能なボタンに */
             <button
-              className="shrink-0"
+              className="flex items-center gap-2.5 min-w-0 flex-1 -mx-1 px-1 py-0.5 rounded-xl hover:bg-primary/8 active:bg-primary/12 transition-colors group"
               onClick={e => { e.stopPropagation(); router.push(`/user/${post.user_id}`) }}
             >
-              <Avatar className="h-9 w-9">
+              <Avatar className="h-9 w-9 shrink-0 ring-2 ring-transparent group-hover:ring-primary/30 transition-all">
                 <AvatarFallback className="text-xs font-bold bg-primary text-primary-foreground">
                   {initial}
                 </AvatarFallback>
               </Avatar>
+              <div className="min-w-0 text-left">
+                <p className="text-sm font-semibold leading-tight truncate text-primary group-hover:underline underline-offset-2">
+                  {authorName}
+                </p>
+                <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                  {universityName ? `${universityName}・` : ''}{timeAgo(post.created_at)}
+                </p>
+              </div>
             </button>
           ) : (
-            <Avatar className="h-9 w-9 shrink-0">
-              <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">
-                匿
-              </AvatarFallback>
-            </Avatar>
+            /* 匿名の場合はリンクなし */
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <Avatar className="h-9 w-9 shrink-0">
+                <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">
+                  匿
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-muted-foreground leading-tight">{authorName}</p>
+                <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                  {universityName ? `${universityName}・` : ''}{timeAgo(post.created_at)}
+                </p>
+              </div>
+            </div>
           )}
-
-          <div className="flex-1 min-w-0">
-            {!isAnon && post.user_id ? (
-              <button
-                className="text-sm font-semibold leading-tight hover:text-primary transition-colors text-left w-full truncate"
-                onClick={e => { e.stopPropagation(); router.push(`/user/${post.user_id}`) }}
-              >
-                {authorName}
-              </button>
-            ) : (
-              <p className="text-sm font-semibold text-muted-foreground leading-tight">{authorName}</p>
-            )}
-            <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-              {universityName ? `${universityName}・` : ''}{timeAgo(post.created_at)}
-            </p>
-          </div>
 
           <Badge
             className={cn(
