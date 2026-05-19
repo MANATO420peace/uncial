@@ -35,7 +35,9 @@ export function PostActions({ postId }: Props) {
         toast.error(result.error)
         return
       }
-      // deletePost が成功すると redirect('/home') が走るのでここには来ない
+      toast.success('投稿を削除しました')
+      router.replace('/home')
+      router.refresh()
     })
   }
 

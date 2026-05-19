@@ -15,6 +15,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { cn, timeAgo, truncate } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
 import { toggleLike, deletePost } from '@/lib/actions/posts'
@@ -29,6 +36,7 @@ interface Props {
 export function PostCard({ post, isOwner = false }: Props) {
   const router = useRouter()
   const [isDeleting, startDeleteTransition] = useTransition()
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const isAnon = post.anonymous
   const authorName = isAnon ? '匿名の学生' : (post.users?.nickname ?? '不明')
   const initial = isAnon ? '匿' : (post.users?.nickname?.[0]?.toUpperCase() ?? '?')
@@ -68,6 +76,7 @@ export function PostCard({ post, isOwner = false }: Props) {
   }
 
   return (
+    <>
     <article
       className="mx-3 my-2.5 rounded-2xl bg-card border border-border/60 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
       onClick={() => router.push(`/post/${post.id}`)}
@@ -136,15 +145,7 @@ export function PostCard({ post, isOwner = false }: Props) {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-red-600 focus:text-red-600"
-                    disabled={isDeleting}
-                    onSelect={() => {
-                      if (!confirm('この投稿を削除しますか？')) return
-                      startDeleteTransition(async () => {
-                        const result = await deletePost(post.id)
-                        if (result?.error) toast.error(result.error)
-                        // 成功時は deletePost 内の redirect('/home') が走る
-                      })
-                    }}
+                    onSelect={() => setDeleteDialogOpen(true)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     削除する
@@ -242,5 +243,43 @@ export function PostCard({ post, isOwner = false }: Props) {
 
       </div>
     </article>
+
+    {/* 削除確認 Dialog（isOwner の場合のみ） */}
+    {isOwner && (
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent onClick={e => e.stopPropagation()}>
+          <DialogHeader>
+            <DialogTitle>投稿を削除しますか？</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">この操作は取り消せません。</p>
+          <div className="flex gap-2 mt-2">
+            <Button variant="outline" className="flex-1" onClick={() => setDeleteDialogOpen(false)}>
+              キャンセル
+            </Button>
+            <Button
+              variant="destructive"
+              className="flex-1"
+              disabled={isDeleting}
+              onClick={() => {
+                startDeleteTransition(async () => {
+                  const result = await deletePost(post.id)
+                  if (result?.error) {
+                    toast.error(result.error)
+                    setDeleteDialogOpen(false)
+                    return
+                  }
+                  toast.success('投稿を削除しました')
+                  setDeleteDialogOpen(false)
+                  router.refresh()
+                })
+              }}
+            >
+              {isDeleting ? '削除中...' : '削除する'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
+    </>
   )
 }

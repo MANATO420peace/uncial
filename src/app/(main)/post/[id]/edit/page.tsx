@@ -35,7 +35,13 @@ export default function EditPostPage() {
     const formData = new FormData(e.currentTarget)
     startTransition(async () => {
       const result = await updatePost(id, formData)
-      if (result?.error) toast.error(result.error)
+      if (result?.error) {
+        toast.error(result.error)
+        return
+      }
+      toast.success('投稿を更新しました')
+      router.push(`/post/${id}`)
+      router.refresh()
     })
   }
 

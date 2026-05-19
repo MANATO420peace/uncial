@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type { PostCategory, PostFilter } from '@/types'
 import { createNotification } from './notifications'
 import { awardPoints } from './points'
@@ -217,13 +218,12 @@ export async function updatePost(postId: string, formData: FormData) {
   if (!user) return { error: '認証が必要です' }
 
   // 管理者クライアントでRLSを回避（自分の投稿のみ）
-  const { createAdminClient } = await import('@/lib/supabase/admin')
   let admin: ReturnType<typeof createAdminClient>
   try { admin = createAdminClient() } catch { return { error: 'サーバー設定エラー' } }
 
   // 所有権確認
-  const { data: post } = await admin.from('posts').select('user_id').eq('id', postId).single()
-  if (!post || post.user_id !== user.id) return { error: '権限がありません' }
+  const { data: existing } = await admin.from('posts').select('user_id').eq('id', postId).single()
+  if (!existing || existing.user_id !== user.id) return { error: '権限がありません' }
 
   const tagsRaw = formData.get('tags') as string
   const manualTags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : []
@@ -245,7 +245,7 @@ export async function updatePost(postId: string, formData: FormData) {
   }
   revalidatePath(`/post/${postId}`)
   revalidatePath('/home')
-  redirect(`/post/${postId}`)
+  return { success: true }
 }
 
 export async function deletePost(postId: string) {
@@ -254,13 +254,12 @@ export async function deletePost(postId: string) {
   if (!user) return { error: '認証が必要です' }
 
   // 管理者クライアントでRLSを回避（自分の投稿のみ）
-  const { createAdminClient } = await import('@/lib/supabase/admin')
   let admin: ReturnType<typeof createAdminClient>
   try { admin = createAdminClient() } catch { return { error: 'サーバー設定エラー' } }
 
   // 所有権確認
-  const { data: post } = await admin.from('posts').select('user_id').eq('id', postId).single()
-  if (!post || post.user_id !== user.id) return { error: '権限がありません' }
+  const { data: existing } = await admin.from('posts').select('user_id').eq('id', postId).single()
+  if (!existing || existing.user_id !== user.id) return { error: '権限がありません' }
 
   const { error } = await admin.from('posts').delete().eq('id', postId)
 
@@ -271,5 +270,5 @@ export async function deletePost(postId: string) {
 
   revalidatePath('/home')
   revalidatePath('/profile')
-  redirect('/home')
+  return { success: true }
 }
