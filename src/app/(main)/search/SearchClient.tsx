@@ -21,9 +21,10 @@ interface Props {
   }
   universities: University[]
   selectedUniversityId: string
+  popularTags: string[]
 }
 
-export function SearchClient({ query, results, universities, selectedUniversityId }: Props) {
+export function SearchClient({ query, results, universities, selectedUniversityId, popularTags }: Props) {
   const router = useRouter()
   const [input, setInput] = useState(query)
   const [universityId, setUniversityId] = useState(selectedUniversityId)
@@ -52,6 +53,14 @@ export function SearchClient({ query, results, universities, selectedUniversityI
         router.push(buildUrl(input.trim(), uid))
       })
     }
+  }
+
+  function handleTagClick(tag: string) {
+    const q = `#${tag}`
+    setInput(q)
+    startTransition(() => {
+      router.push(buildUrl(q, universityId))
+    })
   }
 
   return (
@@ -83,9 +92,27 @@ export function SearchClient({ query, results, universities, selectedUniversityI
       </div>
 
       {!query ? (
-        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-1">
-          <Search className="h-8 w-8 mb-2 opacity-30" />
-          <p className="text-sm">キーワードを入力して検索</p>
+        <div className="px-4 py-4 space-y-4">
+          {popularTags.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground">人気のタグ</p>
+              <div className="flex flex-wrap gap-2">
+                {popularTags.map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => handleTagClick(tag)}
+                    className="text-xs bg-muted hover:bg-muted/70 text-foreground px-3 py-1.5 rounded-full transition-colors"
+                  >
+                    #{tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="flex flex-col items-center justify-center py-8 text-muted-foreground gap-1">
+            <Search className="h-8 w-8 mb-2 opacity-30" />
+            <p className="text-sm">キーワードまたは #タグ で検索</p>
+          </div>
         </div>
       ) : (
         <Tabs defaultValue="posts" className="w-full">

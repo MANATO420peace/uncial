@@ -71,9 +71,13 @@ export async function createPost(formData: FormData) {
   }
 
   const tagsRaw = formData.get('tags') as string
-  const tags = tagsRaw
+  const manualTags = tagsRaw
     ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean)
     : []
+
+  const content = formData.get('content') as string
+  const hashtagsFromContent = (content.match(/#[\p{L}\p{N}_]+/gu) ?? []).map(t => t.slice(1))
+  const tags = [...new Set([...manualTags, ...hashtagsFromContent])]
 
   const imagesJson = formData.get('images') as string | null
   const images = imagesJson ? JSON.parse(imagesJson) : []
@@ -85,7 +89,7 @@ export async function createPost(formData: FormData) {
     university_id: profile.university_id,
     category,
     title: formData.get('title') as string,
-    content: formData.get('content') as string,
+    content,
     tags,
     anonymous: formData.get('anonymous') === 'true',
     images,
@@ -206,12 +210,15 @@ export async function updatePost(postId: string, formData: FormData) {
   if (!user) return { error: '認証が必要です' }
 
   const tagsRaw = formData.get('tags') as string
-  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : []
+  const manualTags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : []
+  const editContent = formData.get('content') as string
+  const hashtagsFromContent = (editContent.match(/#[\p{L}\p{N}_]+/gu) ?? []).map(t => t.slice(1))
+  const tags = [...new Set([...manualTags, ...hashtagsFromContent])]
 
   const { error } = await supabase.from('posts')
     .update({
       title: formData.get('title') as string,
-      content: formData.get('content') as string,
+      content: editContent,
       tags,
     })
     .eq('id', postId)

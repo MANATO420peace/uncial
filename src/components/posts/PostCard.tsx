@@ -38,11 +38,11 @@ export function PostCard({ post }: Props) {
             >
               {POST_CATEGORY_LABELS[post.category]}
             </Badge>
-            {post.tags?.slice(0, 2).map(tag => (
+            {post.tags?.slice(0, 3).map(tag => (
               <Link
                 key={tag}
-                href={`/search?q=${encodeURIComponent(tag)}`}
-                className="text-[10px] text-blue-500 hover:underline"
+                href={`/search?q=${encodeURIComponent('#' + tag)}`}
+                className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full hover:bg-primary/20 transition-colors"
                 onClick={e => e.stopPropagation()}
               >
                 #{tag}
