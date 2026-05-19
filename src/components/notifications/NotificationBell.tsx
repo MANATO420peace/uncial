@@ -7,7 +7,11 @@ import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { getNotifications } from '@/lib/actions/notifications'
 
-export function NotificationBell() {
+interface NotificationBellProps {
+  className?: string
+}
+
+export function NotificationBell({ className }: NotificationBellProps = {}) {
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
@@ -17,7 +21,7 @@ export function NotificationBell() {
   return (
     <Link
       href="/notifications"
-      className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'h-8 w-8 relative')}
+      className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'h-8 w-8 relative', className)}
     >
       <Bell className="h-4 w-4" />
       {unreadCount > 0 && (
