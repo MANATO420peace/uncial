@@ -18,15 +18,24 @@ export function LikeButton({ postId, initialLiked, initialCount }: Props) {
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
+    // 楽観的更新：即時反映
+    const newLiked = !liked
+    setLiked(newLiked)
+    setCount(c => Math.max(0, c + (newLiked ? 1 : -1)))
+
     startTransition(async () => {
       const result = await toggleLike(postId)
       if (result?.error) {
         toast.error(result.error)
+        // 失敗時ロールバック
+        setLiked(!newLiked)
+        setCount(c => Math.max(0, c + (newLiked ? -1 : 1)))
         return
       }
-      if (result?.liked !== undefined) {
-        setLiked(result.liked)
-        setCount(c => result.liked ? c + 1 : c - 1)
+      // サーバーの正確な値で同期
+      if (result && 'liked' in result) setLiked(result.liked)
+      if (result && 'likesCount' in result && result.likesCount != null) {
+        setCount(result.likesCount)
       }
     })
   }
