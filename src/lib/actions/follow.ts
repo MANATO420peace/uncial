@@ -11,15 +11,17 @@ export async function toggleFollow(targetUserId: string) {
   if (!user) return { error: '認証が必要です' }
   if (user.id === targetUserId) return { error: '自分はフォローできません' }
 
-  let admin: ReturnType<typeof createAdminClient>
+  // admin client が使えればRLSを回避、使えなければ通常クライアントで試みる
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
   try {
-    admin = createAdminClient()
+    db = createAdminClient()
   } catch {
-    return { error: 'サーバー設定エラー' }
+    console.warn('[toggleFollow] admin client unavailable, falling back to regular client')
+    db = supabase
   }
 
   // すでにフォロー中なら解除
-  const { data: existing } = await admin
+  const { data: existing } = await db
     .from('follows')
     .select('id')
     .eq('follower_id', user.id)
@@ -27,14 +29,14 @@ export async function toggleFollow(targetUserId: string) {
     .maybeSingle()
 
   if (existing) {
-    await admin.from('follows').delete().eq('id', existing.id)
+    await db.from('follows').delete().eq('id', existing.id)
     revalidatePath(`/user/${targetUserId}`)
     revalidatePath('/profile')
     return { following: false, requested: false }
   }
 
   // リクエスト中なら取り消し
-  const { data: existingRequest } = await admin
+  const { data: existingRequest } = await db
     .from('follow_requests')
     .select('id')
     .eq('requester_id', user.id)
@@ -42,21 +44,21 @@ export async function toggleFollow(targetUserId: string) {
     .maybeSingle()
 
   if (existingRequest) {
-    await admin.from('follow_requests').delete().eq('id', existingRequest.id)
+    await db.from('follow_requests').delete().eq('id', existingRequest.id)
     revalidatePath(`/user/${targetUserId}`)
     revalidatePath('/profile')
     return { following: false, requested: false }
   }
 
   // 非公開アカウントならリクエスト
-  const { data: targetProfile } = await admin
+  const { data: targetProfile } = await db
     .from('users')
     .select('is_private')
     .eq('id', targetUserId)
     .single()
 
   if (targetProfile?.is_private) {
-    const { error: reqErr } = await admin
+    const { error: reqErr } = await db
       .from('follow_requests')
       .insert({ requester_id: user.id, target_id: targetUserId })
     if (reqErr) {
@@ -70,7 +72,7 @@ export async function toggleFollow(targetUserId: string) {
   }
 
   // 通常フォロー
-  const { error: followErr } = await admin
+  const { error: followErr } = await db
     .from('follows')
     .insert({ follower_id: user.id, following_id: targetUserId })
   if (followErr) {
