@@ -78,7 +78,7 @@ export function Header({ user }: Props) {
           <Link href="/home" className="flex items-center gap-2 shrink-0">
             <LotusLogo size={32} />
             <div className="flex flex-col leading-none">
-              <span className="font-bold text-white text-[17px] tracking-tight">ユニキャン</span>
+              <span className="logo-text-gradient font-bold text-[17px] tracking-tight">ユニキャン</span>
               {isHome && user?.universities?.name && (
                 <span className="text-white/55 text-[10px] tracking-wide mt-0.5">{user.universities.name}</span>
               )}

@@ -127,23 +127,45 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    /* ライトモード: ごく薄い青白グラデーション */
+    background: linear-gradient(160deg, oklch(0.984 0.006 200) 0%, oklch(0.972 0.013 212) 100%);
   }
   html {
     @apply font-sans;
   }
 }
 
+/* ダークモード: 深いネイビーグラデーション */
+.dark body {
+  background: linear-gradient(160deg, oklch(0.168 0.044 212) 0%, oklch(0.138 0.031 224) 55%, oklch(0.118 0.020 232) 100%);
+}
+
 /* ヘッダーグラデーション
    ライト: スカイシアン #1ABBD0 → #2ECADD
-   ダーク:  深いネイビー #0B1F2E → #091728
+   ダーク:  深いネイビー → 少しシアンがかったネイビー
 */
 .header-gradient {
-  background: linear-gradient(135deg, #1ABBD0 0%, #2ECADD 100%);
+  background: linear-gradient(135deg, #18B8CE 0%, #22C9DE 60%, #2DD5E8 100%);
 }
 .dark .header-gradient {
-  background: linear-gradient(135deg, #0B2030 0%, #091828 100%);
+  background: linear-gradient(135deg, #0C1E30 0%, #102840 50%, #0E2238 100%);
+}
+
+/* ロゴテキストグラデーション */
+.logo-text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #9eecf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.dark .logo-text-gradient {
+  background: linear-gradient(135deg, #7ee8f8 0%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 ::-webkit-scrollbar {
