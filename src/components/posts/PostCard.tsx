@@ -3,18 +3,12 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Heart, MessageSquare, MapPin, MoreVertical, Pencil, Trash2, ChevronRight } from 'lucide-react'
+import { Heart, MessageSquare, MapPin, Pencil, Trash2, ChevronRight } from 'lucide-react'
 import { ReportButton } from './ReportButton'
 import { BookmarkButton } from './BookmarkButton'
 import { ShareButton } from './ShareButton'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,7 +33,6 @@ interface Props {
 export function PostCard({ post, isOwner = false }: Props) {
   const router = useRouter()
   const [isDeleting, startDeleteTransition] = useTransition()
-  const [ownerMenuOpen, setOwnerMenuOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const isAnon = post.anonymous
   const authorName = isAnon ? '匿名の学生' : (post.users?.nickname ?? '不明')
@@ -135,38 +128,26 @@ export function PostCard({ post, isOwner = false }: Props) {
             {POST_CATEGORY_LABELS[post.category]}
           </Badge>
 
-          {/* オーナーメニュー（マイページ等で表示） */}
+          {/* オーナーボタン（マイページ等で表示） */}
           {isOwner && (
-            <span onClick={e => e.stopPropagation()} className="ml-auto shrink-0">
-              <DropdownMenu open={ownerMenuOpen} onOpenChange={setOwnerMenuOpen}>
-                <DropdownMenuTrigger className="p-1 rounded text-muted-foreground hover:text-foreground outline-none">
-                  <MoreVertical className="h-4 w-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onSelect={(e) => {
-                      e.preventDefault()
-                      setOwnerMenuOpen(false)
-                      setTimeout(() => router.push(`/post/${post.id}/edit`), 150)
-                    }}
-                  >
-                    <Pencil className="h-4 w-4 mr-2" />
-                    編集する
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-red-600 focus:text-red-600"
-                    onSelect={(e) => {
-                      e.preventDefault()
-                      setOwnerMenuOpen(false)
-                      setTimeout(() => setDeleteDialogOpen(true), 150)
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    削除する
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </span>
+            <div className="flex items-center gap-0.5 ml-auto shrink-0" onClick={e => e.stopPropagation()}>
+              <button
+                type="button"
+                onClick={() => router.push(`/post/${post.id}/edit`)}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                title="編集する"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteDialogOpen(true)}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+                title="削除する"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
           )}
         </div>
 

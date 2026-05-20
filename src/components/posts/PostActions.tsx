@@ -2,14 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,7 +22,6 @@ interface Props {
 
 export function PostActions({ postId }: Props) {
   const router = useRouter()
-  const [menuOpen, setMenuOpen] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
@@ -46,35 +39,26 @@ export function PostActions({ postId }: Props) {
   }
 
   return (
-    <>
-      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-        <DropdownMenuTrigger className="p-1 rounded text-muted-foreground hover:text-foreground outline-none">
-          <MoreHorizontal className="h-5 w-5" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault()
-              setMenuOpen(false)
-              setTimeout(() => router.push(`/post/${postId}/edit`), 150)
-            }}
-          >
-            <Pencil className="h-4 w-4 mr-2" />
-            編集する
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-red-600 focus:text-red-600"
-            onSelect={(e) => {
-              e.preventDefault()
-              setMenuOpen(false)
-              setTimeout(() => setConfirmOpen(true), 150)
-            }}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            削除する
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="flex items-center gap-1">
+      {/* 編集ボタン */}
+      <button
+        type="button"
+        onClick={() => router.push(`/post/${postId}/edit`)}
+        className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+      >
+        <Pencil className="h-3.5 w-3.5" />
+        編集
+      </button>
+
+      {/* 削除ボタン */}
+      <button
+        type="button"
+        onClick={() => setConfirmOpen(true)}
+        className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+      >
+        <Trash2 className="h-3.5 w-3.5" />
+        削除
+      </button>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
@@ -94,6 +78,6 @@ export function PostActions({ postId }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   )
 }
