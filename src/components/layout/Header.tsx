@@ -72,10 +72,7 @@ export function Header({ user }: Props) {
 
   return (
     <>
-      <header
-        className="sticky top-0 z-50 border-b border-white/10"
-        style={{ background: 'linear-gradient(135deg, #0d2b5e 0%, #1a4a8a 50%, #0d6e8a 100%)' }}
-      >
+      <header className="header-gradient sticky top-0 z-50 border-b border-white/10">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
           {/* Logo + App name */}
           <Link href="/home" className="flex items-center gap-2 shrink-0">
