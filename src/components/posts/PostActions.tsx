@@ -28,6 +28,7 @@ interface Props {
 
 export function PostActions({ postId }: Props) {
   const router = useRouter()
+  const [menuOpen, setMenuOpen] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
@@ -46,7 +47,7 @@ export function PostActions({ postId }: Props) {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger className="p-1 rounded text-muted-foreground hover:text-foreground outline-none">
           <MoreHorizontal className="h-5 w-5" />
         </DropdownMenuTrigger>
@@ -54,8 +55,8 @@ export function PostActions({ postId }: Props) {
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault()
-              // DropdownMenu の close アニメーション完了後に遷移
-              setTimeout(() => router.push(`/post/${postId}/edit`), 100)
+              setMenuOpen(false)
+              setTimeout(() => router.push(`/post/${postId}/edit`), 150)
             }}
           >
             <Pencil className="h-4 w-4 mr-2" />
@@ -65,8 +66,8 @@ export function PostActions({ postId }: Props) {
             className="text-red-600 focus:text-red-600"
             onSelect={(e) => {
               e.preventDefault()
-              // DropdownMenu の FocusTrap が解放されてから Dialog を開く
-              setTimeout(() => setConfirmOpen(true), 100)
+              setMenuOpen(false)
+              setTimeout(() => setConfirmOpen(true), 150)
             }}
           >
             <Trash2 className="h-4 w-4 mr-2" />

@@ -39,6 +39,7 @@ interface Props {
 export function PostCard({ post, isOwner = false }: Props) {
   const router = useRouter()
   const [isDeleting, startDeleteTransition] = useTransition()
+  const [ownerMenuOpen, setOwnerMenuOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const isAnon = post.anonymous
   const authorName = isAnon ? '匿名の学生' : (post.users?.nickname ?? '不明')
@@ -137,7 +138,7 @@ export function PostCard({ post, isOwner = false }: Props) {
           {/* オーナーメニュー（マイページ等で表示） */}
           {isOwner && (
             <span onClick={e => e.stopPropagation()} className="ml-auto shrink-0">
-              <DropdownMenu>
+              <DropdownMenu open={ownerMenuOpen} onOpenChange={setOwnerMenuOpen}>
                 <DropdownMenuTrigger className="p-1 rounded text-muted-foreground hover:text-foreground outline-none">
                   <MoreVertical className="h-4 w-4" />
                 </DropdownMenuTrigger>
@@ -145,7 +146,8 @@ export function PostCard({ post, isOwner = false }: Props) {
                   <DropdownMenuItem
                     onSelect={(e) => {
                       e.preventDefault()
-                      setTimeout(() => router.push(`/post/${post.id}/edit`), 100)
+                      setOwnerMenuOpen(false)
+                      setTimeout(() => router.push(`/post/${post.id}/edit`), 150)
                     }}
                   >
                     <Pencil className="h-4 w-4 mr-2" />
@@ -155,7 +157,8 @@ export function PostCard({ post, isOwner = false }: Props) {
                     className="text-red-600 focus:text-red-600"
                     onSelect={(e) => {
                       e.preventDefault()
-                      setTimeout(() => setDeleteDialogOpen(true), 100)
+                      setOwnerMenuOpen(false)
+                      setTimeout(() => setDeleteDialogOpen(true), 150)
                     }}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
