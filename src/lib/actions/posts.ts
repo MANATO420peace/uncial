@@ -138,19 +138,45 @@ export async function getPosts(filter: PostFilter = {}) {
   if (error) return { error: error.message, posts: [] }
 
   const { data: { user } } = await supabase.auth.getUser()
+  const postIds = data?.map(p => p.id) ?? []
+
+  // likesテーブルから正確なカウントを取得（likes_countキャッシュは不正確なことがあるため）
+  const { data: allLikesData } = await supabase
+    .from('likes')
+    .select('post_id')
+    .in('post_id', postIds)
+
+  const realCountMap = new Map<string, number>()
+  allLikesData?.forEach(l => {
+    realCountMap.set(l.post_id, (realCountMap.get(l.post_id) ?? 0) + 1)
+  })
+
   if (user && data) {
-    const postIds = data.map(p => p.id)
-    const [{ data: likes }, { data: bookmarks }] = await Promise.all([
+    const [{ data: myLikes }, { data: bookmarks }] = await Promise.all([
       supabase.from('likes').select('post_id').eq('user_id', user.id).in('post_id', postIds),
       supabase.from('bookmarks').select('post_id').eq('user_id', user.id).in('post_id', postIds),
     ])
 
-    const likedSet = new Set(likes?.map(l => l.post_id) ?? [])
+    const likedSet = new Set(myLikes?.map(l => l.post_id) ?? [])
     const bookmarkedSet = new Set(bookmarks?.map(b => b.post_id) ?? [])
-    return { posts: data.map(p => ({ ...p, liked: likedSet.has(p.id), bookmarked: bookmarkedSet.has(p.id) })), error: null }
+    return {
+      posts: data.map(p => ({
+        ...p,
+        likes_count: realCountMap.get(p.id) ?? p.likes_count ?? 0,
+        liked: likedSet.has(p.id),
+        bookmarked: bookmarkedSet.has(p.id),
+      })),
+      error: null,
+    }
   }
 
-  return { posts: data ?? [], error: null }
+  return {
+    posts: (data ?? []).map(p => ({
+      ...p,
+      likes_count: realCountMap.get(p.id) ?? p.likes_count ?? 0,
+    })),
+    error: null,
+  }
 }
 
 export async function getPost(id: string) {
@@ -169,15 +195,22 @@ export async function getPost(id: string) {
   if (error) return { post: null, error: error.message }
 
   const { data: { user } } = await supabase.auth.getUser()
+
+  // likesテーブルから正確なカウントを取得
+  const { count: realCount } = await supabase
+    .from('likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('post_id', id)
+
   if (user) {
     const [{ data: like }, { data: bookmark }] = await Promise.all([
       supabase.from('likes').select('id').eq('user_id', user.id).eq('post_id', id).maybeSingle(),
       supabase.from('bookmarks').select('id').eq('user_id', user.id).eq('post_id', id).maybeSingle(),
     ])
-    return { post: { ...data, liked: !!like, bookmarked: !!bookmark }, error: null }
+    return { post: { ...data, likes_count: realCount ?? data.likes_count ?? 0, liked: !!like, bookmarked: !!bookmark }, error: null }
   }
 
-  return { post: data, error: null }
+  return { post: { ...data, likes_count: realCount ?? data.likes_count ?? 0 }, error: null }
 }
 
 export async function toggleLike(postId: string) {

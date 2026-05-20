@@ -152,7 +152,19 @@ DO $$ BEGIN
 END $$;
 
 -- ==========================================
--- 6. users テーブルに不足カラムを追加
+-- 6. 既存の likes_count を全件正確に再計算（一度だけ実行）
+-- ==========================================
+UPDATE posts SET likes_count = (
+  SELECT COUNT(*) FROM likes WHERE post_id = posts.id
+);
+
+-- comments_count も再計算
+UPDATE posts SET comments_count = (
+  SELECT COUNT(*) FROM comments WHERE post_id = posts.id
+);
+
+-- ==========================================
+-- 7. users テーブルに不足カラムを追加
 -- ==========================================
 ALTER TABLE users ADD COLUMN IF NOT EXISTS is_private boolean DEFAULT false;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS bio text;

@@ -15,8 +15,26 @@ export async function getLikedPosts() {
     .order('created_at', { ascending: false })
     .limit(50)
 
-  // liked: true を付与してPostCardがいいね済み状態で表示できるようにする
-  return data?.map(l => l.posts ? { ...l.posts, liked: true } : null).filter(Boolean) ?? []
+  const posts = data?.map(l => l.posts).filter(Boolean) ?? []
+  if (posts.length === 0) return []
+
+  // likesテーブルから正確なカウントを一括取得（likes_countキャッシュが0になる問題を回避）
+  const postIds = posts.map(p => (p as { id: string }).id)
+  const { data: allLikes } = await supabase
+    .from('likes')
+    .select('post_id')
+    .in('post_id', postIds)
+
+  const realCountMap = new Map<string, number>()
+  allLikes?.forEach(l => {
+    realCountMap.set(l.post_id, (realCountMap.get(l.post_id) ?? 0) + 1)
+  })
+
+  // liked: true を付与し、正確なlikes_countをセット
+  return posts.map(p => {
+    const post = p as { id: string; likes_count?: number }
+    return { ...p, liked: true, likes_count: realCountMap.get(post.id) ?? post.likes_count ?? 0 }
+  })
 }
 
 export async function getFollowList(userId: string, type: 'followers' | 'following') {
