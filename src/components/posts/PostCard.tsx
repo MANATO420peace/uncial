@@ -22,6 +22,7 @@ import {
 import { cn, timeAgo, truncate } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
 import { toggleLike, deletePost } from '@/lib/actions/posts'
+import { getLikeState, setLikeState } from '@/lib/client/likeStore'
 import { toast } from 'sonner'
 import type { Post } from '@/types'
 
@@ -39,9 +40,10 @@ export function PostCard({ post, isOwner = false }: Props) {
   const initial = isAnon ? '匿' : (post.users?.nickname?.[0]?.toUpperCase() ?? '?')
   const universityName = (post.users as never as { universities?: { name: string } | null })?.universities?.name
 
-  // 楽観的いいね状態（即時UI反映）
-  const [liked, setLiked] = useState(post.liked ?? false)
-  const [likesCount, setLikesCount] = useState(post.likes_count ?? 0)
+  // セッション内ストアから初期値を取得（ページ遷移後も状態を保持）
+  const initialState = getLikeState(post.id, post.liked ?? false, post.likes_count ?? 0)
+  const [liked, setLiked] = useState(initialState.liked)
+  const [likesCount, setLikesCount] = useState(initialState.count)
   const [isLiking, setIsLiking] = useState(false)
 
   async function handleLike(e: React.MouseEvent) {
@@ -56,17 +58,17 @@ export function PostCard({ post, isOwner = false }: Props) {
     setLikesCount(c => Math.max(0, c + (newLiked ? 1 : -1)))
     try {
       const result = await toggleLike(post.id)
-      if (result && 'likesCount' in result && result.likesCount != null) {
-        // DBの正確なカウントに同期
-        setLikesCount(result.likesCount)
-      }
-      if (result && 'liked' in result && result.liked !== undefined) {
-        setLiked(result.liked)
-      }
+      const finalLiked = (result && 'liked' in result && result.liked !== undefined) ? result.liked : newLiked
+      const finalCount = (result && 'likesCount' in result && result.likesCount != null) ? result.likesCount : Math.max(0, prevCount + (newLiked ? 1 : -1))
+      // DBの正確な値に同期し、ストアにも保存（ページ遷移後も維持）
+      setLiked(finalLiked)
+      setLikesCount(finalCount)
+      setLikeState(post.id, finalLiked, finalCount)
     } catch {
       // 失敗時は元に戻す
       setLiked(prevLiked)
       setLikesCount(prevCount)
+      setLikeState(post.id, prevLiked, prevCount)
     } finally {
       setIsLiking(false)
     }
