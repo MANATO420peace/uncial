@@ -55,33 +55,33 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  /* ティール (Teal) primary */
-  --primary: oklch(0.52 0.12 195);
+  /* シアンブルー (Cyan-Blue) primary — 青寄りのティール */
+  --primary: oklch(0.52 0.11 210);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.95 0.03 195);
-  --secondary-foreground: oklch(0.52 0.12 195);
-  --muted: oklch(0.97 0.015 195);
-  --muted-foreground: oklch(0.52 0.04 195);
-  --accent: oklch(0.93 0.05 195);
-  --accent-foreground: oklch(0.52 0.12 195);
+  --secondary: oklch(0.95 0.025 210);
+  --secondary-foreground: oklch(0.52 0.11 210);
+  --muted: oklch(0.97 0.012 210);
+  --muted-foreground: oklch(0.52 0.04 210);
+  --accent: oklch(0.93 0.04 210);
+  --accent-foreground: oklch(0.52 0.11 210);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.02 195);
-  --input: oklch(0.91 0.02 195);
-  --ring: oklch(0.60 0.12 195);
-  --chart-1: oklch(0.52 0.12 195);
-  --chart-2: oklch(0.63 0.12 195);
-  --chart-3: oklch(0.72 0.10 195);
-  --chart-4: oklch(0.80 0.08 195);
-  --chart-5: oklch(0.88 0.05 195);
+  --border: oklch(0.91 0.018 210);
+  --input: oklch(0.91 0.018 210);
+  --ring: oklch(0.60 0.11 210);
+  --chart-1: oklch(0.52 0.11 210);
+  --chart-2: oklch(0.63 0.11 210);
+  --chart-3: oklch(0.72 0.09 210);
+  --chart-4: oklch(0.80 0.07 210);
+  --chart-5: oklch(0.88 0.04 210);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0.01 195);
+  --sidebar: oklch(0.985 0.01 210);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.52 0.12 195);
+  --sidebar-primary: oklch(0.52 0.11 210);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.93 0.05 195);
-  --sidebar-accent-foreground: oklch(0.52 0.12 195);
-  --sidebar-border: oklch(0.91 0.02 195);
-  --sidebar-ring: oklch(0.60 0.12 195);
+  --sidebar-accent: oklch(0.93 0.04 210);
+  --sidebar-accent-foreground: oklch(0.52 0.11 210);
+  --sidebar-border: oklch(0.91 0.018 210);
+  --sidebar-ring: oklch(0.60 0.11 210);
 }
 
 .dark {
@@ -91,32 +91,32 @@
   --card-foreground: oklch(0.96 0.01 195);
   --popover: oklch(0.17 0.03 216);
   --popover-foreground: oklch(0.96 0.01 195);
-  /* ティール dark — bright teal */
-  --primary: oklch(0.73 0.12 192);
+  /* シアンブルー dark — bright cyan-blue */
+  --primary: oklch(0.73 0.11 205);
   --primary-foreground: oklch(0.13 0.025 220);
-  --secondary: oklch(0.22 0.04 210);
-  --secondary-foreground: oklch(0.96 0.01 195);
-  --muted: oklch(0.22 0.04 210);
-  --muted-foreground: oklch(0.63 0.05 195);
-  --accent: oklch(0.22 0.04 210);
-  --accent-foreground: oklch(0.96 0.01 195);
+  --secondary: oklch(0.22 0.04 215);
+  --secondary-foreground: oklch(0.96 0.01 210);
+  --muted: oklch(0.22 0.04 215);
+  --muted-foreground: oklch(0.63 0.05 210);
+  --accent: oklch(0.22 0.04 215);
+  --accent-foreground: oklch(0.96 0.01 210);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.73 0.12 192);
-  --chart-1: oklch(0.73 0.12 192);
-  --chart-2: oklch(0.62 0.12 192);
-  --chart-3: oklch(0.52 0.10 195);
-  --chart-4: oklch(0.40 0.08 200);
-  --chart-5: oklch(0.30 0.06 205);
-  --sidebar: oklch(0.17 0.03 216);
-  --sidebar-foreground: oklch(0.96 0.01 195);
-  --sidebar-primary: oklch(0.73 0.12 192);
+  --ring: oklch(0.73 0.11 205);
+  --chart-1: oklch(0.73 0.11 205);
+  --chart-2: oklch(0.62 0.11 205);
+  --chart-3: oklch(0.52 0.09 210);
+  --chart-4: oklch(0.40 0.07 215);
+  --chart-5: oklch(0.30 0.05 220);
+  --sidebar: oklch(0.17 0.03 220);
+  --sidebar-foreground: oklch(0.96 0.01 210);
+  --sidebar-primary: oklch(0.73 0.11 205);
   --sidebar-primary-foreground: oklch(0.13 0.025 220);
-  --sidebar-accent: oklch(0.22 0.04 210);
-  --sidebar-accent-foreground: oklch(0.96 0.01 195);
+  --sidebar-accent: oklch(0.22 0.04 215);
+  --sidebar-accent-foreground: oklch(0.96 0.01 210);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.73 0.12 192);
+  --sidebar-ring: oklch(0.73 0.11 205);
 }
 
 @layer base {
@@ -134,10 +134,10 @@
 
 /* ヘッダーグラデーション（ライト/ダーク自動切替） */
 .header-gradient {
-  background: linear-gradient(135deg, #17BEC9 0%, #22CBD6 60%, #12B5C0 100%);
+  background: linear-gradient(135deg, #1AB6D4 0%, #1EC8E0 60%, #15B0CC 100%);
 }
 .dark .header-gradient {
-  background: linear-gradient(135deg, #0C2535 0%, #0A1E2D 60%, #0B2230 100%);
+  background: linear-gradient(135deg, #0A2030 0%, #081A28 60%, #0A1E2E 100%);
 }
 
 ::-webkit-scrollbar {
