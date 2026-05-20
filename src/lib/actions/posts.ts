@@ -192,19 +192,23 @@ export async function toggleLike(postId: string) {
     .eq('post_id', postId)
     .maybeSingle()
 
+  // likes_countの更新はadminクライアントで行う
+  // RLSでは自分の投稿しか更新できないため、他ユーザーの投稿のlikes_countが更新されない問題を修正
+  let admin: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { admin = createAdminClient() } catch { admin = supabase }
+
   if (existing) {
     await supabase.from('likes').delete().eq('id', existing.id)
     const { count } = await supabase
       .from('likes').select('*', { count: 'exact', head: true }).eq('post_id', postId)
-    await supabase.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
-    // クライアント側ストアが視覚状態を保持するのでrevalidatePathを復活させてキャッシュを更新
+    await admin.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
     revalidatePath('/home')
     return { liked: false, likesCount: count ?? 0 }
   } else {
     await supabase.from('likes').insert({ user_id: user.id, post_id: postId })
     const { count } = await supabase
       .from('likes').select('*', { count: 'exact', head: true }).eq('post_id', postId)
-    await supabase.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
+    await admin.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
     const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
     if (post) await createNotification({ userId: post.user_id, actorId: user.id, type: 'like', postId })
     revalidatePath('/home')
