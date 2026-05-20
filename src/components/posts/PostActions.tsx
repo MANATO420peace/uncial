@@ -11,12 +11,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { deletePost } from '@/lib/actions/posts'
 
 interface Props {
@@ -48,13 +51,23 @@ export function PostActions({ postId }: Props) {
           <MoreHorizontal className="h-5 w-5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={() => router.push(`/post/${postId}/edit`)}>
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault()
+              // DropdownMenu の close アニメーション完了後に遷移
+              setTimeout(() => router.push(`/post/${postId}/edit`), 100)
+            }}
+          >
             <Pencil className="h-4 w-4 mr-2" />
             編集する
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-red-600 focus:text-red-600"
-            onSelect={() => setConfirmOpen(true)}
+            onSelect={(e) => {
+              e.preventDefault()
+              // DropdownMenu の FocusTrap が解放されてから Dialog を開く
+              setTimeout(() => setConfirmOpen(true), 100)
+            }}
           >
             <Trash2 className="h-4 w-4 mr-2" />
             削除する
@@ -62,22 +75,24 @@ export function PostActions({ postId }: Props) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>投稿を削除しますか？</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">この操作は取り消せません。</p>
-          <div className="flex gap-2 mt-2">
-            <Button variant="outline" className="flex-1" onClick={() => setConfirmOpen(false)}>
-              キャンセル
-            </Button>
-            <Button variant="destructive" className="flex-1" disabled={isPending} onClick={handleDelete}>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>投稿を削除しますか？</AlertDialogTitle>
+            <AlertDialogDescription>この操作は取り消せません。</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              disabled={isPending}
+              onClick={handleDelete}
+            >
               {isPending ? '削除中...' : '削除する'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

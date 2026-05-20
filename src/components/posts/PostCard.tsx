@@ -16,12 +16,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { cn, timeAgo, truncate } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
 import { toggleLike, deletePost } from '@/lib/actions/posts'
@@ -139,13 +142,21 @@ export function PostCard({ post, isOwner = false }: Props) {
                   <MoreVertical className="h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onSelect={() => router.push(`/post/${post.id}/edit`)}>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      setTimeout(() => router.push(`/post/${post.id}/edit`), 100)
+                    }}
+                  >
                     <Pencil className="h-4 w-4 mr-2" />
                     編集する
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-red-600 focus:text-red-600"
-                    onSelect={() => setDeleteDialogOpen(true)}
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      setTimeout(() => setDeleteDialogOpen(true), 100)
+                    }}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     削除する
@@ -244,23 +255,21 @@ export function PostCard({ post, isOwner = false }: Props) {
       </div>
     </article>
 
-    {/* 削除確認 Dialog（isOwner の場合のみ） */}
+    {/* 削除確認（isOwner の場合のみ） */}
     {isOwner && (
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent onClick={e => e.stopPropagation()}>
-          <DialogHeader>
-            <DialogTitle>投稿を削除しますか？</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">この操作は取り消せません。</p>
-          <div className="flex gap-2 mt-2">
-            <Button variant="outline" className="flex-1" onClick={() => setDeleteDialogOpen(false)}>
-              キャンセル
-            </Button>
-            <Button
-              variant="destructive"
-              className="flex-1"
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>投稿を削除しますか？</AlertDialogTitle>
+            <AlertDialogDescription>この操作は取り消せません。</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
               disabled={isDeleting}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
                 startDeleteTransition(async () => {
                   const result = await deletePost(post.id)
                   if (result?.error) {
@@ -275,10 +284,10 @@ export function PostCard({ post, isOwner = false }: Props) {
               }}
             >
               {isDeleting ? '削除中...' : '削除する'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     )}
     </>
   )
