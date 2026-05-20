@@ -15,7 +15,8 @@ export async function getLikedPosts() {
     .order('created_at', { ascending: false })
     .limit(50)
 
-  return data?.map(l => l.posts).filter(Boolean) ?? []
+  // liked: true を付与してPostCardがいいね済み状態で表示できるようにする
+  return data?.map(l => l.posts ? { ...l.posts, liked: true } : null).filter(Boolean) ?? []
 }
 
 export async function getFollowList(userId: string, type: 'followers' | 'following') {

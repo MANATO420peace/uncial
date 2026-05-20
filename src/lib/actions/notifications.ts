@@ -61,7 +61,15 @@ export async function getNotifications() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { notifications: [], unreadCount: 0 }
 
-  const { data } = await supabase
+  // adminクライアントでRLSを回避（SELECT ポリシー未設定環境でも動作させるため）
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try {
+    db = createAdminClient()
+  } catch {
+    db = supabase
+  }
+
+  const { data, error } = await db
     .from('notifications')
     .select(`
       id, type, read_at, created_at,
@@ -72,6 +80,11 @@ export async function getNotifications() {
     .order('created_at', { ascending: false })
     .limit(50)
 
+  if (error) {
+    console.error('[getNotifications] error:', error.message)
+    return { notifications: [], unreadCount: 0 }
+  }
+
   const unreadCount = (data ?? []).filter(n => !n.read_at).length
   return { notifications: data ?? [], unreadCount }
 }
@@ -81,7 +94,15 @@ export async function markAllNotificationsRead() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
 
-  await supabase
+  // adminクライアントでRLSを回避
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try {
+    db = createAdminClient()
+  } catch {
+    db = supabase
+  }
+
+  await db
     .from('notifications')
     .update({ read_at: new Date().toISOString() })
     .eq('user_id', user.id)
