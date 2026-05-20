@@ -6,12 +6,12 @@ import { Home, Search, CalendarDays, BookOpen, User, MessageCircle } from 'lucid
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { href: '/home', icon: Home, label: 'ホーム' },
-  { href: '/search', icon: Search, label: '検索' },
-  { href: '/messages', icon: MessageCircle, label: 'DM' },
-  { href: '/timetable', icon: CalendarDays, label: '時間割' },
-  { href: '/study-rooms', icon: BookOpen, label: '対策部屋' },
-  { href: '/profile', icon: User, label: 'マイページ' },
+  { href: '/home',        icon: Home,          label: 'ホーム'   },
+  { href: '/search',      icon: Search,        label: '検索'     },
+  { href: '/messages',    icon: MessageCircle, label: 'DM'       },
+  { href: '/timetable',   icon: CalendarDays,  label: '時間割'   },
+  { href: '/study-rooms', icon: BookOpen,      label: '対策部屋' },
+  { href: '/profile',     icon: User,          label: 'マイページ' },
 ]
 
 export function BottomNav() {
