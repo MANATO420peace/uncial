@@ -217,13 +217,9 @@ export async function updatePost(postId: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '認証が必要です' }
 
-  // 管理者クライアントでRLSを回避（自分の投稿のみ）
-  let admin: ReturnType<typeof createAdminClient>
-  try { admin = createAdminClient() } catch { return { error: 'サーバー設定エラー' } }
-
-  // 所有権確認
-  const { data: existing } = await admin.from('posts').select('user_id').eq('id', postId).single()
-  if (!existing || existing.user_id !== user.id) return { error: '権限がありません' }
+  // admin client が使えればRLSを回避、使えなければ通常クライアントで試みる
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { db = createAdminClient() } catch { db = supabase }
 
   const tagsRaw = formData.get('tags') as string
   const manualTags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : []
@@ -231,18 +227,21 @@ export async function updatePost(postId: string, formData: FormData) {
   const hashtagsFromContent = (editContent.match(/#[\p{L}\p{N}_]+/gu) ?? []).map(t => t.slice(1))
   const tags = [...new Set([...manualTags, ...hashtagsFromContent])]
 
-  const { error } = await admin.from('posts')
+  // user_id 条件を必ず付けて所有権チェック兼RLS対応
+  const { error } = await db.from('posts')
     .update({
       title: formData.get('title') as string,
       content: editContent,
       tags,
     })
     .eq('id', postId)
+    .eq('user_id', user.id)
 
   if (error) {
     console.error('[updatePost] error:', error.message)
     return { error: error.message }
   }
+
   revalidatePath(`/post/${postId}`)
   revalidatePath('/home')
   return { success: true }
@@ -253,15 +252,15 @@ export async function deletePost(postId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '認証が必要です' }
 
-  // 管理者クライアントでRLSを回避（自分の投稿のみ）
-  let admin: ReturnType<typeof createAdminClient>
-  try { admin = createAdminClient() } catch { return { error: 'サーバー設定エラー' } }
+  // admin client が使えればRLSを回避、使えなければ通常クライアントで試みる
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { db = createAdminClient() } catch { db = supabase }
 
-  // 所有権確認
-  const { data: existing } = await admin.from('posts').select('user_id').eq('id', postId).single()
-  if (!existing || existing.user_id !== user.id) return { error: '権限がありません' }
-
-  const { error } = await admin.from('posts').delete().eq('id', postId)
+  // user_id 条件を必ず付けて所有権チェック兼RLS対応
+  const { error } = await db.from('posts')
+    .delete()
+    .eq('id', postId)
+    .eq('user_id', user.id)
 
   if (error) {
     console.error('[deletePost] error:', error.message)
