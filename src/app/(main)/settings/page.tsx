@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser, getUniversities } from '@/lib/actions/user'
 import { SettingsForm } from './SettingsForm'
+import { NotificationDebug } from '@/components/debug/NotificationDebug'
 
 export const metadata: Metadata = { title: '設定' }
 
@@ -21,6 +22,7 @@ export default async function SettingsPage() {
         <p className="text-sm text-muted-foreground">表示情報を変更できます</p>
       </div>
       <SettingsForm user={user} universities={universities} email={authUser?.email ?? ''} />
+      <NotificationDebug />
     </div>
   )
 }
