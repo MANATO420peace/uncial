@@ -175,5 +175,34 @@ export async function handleFollowRequest(requestId: string, accept: boolean) {
 
   await supabase.from('follow_requests').delete().eq('id', requestId)
   revalidatePath('/profile')
+  revalidatePath('/notifications')
+  return { error: null }
+}
+
+// 通知ページから actor_id（リクエスト送信者のID）で直接承認・拒否
+export async function handleFollowRequestByActor(actorId: string, accept: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  const { data: request } = await supabase
+    .from('follow_requests')
+    .select('id, requester_id, target_id')
+    .eq('requester_id', actorId)
+    .eq('target_id', user.id)
+    .single()
+
+  if (!request) return { error: 'リクエストが見つかりません' }
+
+  if (accept) {
+    await supabase.from('follows').insert({
+      follower_id: request.requester_id,
+      following_id: request.target_id,
+    })
+  }
+
+  await supabase.from('follow_requests').delete().eq('id', request.id)
+  revalidatePath('/profile')
+  revalidatePath('/notifications')
   return { error: null }
 }

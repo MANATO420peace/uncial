@@ -31,11 +31,24 @@ export async function searchAll(query: string, universityId?: string) {
   const isTagSearch = query.startsWith('#')
   const cleanQuery = isTagSearch ? query.slice(1) : query
 
+  // 現在のユーザーを取得（非公開アカウントのフィルタリング用）
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // 現在のユーザーがフォローしているユーザーIDの一覧を取得
+  let followingIds: string[] = []
+  if (user) {
+    const { data: follows } = await supabase
+      .from('follows')
+      .select('following_id')
+      .eq('follower_id', user.id)
+    followingIds = follows?.map(f => f.following_id) ?? []
+  }
+
   let postsQuery = supabase
     .from('posts')
-    .select('*, users(id, nickname), universities(id, name)')
+    .select('*, users(id, nickname, is_private), universities(id, name)')
     .order('created_at', { ascending: false })
-    .limit(20)
+    .limit(50) // 後でフィルタするので多めに取得
 
   if (isTagSearch) {
     postsQuery = postsQuery.contains('tags', [cleanQuery])
@@ -68,8 +81,22 @@ export async function searchAll(query: string, universityId?: string) {
     usersQuery,
   ])
 
+  // 非公開アカウントの投稿をフィルタリング:
+  // - 自分の投稿は常に表示
+  // - フォローしているユーザーの投稿は表示
+  // - 非公開アカウントのそれ以外の投稿は非表示
+  const allPosts = postsResult.data ?? []
+  const filteredPosts = allPosts.filter(post => {
+    const poster = post.users as { id: string; nickname: string; is_private?: boolean } | null
+    if (!poster) return true // ユーザー情報がなければ表示
+    if (!poster.is_private) return true // 公開アカウントは表示
+    if (user && poster.id === user.id) return true // 自分の投稿は表示
+    if (followingIds.includes(poster.id)) return true // フォロー中なら表示
+    return false // 非公開アカウントの投稿は非表示
+  }).slice(0, 20)
+
   return {
-    posts: postsResult.data ?? [],
+    posts: filteredPosts,
     reviews: reviewsResult.data ?? [],
     users: usersResult.data ?? [],
   }

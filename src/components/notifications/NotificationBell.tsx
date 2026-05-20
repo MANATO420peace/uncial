@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -14,14 +14,36 @@ interface NotificationBellProps {
 export function NotificationBell({ className }: NotificationBellProps = {}) {
   const [unreadCount, setUnreadCount] = useState(0)
 
-  useEffect(() => {
-    getNotifications().then(({ unreadCount }) => setUnreadCount(unreadCount))
+  const fetchCount = useCallback(async () => {
+    try {
+      const { unreadCount } = await getNotifications()
+      setUnreadCount(unreadCount)
+    } catch {
+      // 取得失敗は無視
+    }
   }, [])
+
+  useEffect(() => {
+    // 初回取得
+    fetchCount()
+    // 30秒ごとにポーリング
+    const interval = setInterval(fetchCount, 30_000)
+    // タブがアクティブになったときも取得
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') fetchCount()
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+  }, [fetchCount])
 
   return (
     <Link
       href="/notifications"
       className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'h-8 w-8 relative', className)}
+      onClick={() => setUnreadCount(0)}
     >
       <Bell className="h-4 w-4" />
       {unreadCount > 0 && (
