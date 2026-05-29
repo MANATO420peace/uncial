@@ -144,14 +144,14 @@
 }
 
 /* ヘッダーグラデーション
-   ライト: スカイシアン #1ABBD0 → #2ECADD
-   ダーク:  深いネイビー → 少しシアンがかったネイビー
+   ライト: スカイシアン #18B8CE → #2DD5E8
+   ダーク:  ダークティール #0A2E3A → #0D3D50
 */
 .header-gradient {
   background: linear-gradient(135deg, #18B8CE 0%, #22C9DE 60%, #2DD5E8 100%);
 }
 .dark .header-gradient {
-  background: linear-gradient(135deg, #0C1E30 0%, #102840 50%, #0E2238 100%);
+  background: linear-gradient(135deg, #0A2E3A 0%, #0D3D50 60%, #0B3545 100%);
 }
 
 /* ロゴテキストグラデーション */
