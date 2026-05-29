@@ -14,7 +14,11 @@ const navItems = [
   { href: '/profile',     icon: User,          label: 'マイページ' },
 ]
 
-export function BottomNav() {
+interface Props {
+  unreadDmCount?: number
+}
+
+export function BottomNav({ unreadDmCount = 0 }: Props) {
   const pathname = usePathname()
 
   return (
@@ -22,6 +26,8 @@ export function BottomNav() {
       <div className="max-w-2xl mx-auto px-1 h-16 flex items-center justify-around">
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== '/home' && pathname.startsWith(href))
+          const isDM = href === '/messages'
+          const showBadge = isDM && unreadDmCount > 0
           return (
             <Link
               key={href}
@@ -33,7 +39,14 @@ export function BottomNav() {
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <Icon className={cn('h-5 w-5', active && 'fill-current')} strokeWidth={active ? 2.5 : 2} />
+              <div className="relative">
+                <Icon className={cn('h-5 w-5', active && 'fill-current')} strokeWidth={active ? 2.5 : 2} />
+                {showBadge && (
+                  <span className="absolute -top-1 -right-1.5 min-w-[14px] h-[14px] flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
+                    {unreadDmCount > 99 ? '99+' : unreadDmCount}
+                  </span>
+                )}
+              </div>
               <span className="text-[9px] font-medium">{label}</span>
             </Link>
           )
