@@ -132,8 +132,6 @@ export async function getMessages(conversationId: string) {
     .neq('sender_id', user.id)
     .is('read_at', null)
 
-  revalidatePath('/messages')
-
   return { messages: messages ?? [], conversation, currentUserId: user.id }
 }
 
