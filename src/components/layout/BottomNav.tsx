@@ -20,16 +20,27 @@ interface Props {
   unreadDmCount?: number
 }
 
+const CHAT_DETAIL_RE = /^\/messages\/.+/
+
 export function BottomNav({ unreadDmCount = 0 }: Props) {
   const pathname = usePathname()
   const [dmCount, setDmCount] = useState(unreadDmCount)
   const prevPathname = useRef<string | null>(null)
 
-  // ページ遷移のたびに未読件数を再取得（既読後にバッジが消えるようにする）
   useEffect(() => {
-    if (prevPathname.current === pathname) return
+    const prev = prevPathname.current
     prevPathname.current = pathname
-    getUnreadMessageCount().then(setDmCount)
+
+    // 初回マウント時はサーバー値をそのまま使う
+    if (prev === null) return
+
+    // チャット詳細ページ（/messages/[id]）に「入る」タイミングはスキップ
+    // → サーバー側の既読処理がまだ完了していないためレース条件が発生する
+    // チャットから「出る」タイミング、またはその他の遷移時に再取得する
+    const isEnteringChatDetail = CHAT_DETAIL_RE.test(pathname)
+    if (!isEnteringChatDetail) {
+      getUnreadMessageCount().then(setDmCount)
+    }
   }, [pathname])
 
   return (

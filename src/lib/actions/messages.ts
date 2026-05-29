@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendPushToUser } from './push'
 
 export async function getOrCreateConversation(otherUserId: string) {
@@ -120,12 +121,18 @@ export async function getMessages(conversationId: string) {
     .eq('conversation_id', conversationId)
     .order('created_at', { ascending: true })
 
-  await supabase
+  // adminクライアントでRLSを回避して既読処理（RLSにUPDATEポリシーがない場合でも確実に実行）
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { db = createAdminClient() } catch { db = supabase }
+
+  await db
     .from('messages')
     .update({ read_at: new Date().toISOString() })
     .eq('conversation_id', conversationId)
     .neq('sender_id', user.id)
     .is('read_at', null)
+
+  revalidatePath('/messages')
 
   return { messages: messages ?? [], conversation, currentUserId: user.id }
 }
