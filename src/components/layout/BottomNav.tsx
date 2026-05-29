@@ -1,9 +1,11 @@
 'use client'
 
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Search, CalendarDays, BookOpen, User, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getUnreadMessageCount } from '@/lib/actions/messages'
 
 const navItems = [
   { href: '/home',        icon: Home,          label: 'ホーム'   },
@@ -20,6 +22,15 @@ interface Props {
 
 export function BottomNav({ unreadDmCount = 0 }: Props) {
   const pathname = usePathname()
+  const [dmCount, setDmCount] = useState(unreadDmCount)
+  const prevPathname = useRef<string | null>(null)
+
+  // ページ遷移のたびに未読件数を再取得（既読後にバッジが消えるようにする）
+  useEffect(() => {
+    if (prevPathname.current === pathname) return
+    prevPathname.current = pathname
+    getUnreadMessageCount().then(setDmCount)
+  }, [pathname])
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-md">
@@ -27,7 +38,7 @@ export function BottomNav({ unreadDmCount = 0 }: Props) {
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== '/home' && pathname.startsWith(href))
           const isDM = href === '/messages'
-          const showBadge = isDM && unreadDmCount > 0
+          const showBadge = isDM && dmCount > 0
           return (
             <Link
               key={href}
@@ -43,7 +54,7 @@ export function BottomNav({ unreadDmCount = 0 }: Props) {
                 <Icon className={cn('h-5 w-5', active && 'fill-current')} strokeWidth={active ? 2.5 : 2} />
                 {showBadge && (
                   <span className="absolute -top-1 -right-1.5 min-w-[14px] h-[14px] flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
-                    {unreadDmCount > 99 ? '99+' : unreadDmCount}
+                    {dmCount > 99 ? '99+' : dmCount}
                   </span>
                 )}
               </div>
