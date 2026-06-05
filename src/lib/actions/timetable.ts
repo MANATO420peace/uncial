@@ -108,13 +108,70 @@ export async function deleteCourseTask(taskId: string) {
 export async function findUsersWithSameCourse(courseName: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
 
-  const { data } = await supabase
+  // 自分の大学IDを取得して同じ大学内のみに絞る
+  const { data: profile } = await supabase
+    .from('users')
+    .select('university_id')
+    .eq('id', user.id)
+    .single()
+
+  const query = supabase
     .from('timetable_entries')
-    .select('users(id, nickname, avatar_url, universities(name))')
+    .select('users!inner(id, nickname, avatar_url, university_id, universities(name))')
     .ilike('course_name', `%${courseName}%`)
-    .neq('user_id', user?.id ?? '')
+    .neq('user_id', user.id)
     .limit(20)
 
+  // 同じ大学のユーザーのみ
+  if (profile?.university_id) {
+    query.eq('users.university_id', profile.university_id)
+  }
+
+  const { data } = await query
   return data?.map(d => d.users).filter(Boolean) ?? []
+}
+
+// 同じ曜日・時限に授業を登録しているユーザーを検索（大学内のみ）
+export async function findUsersBySlot(dayOfWeek: number, period: number) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data: profile } = await supabase
+    .from('users')
+    .select('university_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile?.university_id) return []
+
+  // 自分の同じコマの授業名を取得
+  const { data: myEntry } = await supabase
+    .from('timetable_entries')
+    .select('course_name')
+    .eq('user_id', user.id)
+    .eq('day_of_week', dayOfWeek)
+    .eq('period', period)
+    .maybeSingle()
+
+  // 同じ時限に授業を持つ同大学の他ユーザーを取得
+  const { data } = await supabase
+    .from('timetable_entries')
+    .select('course_name, users!inner(id, nickname, avatar_url, university_id, universities(name))')
+    .eq('day_of_week', dayOfWeek)
+    .eq('period', period)
+    .neq('user_id', user.id)
+    .eq('users.university_id', profile.university_id)
+    .limit(20)
+
+  return (data ?? []).map(d => ({
+    ...(d.users as { id: string; nickname: string; avatar_url: string | null; universities: { name: string } | null }),
+    course_name: d.course_name,
+    is_same_course: myEntry
+      ? d.course_name.includes(myEntry.course_name.slice(0, 4)) ||
+        myEntry.course_name.includes(d.course_name.slice(0, 4))
+      : false,
+  })).filter(u => u.id)
 }
