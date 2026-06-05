@@ -3,17 +3,16 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Search, CalendarDays, BookOpen, User, MessageCircle } from 'lucide-react'
+import { Home, Search, CalendarDays, User, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getUnreadMessageCount } from '@/lib/actions/messages'
 
 const navItems = [
-  { href: '/home',        icon: Home,          label: 'ホーム'   },
-  { href: '/search',      icon: Search,        label: '検索'     },
-  { href: '/messages',    icon: MessageCircle, label: 'DM'       },
-  { href: '/timetable',   icon: CalendarDays,  label: '時間割'   },
-  { href: '/study-rooms', icon: BookOpen,      label: '対策部屋' },
-  { href: '/profile',     icon: User,          label: 'マイページ' },
+  { href: '/home',      icon: Home,          label: 'ホーム'    },
+  { href: '/search',    icon: Search,        label: '検索'      },
+  { href: '/messages',  icon: MessageCircle, label: 'DM'        },
+  { href: '/timetable', icon: CalendarDays,  label: '時間割'    },
+  { href: '/profile',   icon: User,          label: 'マイページ' },
 ]
 
 interface Props {
