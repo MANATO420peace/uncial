@@ -7,6 +7,7 @@ import { LikeButton } from '@/components/posts/LikeButton'
 import { PostActions } from '@/components/posts/PostActions'
 import { SoldButton } from '@/components/posts/SoldButton'
 import { ImageCarousel } from '@/components/posts/ImageCarousel'
+import { ViewIncrementer } from '@/components/posts/ViewIncrementer'
 import { CommentSection } from '@/components/comments/CommentSection'
 import { getPost } from '@/lib/actions/posts'
 import { getComments } from '@/lib/actions/comments'
@@ -14,6 +15,7 @@ import { createClient } from '@/lib/supabase/server'
 import { timeAgo } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS, ITEM_CONDITION_LABELS } from '@/types'
 import { cn } from '@/lib/utils'
+import { Eye } from 'lucide-react'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -110,7 +112,7 @@ export default async function PostPage({ params }: Props) {
           </div>
         )}
 
-        <div className="flex items-center gap-3 mt-5">
+        <div className="flex items-center gap-4 mt-5">
           <LikeButton
             postId={post.id}
             initialLiked={post.liked ?? false}
@@ -120,8 +122,14 @@ export default async function PostPage({ params }: Props) {
             <MessageSquare className="h-4 w-4" />
             {post.comments_count}
           </span>
+          <span className="flex items-center gap-1.5 text-sm text-muted-foreground ml-auto">
+            <Eye className="h-4 w-4" />
+            {((post as never as { views_count?: number }).views_count ?? 0).toLocaleString()}
+          </span>
         </div>
       </article>
+
+      <ViewIncrementer postId={post.id} />
 
       <CommentSection comments={comments ?? []} postId={post.id} currentUserId={user?.id} />
     </div>

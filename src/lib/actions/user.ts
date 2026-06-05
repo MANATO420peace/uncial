@@ -78,6 +78,38 @@ export async function getCurrentUser() {
   return data
 }
 
+export async function getSuggestedUsers(limit = 5) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data: profile } = await supabase
+    .from('users')
+    .select('university_id')
+    .eq('id', user.id)
+    .single()
+
+  const { data: follows } = await supabase
+    .from('follows')
+    .select('following_id')
+    .eq('follower_id', user.id)
+
+  const excludeIds = new Set([user.id, ...(follows?.map(f => f.following_id) ?? [])])
+
+  let query = supabase
+    .from('users')
+    .select('id, nickname, avatar_url, points, universities(name)')
+    .order('points', { ascending: false })
+    .limit(30)
+
+  if (profile?.university_id) {
+    query = query.eq('university_id', profile.university_id)
+  }
+
+  const { data } = await query
+  return (data ?? []).filter(u => !excludeIds.has(u.id)).slice(0, limit)
+}
+
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

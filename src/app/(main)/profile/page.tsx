@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PostCard } from '@/components/posts/PostCard'
 import { FollowRequestList } from '@/components/users/FollowRequestList'
 import { BadgeProgress } from '@/components/profile/BadgeProgress'
+import { ProfileShareButton } from '@/components/users/ProfileShareButton'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -46,10 +47,13 @@ export default async function ProfilePage() {
               {user.nickname[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <Link href="/settings" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}>
-            <Settings className="h-4 w-4 mr-1" />
-            編集
-          </Link>
+          <div className="flex items-center gap-2">
+            <ProfileShareButton userId={user.id} nickname={user.nickname} />
+            <Link href="/settings" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}>
+              <Settings className="h-4 w-4 mr-1" />
+              編集
+            </Link>
+          </div>
         </div>
 
         <h1 className="font-bold text-lg">{user.nickname}</h1>

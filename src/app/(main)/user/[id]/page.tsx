@@ -12,6 +12,7 @@ import { PostCard } from '@/components/posts/PostCard'
 import { FollowButton } from '@/components/users/FollowButton'
 import { DMButton } from '@/components/users/DMButton'
 import { UserActionMenu } from '@/components/users/UserActionMenu'
+import { ProfileShareButton } from '@/components/users/ProfileShareButton'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -73,7 +74,7 @@ export default async function UserProfilePage({ params }: Props) {
               {profile.nickname[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          {!isOwnProfile && currentUser && (
+          {!isOwnProfile && currentUser ? (
             <div className="flex items-center gap-2">
               {!blockMuteStatus.isBlocked && <DMButton targetUserId={id} />}
               {!blockMuteStatus.isBlocked && (
@@ -83,6 +84,7 @@ export default async function UserProfilePage({ params }: Props) {
                   initialRequestPending={followStats.hasPendingRequest}
                 />
               )}
+              <ProfileShareButton userId={id} nickname={profile.nickname} />
               <UserActionMenu
                 targetUserId={id}
                 initialBlocked={blockMuteStatus.isBlocked}
@@ -90,7 +92,7 @@ export default async function UserProfilePage({ params }: Props) {
                 targetNickname={profile.nickname}
               />
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="flex items-center gap-2">

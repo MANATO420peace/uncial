@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蓮ロゴ カラーバリエーション</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; background: #0f1117; color: #e2e8f0; }
+
+  h1 { text-align: center; padding: 40px 20px 8px; font-size: 22px; font-weight: 700; letter-spacing: 0.08em; }
+  .subtitle { text-align: center; color: #64748b; font-size: 13px; padding-bottom: 40px; letter-spacing: 0.05em; }
+
+  .variation-section {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+  }
+
+  .variation-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #64748b;
+    border-left: 3px solid;
+    padding-left: 12px;
+    margin-bottom: 20px;
+  }
+
+  .variation-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .variation-desc {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 24px;
+    padding-left: 15px;
+  }
+
+  .logo-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .logo-box {
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px 20px;
+    gap: 14px;
+  }
+
+  .logo-box-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+  }
+
+  /* Header preview */
+  .header-preview {
+    border-radius: 16px;
+    overflow: hidden;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .header-app-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+
+  .header-tagline {
+    font-size: 9px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.08em;
+  }
+
+  .preview-label {
+    font-size: 10px;
+    color: #475569;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid #1e2433;
+    margin: 0 20px 60px;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body>
+
+<h1>蓮ロゴ — カラーバリエーション</h1>
+<p class="subtitle">デザイン01「重なり花びら」× 凛とした色調 5パターン</p>
+
+<!-- ===== VARIATION A: 藍 (Ai) Deep Indigo ===== -->
+<div class="variation-section">
+  <div class="variation-label" style="border-color: #4f7ec4;">Variation A</div>
+  <div class="variation-name" style="color: #7ba7e8;">藍 — AI (Deep Indigo)</div>
+  <div class="variation-desc">深い藍色 × 銀白の光　凛とした知性と品格を表現</div>
+
+  <div class="logo-row">
+    <!-- Dark bg -->
+    <div class="logo-box" style="background: #0a0e1a;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="ai-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#7ba7e8"/>
+            <stop offset="100%" stop-color="#1e3a6e"/>
+          </radialGradient>
+          <radialGradient id="ai-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#93b8f0"/>
+            <stop offset="100%" stop-color="#2d5294"/>
+          </radialGradient>
+          <radialGradient id="ai-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#c8daf8"/>
+            <stop offset="100%" stop-color="#4a7ec8"/>
+          </radialGradient>
+          <filter id="ai-glow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <!-- Water ellipse -->
+        <ellipse cx="50" cy="88" rx="28" ry="5" fill="#1e3a6e" opacity="0.4"/>
+        <!-- Outer petals (8) -->
+        <g filter="url(#ai-glow)">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai-outer)" opacity="0.85" transform="rotate(315 50 65)"/>
+        </g>
+        <!-- Mid petals (6) -->
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <!-- Inner petals (5) -->
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <!-- Stamen dots -->
+        <circle cx="50" cy="63" r="3.5" fill="#d4e8ff"/>
+        <circle cx="46" cy="61" r="1.8" fill="#b8d4f8"/>
+        <circle cx="54" cy="61" r="1.8" fill="#b8d4f8"/>
+        <circle cx="50" cy="59" r="1.5" fill="#e8f2ff"/>
+      </svg>
+      <span class="logo-box-label">DARK</span>
+    </div>
+    <!-- Light bg -->
+    <div class="logo-box" style="background: #f0f5ff;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="ai2-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#4a7ec8"/>
+            <stop offset="100%" stop-color="#1e3a6e"/>
+          </radialGradient>
+          <radialGradient id="ai2-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#5d8fd8"/>
+            <stop offset="100%" stop-color="#2d5294"/>
+          </radialGradient>
+          <radialGradient id="ai2-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#93b8f0"/>
+            <stop offset="100%" stop-color="#3d6ab8"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="5" fill="#2d5294" opacity="0.15"/>
+        <g>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai2-outer)" opacity="0.9" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai2-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai2-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai2-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai2-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai2-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai2-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai2-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai2-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai2-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai2-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai2-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#1e3a6e"/>
+        <circle cx="46" cy="61" r="1.8" fill="#2d5294"/>
+        <circle cx="54" cy="61" r="1.8" fill="#2d5294"/>
+        <circle cx="50" cy="59" r="1.5" fill="#3d6ab8"/>
+      </svg>
+      <span class="logo-box-label" style="color:#1e3a6e;">LIGHT</span>
+    </div>
+    <!-- Gradient bg -->
+    <div class="logo-box" style="background: linear-gradient(135deg, #0d2b5e 0%, #1a4a8a 50%, #0d6e8a 100%);">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="ai3-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#c8daf8"/>
+            <stop offset="100%" stop-color="#5d8fd8"/>
+          </radialGradient>
+          <radialGradient id="ai3-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#ddeeff"/>
+            <stop offset="100%" stop-color="#7ba7e8"/>
+          </radialGradient>
+          <radialGradient id="ai3-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#93b8f0"/>
+          </radialGradient>
+          <filter id="ai3-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="5" fill="rgba(100,160,255,0.2)"/>
+        <g filter="url(#ai3-glow)">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ai3-outer)" opacity="0.9" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai3-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai3-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai3-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai3-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai3-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ai3-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai3-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai3-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai3-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai3-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ai3-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#fff"/>
+        <circle cx="46" cy="61" r="1.8" fill="rgba(255,255,255,0.8)"/>
+        <circle cx="54" cy="61" r="1.8" fill="rgba(255,255,255,0.8)"/>
+        <circle cx="50" cy="59" r="1.5" fill="rgba(255,255,255,0.9)"/>
+      </svg>
+      <span class="logo-box-label">GRADIENT</span>
+    </div>
+  </div>
+
+  <!-- Header preview -->
+  <div class="header-preview" style="background: linear-gradient(135deg, #0d2b5e 0%, #1a4a8a 50%, #0d6e8a 100%);">
+    <svg width="36" height="36" viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="ahp-outer" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#c8daf8"/><stop offset="100%" stop-color="#5d8fd8"/></radialGradient>
+        <radialGradient id="ahp-mid" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#ddeeff"/><stop offset="100%" stop-color="#7ba7e8"/></radialGradient>
+        <radialGradient id="ahp-inner" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#93b8f0"/></radialGradient>
+      </defs>
+      <g opacity="0.9"><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(45 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(90 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(135 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(225 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(270 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ahp-outer)" transform="rotate(315 50 65)"/></g>
+      <g><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ahp-mid)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ahp-mid)" transform="rotate(60 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ahp-mid)" transform="rotate(120 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ahp-mid)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ahp-mid)" transform="rotate(240 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ahp-mid)" transform="rotate(300 50 65)"/></g>
+      <g><ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ahp-inner)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ahp-inner)" transform="rotate(72 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ahp-inner)" transform="rotate(144 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ahp-inner)" transform="rotate(216 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#ahp-inner)" transform="rotate(288 50 65)"/></g>
+      <circle cx="50" cy="63" r="3.5" fill="#fff"/><circle cx="46" cy="61" r="1.8" fill="rgba(255,255,255,0.8)"/><circle cx="54" cy="61" r="1.8" fill="rgba(255,255,255,0.8)"/>
+    </svg>
+    <div>
+      <div class="header-app-name">蓮板</div>
+      <div class="header-tagline">大学生のための掲示板</div>
+    </div>
+  </div>
+  <p class="preview-label">ヘッダープレビュー — 藍グラデーション</p>
+</div>
+
+<hr class="divider">
+
+<!-- ===== VARIATION B: 白銀 Hakugin (Silver White) ===== -->
+<div class="variation-section">
+  <div class="variation-label" style="border-color: #94a3b8;">Variation B</div>
+  <div class="variation-name" style="color: #cbd5e1;">白銀 — HAKUGIN (Silver)</div>
+  <div class="variation-desc">モノクローム銀白 × 深墨　究極にシンプルで凛とした佇まい</div>
+
+  <div class="logo-row">
+    <div class="logo-box" style="background: #080a0f;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="hg-outer" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#e8edf5"/>
+            <stop offset="60%" stop-color="#9aaabf"/>
+            <stop offset="100%" stop-color="#3a4455"/>
+          </radialGradient>
+          <radialGradient id="hg-mid" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="50%" stop-color="#b8c4d8"/>
+            <stop offset="100%" stop-color="#4a5568"/>
+          </radialGradient>
+          <radialGradient id="hg-inner" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#c8d4e8"/>
+          </radialGradient>
+          <filter id="hg-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#3a4455" opacity="0.5"/>
+        <g filter="url(#hg-glow)" opacity="0.85">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#fff"/>
+        <circle cx="46" cy="61" r="1.8" fill="#e0e8f8"/>
+        <circle cx="54" cy="61" r="1.8" fill="#e0e8f8"/>
+        <circle cx="50" cy="59" r="1.5" fill="#f0f4ff"/>
+      </svg>
+      <span class="logo-box-label">DARK</span>
+    </div>
+    <div class="logo-box" style="background: #f8f9fb;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="hgl-outer" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#4a5568"/>
+            <stop offset="60%" stop-color="#2d3748"/>
+            <stop offset="100%" stop-color="#1a202c"/>
+          </radialGradient>
+          <radialGradient id="hgl-mid" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#718096"/>
+            <stop offset="100%" stop-color="#2d3748"/>
+          </radialGradient>
+          <radialGradient id="hgl-inner" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#a0aec0"/>
+            <stop offset="100%" stop-color="#4a5568"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#2d3748" opacity="0.12"/>
+        <g opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgl-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgl-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgl-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgl-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgl-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgl-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgl-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgl-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgl-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgl-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgl-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgl-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#1a202c"/>
+        <circle cx="46" cy="61" r="1.8" fill="#2d3748"/>
+        <circle cx="54" cy="61" r="1.8" fill="#2d3748"/>
+        <circle cx="50" cy="59" r="1.5" fill="#4a5568"/>
+      </svg>
+      <span class="logo-box-label" style="color:#4a5568;">LIGHT</span>
+    </div>
+    <div class="logo-box" style="background: linear-gradient(135deg, #1a2332 0%, #2d3f5a 50%, #1a3244 100%);">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="hgg-outer" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="60%" stop-color="#c8d4e8"/>
+            <stop offset="100%" stop-color="#7a8fa8"/>
+          </radialGradient>
+          <radialGradient id="hgg-mid" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#9aaabf"/>
+          </radialGradient>
+          <radialGradient id="hgg-inner" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#b8c4d8"/>
+          </radialGradient>
+          <filter id="hgg-glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="rgba(255,255,255,0.1)"/>
+        <g filter="url(#hgg-glow)" opacity="0.85">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#hgg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#hgg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#hgg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#fff"/>
+        <circle cx="46" cy="61" r="1.8" fill="rgba(255,255,255,0.85)"/>
+        <circle cx="54" cy="61" r="1.8" fill="rgba(255,255,255,0.85)"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fff"/>
+      </svg>
+      <span class="logo-box-label">GRADIENT</span>
+    </div>
+  </div>
+
+  <div class="header-preview" style="background: linear-gradient(135deg, #1a2332 0%, #2d3f5a 50%, #1a3244 100%);">
+    <svg width="36" height="36" viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="bhp-o" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#9aaabf"/></radialGradient>
+        <radialGradient id="bhp-m" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#b8c4d8"/></radialGradient>
+      </defs>
+      <g opacity="0.9"><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(45 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(90 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(135 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(225 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(270 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#bhp-o)" transform="rotate(315 50 65)"/></g>
+      <g><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#bhp-m)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#bhp-m)" transform="rotate(60 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#bhp-m)" transform="rotate(120 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#bhp-m)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#bhp-m)" transform="rotate(240 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#bhp-m)" transform="rotate(300 50 65)"/></g>
+      <g><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(0 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(72 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(144 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(216 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(288 50 65)"/></g>
+      <circle cx="50" cy="63" r="3.5" fill="#fff"/>
+    </svg>
+    <div>
+      <div class="header-app-name">蓮板</div>
+      <div class="header-tagline">大学生のための掲示板</div>
+    </div>
+  </div>
+  <p class="preview-label">ヘッダープレビュー — ダークネイビー × 白銀</p>
+</div>
+
+<hr class="divider">
+
+<!-- ===== VARIATION C: 翠 Midori (Deep Emerald) ===== -->
+<div class="variation-section">
+  <div class="variation-label" style="border-color: #2d8a6e;">Variation C</div>
+  <div class="variation-name" style="color: #4ecca8;">翠 — MIDORI (Deep Emerald)</div>
+  <div class="variation-desc">深い翠緑 × 金の光点　自然の力強さと静寂を表現</div>
+
+  <div class="logo-row">
+    <div class="logo-box" style="background: #050f0a;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="mg-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#4ecca8"/>
+            <stop offset="100%" stop-color="#0d4a32"/>
+          </radialGradient>
+          <radialGradient id="mg-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#6dddb8"/>
+            <stop offset="100%" stop-color="#1a6448"/>
+          </radialGradient>
+          <radialGradient id="mg-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#a8f0d8"/>
+            <stop offset="100%" stop-color="#2d8a5e"/>
+          </radialGradient>
+          <filter id="mg-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#0d4a32" opacity="0.5"/>
+        <g filter="url(#mg-glow)" opacity="0.85">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <!-- Gold stamens -->
+        <circle cx="50" cy="63" r="3.5" fill="#f6d860"/>
+        <circle cx="46" cy="61" r="1.8" fill="#e8c840"/>
+        <circle cx="54" cy="61" r="1.8" fill="#e8c840"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fae070"/>
+      </svg>
+      <span class="logo-box-label">DARK</span>
+    </div>
+    <div class="logo-box" style="background: #f0faf5;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="mgl-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#1a6448"/>
+            <stop offset="100%" stop-color="#0a3a22"/>
+          </radialGradient>
+          <radialGradient id="mgl-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#2d8a5e"/>
+            <stop offset="100%" stop-color="#1a4a32"/>
+          </radialGradient>
+          <radialGradient id="mgl-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#4ecca8"/>
+            <stop offset="100%" stop-color="#1a6448"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#0a3a22" opacity="0.12"/>
+        <g opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgl-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgl-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgl-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgl-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgl-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgl-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgl-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgl-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgl-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgl-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgl-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgl-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#b8960a"/>
+        <circle cx="46" cy="61" r="1.8" fill="#c8a820"/>
+        <circle cx="54" cy="61" r="1.8" fill="#c8a820"/>
+        <circle cx="50" cy="59" r="1.5" fill="#d4b430"/>
+      </svg>
+      <span class="logo-box-label" style="color:#0a3a22;">LIGHT</span>
+    </div>
+    <div class="logo-box" style="background: linear-gradient(135deg, #042a1a 0%, #0d5a38 50%, #0a4a40 100%);">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="mgg-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#a8f0d8"/>
+            <stop offset="100%" stop-color="#2d8a5e"/>
+          </radialGradient>
+          <radialGradient id="mgg-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#c8f8e8"/>
+            <stop offset="100%" stop-color="#4ecca8"/>
+          </radialGradient>
+          <radialGradient id="mgg-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#88e8c8"/>
+          </radialGradient>
+          <filter id="mgg-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="rgba(78,204,168,0.15)"/>
+        <g filter="url(#mgg-glow)" opacity="0.85">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#mgg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#mgg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#mgg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#f6d860"/>
+        <circle cx="46" cy="61" r="1.8" fill="#e8c840"/>
+        <circle cx="54" cy="61" r="1.8" fill="#e8c840"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fae070"/>
+      </svg>
+      <span class="logo-box-label">GRADIENT</span>
+    </div>
+  </div>
+
+  <div class="header-preview" style="background: linear-gradient(135deg, #042a1a 0%, #0d5a38 50%, #0a4a40 100%);">
+    <svg width="36" height="36" viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="chp-o" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#c8f8e8"/><stop offset="100%" stop-color="#4ecca8"/></radialGradient>
+        <radialGradient id="chp-m" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#88e8c8"/></radialGradient>
+      </defs>
+      <g opacity="0.9"><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(45 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(90 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(135 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(225 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(270 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#chp-o)" transform="rotate(315 50 65)"/></g>
+      <g><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#chp-m)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#chp-m)" transform="rotate(60 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#chp-m)" transform="rotate(120 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#chp-m)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#chp-m)" transform="rotate(240 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#chp-m)" transform="rotate(300 50 65)"/></g>
+      <g><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(0 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(72 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(144 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(216 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(288 50 65)"/></g>
+      <circle cx="50" cy="63" r="3.5" fill="#f6d860"/>
+    </svg>
+    <div>
+      <div class="header-app-name">蓮板</div>
+      <div class="header-tagline">大学生のための掲示板</div>
+    </div>
+  </div>
+  <p class="preview-label">ヘッダープレビュー — 深翠グラデーション × 金しべ</p>
+</div>
+
+<hr class="divider">
+
+<!-- ===== VARIATION D: 紫苑 Shion (Deep Violet) ===== -->
+<div class="variation-section">
+  <div class="variation-label" style="border-color: #7c5cbf;">Variation D</div>
+  <div class="variation-name" style="color: #b794f4;">紫苑 — SHION (Deep Violet)</div>
+  <div class="variation-desc">深い紫紺 × 白銀の輝き　知性と気品、神秘的な凛とした美</div>
+
+  <div class="logo-row">
+    <div class="logo-box" style="background: #08060f;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="vg-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#b794f4"/>
+            <stop offset="100%" stop-color="#3d1a6e"/>
+          </radialGradient>
+          <radialGradient id="vg-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#c8a8f8"/>
+            <stop offset="100%" stop-color="#5a2d94"/>
+          </radialGradient>
+          <radialGradient id="vg-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#e8d8ff"/>
+            <stop offset="100%" stop-color="#7a4ec8"/>
+          </radialGradient>
+          <filter id="vg-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#3d1a6e" opacity="0.5"/>
+        <g filter="url(#vg-glow)" opacity="0.85">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#f8f0ff"/>
+        <circle cx="46" cy="61" r="1.8" fill="#e8d8ff"/>
+        <circle cx="54" cy="61" r="1.8" fill="#e8d8ff"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fff"/>
+      </svg>
+      <span class="logo-box-label">DARK</span>
+    </div>
+    <div class="logo-box" style="background: #f8f5ff;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="vgl-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#5a2d94"/>
+            <stop offset="100%" stop-color="#2d0a5e"/>
+          </radialGradient>
+          <radialGradient id="vgl-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#7c5cbf"/>
+            <stop offset="100%" stop-color="#3d1a6e"/>
+          </radialGradient>
+          <radialGradient id="vgl-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#b794f4"/>
+            <stop offset="100%" stop-color="#5a2d94"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#2d0a5e" opacity="0.12"/>
+        <g opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgl-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgl-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgl-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgl-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgl-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgl-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgl-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgl-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgl-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgl-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgl-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgl-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#2d0a5e"/>
+        <circle cx="46" cy="61" r="1.8" fill="#3d1a6e"/>
+        <circle cx="54" cy="61" r="1.8" fill="#3d1a6e"/>
+        <circle cx="50" cy="59" r="1.5" fill="#5a2d94"/>
+      </svg>
+      <span class="logo-box-label" style="color:#2d0a5e;">LIGHT</span>
+    </div>
+    <div class="logo-box" style="background: linear-gradient(135deg, #1a0a32 0%, #3d1a6e 50%, #2d0a5a 100%);">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="vgg-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#e8d8ff"/>
+            <stop offset="100%" stop-color="#b794f4"/>
+          </radialGradient>
+          <radialGradient id="vgg-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#f4edff"/>
+            <stop offset="100%" stop-color="#c8a8f8"/>
+          </radialGradient>
+          <radialGradient id="vgg-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#d8c8ff"/>
+          </radialGradient>
+          <filter id="vgg-glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="rgba(183,148,244,0.2)"/>
+        <g filter="url(#vgg-glow)" opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#vgg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#vgg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#vgg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#fff"/>
+        <circle cx="46" cy="61" r="1.8" fill="rgba(255,255,255,0.8)"/>
+        <circle cx="54" cy="61" r="1.8" fill="rgba(255,255,255,0.8)"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fff"/>
+      </svg>
+      <span class="logo-box-label">GRADIENT</span>
+    </div>
+  </div>
+
+  <div class="header-preview" style="background: linear-gradient(135deg, #1a0a32 0%, #3d1a6e 50%, #2d0a5a 100%);">
+    <svg width="36" height="36" viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="dhp-o" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#f4edff"/><stop offset="100%" stop-color="#c8a8f8"/></radialGradient>
+        <radialGradient id="dhp-m" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#d8c8ff"/></radialGradient>
+      </defs>
+      <g opacity="0.9"><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(45 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(90 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(135 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(225 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(270 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#dhp-o)" transform="rotate(315 50 65)"/></g>
+      <g><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#dhp-m)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#dhp-m)" transform="rotate(60 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#dhp-m)" transform="rotate(120 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#dhp-m)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#dhp-m)" transform="rotate(240 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#dhp-m)" transform="rotate(300 50 65)"/></g>
+      <g><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(0 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(72 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(144 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(216 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(288 50 65)"/></g>
+      <circle cx="50" cy="63" r="3.5" fill="#fff"/>
+    </svg>
+    <div>
+      <div class="header-app-name">蓮板</div>
+      <div class="header-tagline">大学生のための掲示板</div>
+    </div>
+  </div>
+  <p class="preview-label">ヘッダープレビュー — 紫苑グラデーション</p>
+</div>
+
+<hr class="divider">
+
+<!-- ===== VARIATION E: 鉄紺 Tetsukon (Iron Navy) ===== -->
+<div class="variation-section">
+  <div class="variation-label" style="border-color: #2a4a7a;">Variation E</div>
+  <div class="variation-name" style="color: #60a5fa;">鉄紺 × 蒼 — TETSUKON × AO</div>
+  <div class="variation-desc">鉄のような深紺 × 澄んだ蒼 × 金しべ　最も凛として硬派な印象</div>
+
+  <div class="logo-row">
+    <div class="logo-box" style="background: #020810;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="tg-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="50%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#0f1e4a"/>
+          </radialGradient>
+          <radialGradient id="tg-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#93c5fd"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </radialGradient>
+          <radialGradient id="tg-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#dbeafe"/>
+            <stop offset="100%" stop-color="#3b82f6"/>
+          </radialGradient>
+          <filter id="tg-glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#0f1e4a" opacity="0.6"/>
+        <g filter="url(#tg-glow)" opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#fbbf24"/>
+        <circle cx="46" cy="61" r="1.8" fill="#f59e0b"/>
+        <circle cx="54" cy="61" r="1.8" fill="#f59e0b"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fcd34d"/>
+      </svg>
+      <span class="logo-box-label">DARK</span>
+    </div>
+    <div class="logo-box" style="background: #eff6ff;">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="tgl-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#1d4ed8"/>
+            <stop offset="100%" stop-color="#0f1e4a"/>
+          </radialGradient>
+          <radialGradient id="tgl-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#1e3a8a"/>
+          </radialGradient>
+          <radialGradient id="tgl-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="100%" stop-color="#2563eb"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="#0f1e4a" opacity="0.1"/>
+        <g opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgl-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgl-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgl-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgl-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgl-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgl-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgl-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgl-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgl-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgl-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgl-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgl-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#92400e"/>
+        <circle cx="46" cy="61" r="1.8" fill="#b45309"/>
+        <circle cx="54" cy="61" r="1.8" fill="#b45309"/>
+        <circle cx="50" cy="59" r="1.5" fill="#d97706"/>
+      </svg>
+      <span class="logo-box-label" style="color:#0f1e4a;">LIGHT</span>
+    </div>
+    <div class="logo-box" style="background: linear-gradient(135deg, #060e2a 0%, #0f2060 50%, #061a3a 100%);">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="tgg-outer" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#dbeafe"/>
+            <stop offset="100%" stop-color="#60a5fa"/>
+          </radialGradient>
+          <radialGradient id="tgg-mid" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#eff6ff"/>
+            <stop offset="100%" stop-color="#93c5fd"/>
+          </radialGradient>
+          <radialGradient id="tgg-inner" cx="50%" cy="60%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#bfdbfe"/>
+          </radialGradient>
+          <filter id="tgg-glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="50" cy="88" rx="28" ry="4" fill="rgba(96,165,250,0.15)"/>
+        <g filter="url(#tgg-glow)" opacity="0.9">
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(45 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(90 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(135 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(225 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(270 50 65)"/>
+          <ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#tgg-outer)" transform="rotate(315 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgg-mid)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgg-mid)" transform="rotate(60 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgg-mid)" transform="rotate(120 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgg-mid)" transform="rotate(180 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgg-mid)" transform="rotate(240 50 65)"/>
+          <ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#tgg-mid)" transform="rotate(300 50 65)"/>
+        </g>
+        <g>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgg-inner)" transform="rotate(0 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgg-inner)" transform="rotate(72 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgg-inner)" transform="rotate(144 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgg-inner)" transform="rotate(216 50 65)"/>
+          <ellipse cx="50" cy="42" rx="4" ry="10" fill="url(#tgg-inner)" transform="rotate(288 50 65)"/>
+        </g>
+        <circle cx="50" cy="63" r="3.5" fill="#fbbf24"/>
+        <circle cx="46" cy="61" r="1.8" fill="#f59e0b"/>
+        <circle cx="54" cy="61" r="1.8" fill="#f59e0b"/>
+        <circle cx="50" cy="59" r="1.5" fill="#fcd34d"/>
+      </svg>
+      <span class="logo-box-label">GRADIENT</span>
+    </div>
+  </div>
+
+  <div class="header-preview" style="background: linear-gradient(135deg, #060e2a 0%, #0f2060 50%, #061a3a 100%);">
+    <svg width="36" height="36" viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="ehp-o" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#93c5fd"/></radialGradient>
+        <radialGradient id="ehp-m" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#bfdbfe"/></radialGradient>
+      </defs>
+      <g opacity="0.9"><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(45 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(90 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(135 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(225 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(270 50 65)"/><ellipse cx="50" cy="30" rx="7" ry="20" fill="url(#ehp-o)" transform="rotate(315 50 65)"/></g>
+      <g><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ehp-m)" transform="rotate(0 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ehp-m)" transform="rotate(60 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ehp-m)" transform="rotate(120 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ehp-m)" transform="rotate(180 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ehp-m)" transform="rotate(240 50 65)"/><ellipse cx="50" cy="36" rx="5.5" ry="15" fill="url(#ehp-m)" transform="rotate(300 50 65)"/></g>
+      <g><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(0 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(72 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(144 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(216 50 65)"/><ellipse cx="50" cy="42" rx="4" ry="10" fill="#fff" transform="rotate(288 50 65)"/></g>
+      <circle cx="50" cy="63" r="3.5" fill="#fbbf24"/>
+    </svg>
+    <div>
+      <div class="header-app-name">蓮板</div>
+      <div class="header-tagline">大学生のための掲示板</div>
+    </div>
+  </div>
+  <p class="preview-label">ヘッダープレビュー — 鉄紺グラデーション × 金しべ</p>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center; padding: 40px 20px 60px; color: #334155; font-size: 11px; letter-spacing: 0.1em;">
+  A — 藍 (Deep Indigo)　　B — 白銀 (Silver Mono)　　C — 翠 (Emerald + Gold)　　D — 紫苑 (Violet)　　E — 鉄紺 (Iron Navy + Gold)
+</div>
+
+</body>
+</html>

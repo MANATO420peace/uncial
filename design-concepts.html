@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ユニキャン デザイン案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: #111827;
+    padding: 40px 20px 80px;
+  }
+  h1 {
+    color: white; font-size: 14px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase;
+    opacity: 0.5; text-align: center; margin-bottom: 48px;
+  }
+  .section { margin-bottom: 64px; }
+  .section-title {
+    color: white; font-size: 13px; font-weight: 700;
+    opacity: 0.4; letter-spacing: 1px; text-align: center;
+    margin-bottom: 24px; text-transform: uppercase;
+  }
+  .pair {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .mode-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; opacity: 0.4; color: white;
+  }
+
+  /* ── PHONE ── */
+  .phone {
+    width: 300px; height: 620px;
+    border-radius: 40px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
+    position: relative;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 24px;
+    border-radius: 0 0 16px 16px; z-index: 10;
+  }
+  .status { height: 40px; padding: 0 18px; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 5px; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+  .header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; flex-shrink: 0; }
+  .logo { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
+  .hicons { display: flex; gap: 5px; }
+  .hicon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .tabs { height: 38px; display: flex; border-bottom: 1px solid; flex-shrink: 0; }
+  .tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; position: relative; }
+  .tab.on::after { content: ''; position: absolute; bottom: -1px; left: 10px; right: 10px; height: 2px; border-radius: 2px; }
+  .feed { flex: 1; overflow: hidden; padding: 8px 10px; display: flex; flex-direction: column; gap: 7px; }
+  .card { border-radius: 12px; padding: 11px 12px; }
+  .ctop { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+  .av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; flex-shrink: 0; }
+  .cname { font-size: 11px; font-weight: 600; }
+  .cmeta { font-size: 9px; }
+  .ctitle { font-size: 12px; font-weight: 700; margin-bottom: 3px; line-height: 1.4; }
+  .cbody { font-size: 10px; line-height: 1.5; }
+  .ctags { display: flex; gap: 4px; margin-top: 7px; }
+  .tag { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+  .cact { display: flex; gap: 12px; margin-top: 7px; padding-top: 7px; font-size: 10px; }
+  .bnav { height: 58px; display: flex; align-items: center; justify-content: space-around; padding: 0 4px 6px; border-top: 1px solid; flex-shrink: 0; }
+  .ni { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 8px; font-weight: 500; }
+  .nicon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+
+  /* ── LOTUS SVGs ── */
+
+  /* ════════════════ PATTERN A — Indigo ════════════════ */
+  /* Light */
+  .aL .phone { background: #FAFAFA; }
+  .aL .notch { background: #FAFAFA; }
+  .aL .status { color: #1e1b4b; }
+  .aL .header { background: white; border-bottom: 1px solid #EFEFEF; }
+  .aL .logo { color: #1e1b4b; }
+  .aL .hicon { background: #EEF2FF; color: #4F46E5; }
+  .aL .hicon.av-icon { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: white; }
+  .aL .tabs { border-color: #EFEFEF; background: white; }
+  .aL .tab { color: #999; }
+  .aL .tab.on { color: #4F46E5; }
+  .aL .tab.on::after { background: #4F46E5; }
+  .aL .feed { background: #FAFAFA; }
+  .aL .card { background: white; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+  .aL .ctitle { color: #1e1b4b; }
+  .aL .cbody { color: #6B7280; }
+  .aL .cname { color: #374151; }
+  .aL .cmeta { color: #9CA3AF; }
+  .aL .av1 { background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+  .aL .av2 { background: linear-gradient(135deg,#4F46E5,#6366f1); }
+  .aL .tag { background: #EEF2FF; color: #4F46E5; }
+  .aL .cact { border-color: #F3F4F6; color: #9CA3AF; }
+  .aL .like { color: #4F46E5; }
+  .aL .bnav { background: white; border-color: #EFEFEF; }
+  .aL .ni { color: #9CA3AF; }
+  .aL .ni.on { color: #4F46E5; }
+  .aL .nicon.on { background: #EEF2FF; }
+
+  /* Dark */
+  .aD .phone { background: #0D0D1A; }
+  .aD .notch { background: #0D0D1A; }
+  .aD .status { color: rgba(255,255,255,0.7); }
+  .aD .header { background: #13132B; border-bottom: 1px solid rgba(99,102,241,0.15); }
+  .aD .logo { color: white; }
+  .aD .hicon { background: rgba(99,102,241,0.15); color: #818CF8; }
+  .aD .hicon.av-icon { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: white; }
+  .aD .tabs { border-color: rgba(255,255,255,0.06); background: #13132B; }
+  .aD .tab { color: rgba(255,255,255,0.3); }
+  .aD .tab.on { color: #818CF8; }
+  .aD .tab.on::after { background: linear-gradient(90deg,#6366f1,#818CF8); }
+  .aD .feed { background: #0D0D1A; }
+  .aD .card { background: #13132B; border: 1px solid rgba(255,255,255,0.05); }
+  .aD .ctitle { color: rgba(255,255,255,0.9); }
+  .aD .cbody { color: rgba(255,255,255,0.4); }
+  .aD .cname { color: rgba(255,255,255,0.7); }
+  .aD .cmeta { color: rgba(255,255,255,0.3); }
+  .aD .av1 { background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+  .aD .av2 { background: linear-gradient(135deg,#4F46E5,#6366f1); }
+  .aD .tag { background: rgba(99,102,241,0.15); color: #818CF8; }
+  .aD .cact { border-color: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+  .aD .like { color: #818CF8; }
+  .aD .bnav { background: #13132B; border-color: rgba(255,255,255,0.06); }
+  .aD .ni { color: rgba(255,255,255,0.3); }
+  .aD .ni.on { color: #818CF8; }
+  .aD .nicon.on { background: rgba(99,102,241,0.15); }
+
+  /* ════════════════ PATTERN B — Teal Gradient ════════════════ */
+  /* Light */
+  .bL .phone { background: #F0FAFB; }
+  .bL .notch { background: #0891B2; }
+  .bL .status { background: linear-gradient(135deg,#0EA5E9,#06B6D4); color: white; }
+  .bL .header { background: linear-gradient(135deg,#0EA5E9 0%,#06B6D4 60%,#14B8A6 100%); box-shadow: 0 2px 12px rgba(14,165,233,0.25); }
+  .bL .logo { color: white; }
+  .bL .hicon { background: rgba(255,255,255,0.2); color: white; }
+  .bL .hicon.av-icon { background: rgba(255,255,255,0.35); }
+  .bL .tabs { border-color: #BAE6FD; background: white; }
+  .bL .tab { color: #94A3B8; }
+  .bL .tab.on { color: #0891B2; }
+  .bL .tab.on::after { background: linear-gradient(90deg,#0EA5E9,#14B8A6); }
+  .bL .feed { background: #F0FAFB; }
+  .bL .card { background: white; box-shadow: 0 1px 8px rgba(14,165,233,0.08); }
+  .bL .ctitle { color: #0C4A6E; }
+  .bL .cbody { color: #64748B; }
+  .bL .cname { color: #075985; }
+  .bL .cmeta { color: #94A3B8; }
+  .bL .av1 { background: linear-gradient(135deg,#0EA5E9,#14B8A6); }
+  .bL .av2 { background: linear-gradient(135deg,#06B6D4,#0EA5E9); }
+  .bL .tag { background: #CFFAFE; color: #0891B2; }
+  .bL .cact { border-color: #E0F7FA; color: #94A3B8; }
+  .bL .like { color: #0EA5E9; }
+  .bL .bnav { background: white; border-color: #BAE6FD; }
+  .bL .ni { color: #94A3B8; }
+  .bL .ni.on { color: #0891B2; }
+  .bL .nicon.on { background: #E0F7FA; }
+
+  /* Dark */
+  .bD .phone { background: #052830; }
+  .bD .notch { background: #052830; }
+  .bD .status { color: rgba(255,255,255,0.7); background: #052830; }
+  .bD .header { background: linear-gradient(135deg,#0C4A6E 0%,#065F67 100%); border-bottom: 1px solid rgba(14,165,233,0.2); }
+  .bD .logo { color: white; }
+  .bD .hicon { background: rgba(14,165,233,0.15); color: #38BDF8; }
+  .bD .hicon.av-icon { background: linear-gradient(135deg,#0EA5E9,#14B8A6); color: white; }
+  .bD .tabs { border-color: rgba(14,165,233,0.1); background: #063040; }
+  .bD .tab { color: rgba(255,255,255,0.3); }
+  .bD .tab.on { color: #38BDF8; }
+  .bD .tab.on::after { background: linear-gradient(90deg,#0EA5E9,#14B8A6); }
+  .bD .feed { background: #052830; }
+  .bD .card { background: #063040; border: 1px solid rgba(14,165,233,0.1); }
+  .bD .ctitle { color: rgba(255,255,255,0.9); }
+  .bD .cbody { color: rgba(255,255,255,0.4); }
+  .bD .cname { color: rgba(255,255,255,0.7); }
+  .bD .cmeta { color: rgba(255,255,255,0.3); }
+  .bD .av1 { background: linear-gradient(135deg,#0EA5E9,#14B8A6); }
+  .bD .av2 { background: linear-gradient(135deg,#06B6D4,#0EA5E9); }
+  .bD .tag { background: rgba(14,165,233,0.12); color: #38BDF8; }
+  .bD .cact { border-color: rgba(14,165,233,0.08); color: rgba(255,255,255,0.3); }
+  .bD .like { color: #38BDF8; }
+  .bD .bnav { background: #063040; border-color: rgba(14,165,233,0.1); }
+  .bD .ni { color: rgba(255,255,255,0.3); }
+  .bD .ni.on { color: #38BDF8; }
+  .bD .nicon.on { background: rgba(14,165,233,0.12); }
+
+  /* ════════════════ PATTERN C — Dark Navy ════════════════ */
+  /* Light */
+  .cL .phone { background: #F8FAFC; }
+  .cL .notch { background: #F8FAFC; }
+  .cL .status { color: #1E293B; }
+  .cL .header { background: white; border-bottom: 1px solid #E2E8F0; }
+  .cL .logo { color: #1E293B; }
+  .cL .hicon { background: #F1F5F9; color: #64748B; }
+  .cL .hicon.av-icon { background: linear-gradient(135deg,#3B82F6,#6366f1); color: white; }
+  .cL .tabs { border-color: #E2E8F0; background: white; }
+  .cL .tab { color: #94A3B8; }
+  .cL .tab.on { color: #3B82F6; }
+  .cL .tab.on::after { background: linear-gradient(90deg,#3B82F6,#6366f1); }
+  .cL .feed { background: #F8FAFC; }
+  .cL .card { background: white; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+  .cL .ctitle { color: #0F172A; }
+  .cL .cbody { color: #64748B; }
+  .cL .cname { color: #334155; }
+  .cL .cmeta { color: #94A3B8; }
+  .cL .av1 { background: linear-gradient(135deg,#3B82F6,#6366f1); }
+  .cL .av2 { background: linear-gradient(135deg,#6366f1,#8B5CF6); }
+  .cL .tag { background: #EFF6FF; color: #3B82F6; }
+  .cL .cact { border-color: #F1F5F9; color: #94A3B8; }
+  .cL .like { color: #3B82F6; }
+  .cL .bnav { background: white; border-color: #E2E8F0; }
+  .cL .ni { color: #94A3B8; }
+  .cL .ni.on { color: #3B82F6; }
+  .cL .nicon.on { background: #EFF6FF; }
+
+  /* Dark (本来の姿) */
+  .cD .phone { background: #0F172A; }
+  .cD .notch { background: #0F172A; }
+  .cD .status { color: rgba(255,255,255,0.6); }
+  .cD .header { background: #1E293B; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .cD .logo { background: linear-gradient(90deg,#60A5FA,#818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .cD .hicon { background: rgba(59,130,246,0.12); color: #60A5FA; }
+  .cD .hicon.av-icon { background: linear-gradient(135deg,#3B82F6,#6366f1); color: white; -webkit-text-fill-color: white; }
+  .cD .tabs { border-color: rgba(255,255,255,0.05); background: #1E293B; }
+  .cD .tab { color: rgba(255,255,255,0.3); }
+  .cD .tab.on { color: #60A5FA; }
+  .cD .tab.on::after { background: linear-gradient(90deg,#3B82F6,#6366f1); }
+  .cD .feed { background: #0F172A; }
+  .cD .card { background: #1E293B; border: 1px solid rgba(255,255,255,0.04); }
+  .cD .ctitle { color: rgba(255,255,255,0.9); }
+  .cD .cbody { color: rgba(255,255,255,0.4); }
+  .cD .cname { color: rgba(255,255,255,0.7); }
+  .cD .cmeta { color: rgba(255,255,255,0.3); }
+  .cD .av1 { background: linear-gradient(135deg,#3B82F6,#6366f1); }
+  .cD .av2 { background: linear-gradient(135deg,#6366f1,#8B5CF6); }
+  .cD .tag { background: rgba(59,130,246,0.12); color: #60A5FA; }
+  .cD .cact { border-color: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+  .cD .like { color: #60A5FA; }
+  .cD .bnav { background: #1E293B; border-color: rgba(255,255,255,0.05); }
+  .cD .ni { color: rgba(255,255,255,0.3); }
+  .cD .ni.on { color: #60A5FA; }
+  .cD .nicon.on { background: rgba(59,130,246,0.12); }
+</style>
+</head>
+<body>
+<h1>ユニキャン — ライト / ダーク 比較</h1>
+
+<script>
+function makeLotus(variant) {
+  if (variant === 'a') return `<svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="#4F46E5" opacity="0.9"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="#818CF8" opacity="0.7" transform="rotate(72 13 13)"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="#4F46E5" opacity="0.8" transform="rotate(144 13 13)"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="#818CF8" opacity="0.7" transform="rotate(216 13 13)"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="#4F46E5" opacity="0.9" transform="rotate(288 13 13)"/>
+    <circle cx="13" cy="13" r="2.5" fill="#4F46E5"/></svg>`;
+  if (variant === 'b') return `<svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+    <ellipse cx="13" cy="7" rx="3.5" ry="7" fill="white" opacity="0.95"/>
+    <ellipse cx="13" cy="7" rx="3.5" ry="7" fill="white" opacity="0.7" transform="rotate(60 13 13)"/>
+    <ellipse cx="13" cy="7" rx="3.5" ry="7" fill="white" opacity="0.95" transform="rotate(120 13 13)"/>
+    <ellipse cx="13" cy="7" rx="3.5" ry="7" fill="white" opacity="0.7" transform="rotate(180 13 13)"/>
+    <ellipse cx="13" cy="7" rx="3.5" ry="7" fill="white" opacity="0.95" transform="rotate(240 13 13)"/>
+    <ellipse cx="13" cy="7" rx="3.5" ry="7" fill="white" opacity="0.7" transform="rotate(300 13 13)"/>
+    <circle cx="13" cy="13" r="2.8" fill="white"/>
+    <ellipse cx="13" cy="21" rx="7" ry="1.8" fill="white" opacity="0.25"/></svg>`;
+  return `<svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+    <defs>
+      <linearGradient id="g1" x1="13" y1="3" x2="13" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#60A5FA"/><stop offset="1" stop-color="#6366f1"/></linearGradient>
+      <linearGradient id="g2" x1="13" y1="3" x2="13" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#818CF8"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
+    </defs>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="url(#g1)" opacity="0.9"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="url(#g2)" opacity="0.7" transform="rotate(72 13 13)"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="url(#g1)" opacity="0.8" transform="rotate(144 13 13)"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="url(#g2)" opacity="0.7" transform="rotate(216 13 13)"/>
+    <path d="M13 3 C10 8 10 13 13 15 C16 13 16 8 13 3Z" fill="url(#g1)" opacity="0.9" transform="rotate(288 13 13)"/>
+    <circle cx="13" cy="13" r="2.5" fill="#60A5FA"/></svg>`;
+}
+
+const NAV_ICONS = {
+  home: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>`,
+  homeF: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.1L2 9.5V21a1 1 0 0 0 1 1h6v-8h6v8h6a1 1 0 0 0 1-1V9.5L12 2.1z"/></svg>`,
+  search: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  cal: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  book: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  user: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  bell: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  plus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+};
+
+function makePhone(cls, variant, logoText) {
+  const lotus = makeLotus(variant);
+  const logoStyle = variant === 'c' && cls.includes('D') ? 'style="background:linear-gradient(90deg,#60A5FA,#818CF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"' : '';
+  const isB = variant === 'b';
+  const navActiveColor = isB ? (cls.includes('D') ? '#38BDF8' : '#0891B2') : variant === 'a' ? (cls.includes('D') ? '#818CF8' : '#4F46E5') : (cls.includes('D') ? '#60A5FA' : '#3B82F6');
+  const navInactiveColor = cls.includes('D') ? 'rgba(255,255,255,0.3)' : '#94A3B8';
+
+  return `
+  <div class="phone-wrap ${cls}">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status"><span>9:41</span><span>●●● WiFi</span></div>
+      <div class="header">
+        <div class="logo">${lotus}<span ${logoStyle}>ユニキャン</span></div>
+        <div class="hicons">
+          <div class="hicon">${NAV_ICONS.bell}</div>
+          <div class="hicon">${NAV_ICONS.plus}</div>
+          <div class="hicon av-icon" style="font-size:11px;font-weight:700;color:white;">J</div>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab on">みんなの投稿</div>
+        <div class="tab">フォロー中</div>
+      </div>
+      <div class="feed">
+        <div class="card">
+          <div class="ctop">
+            <div class="av av1">K</div>
+            <div><div class="cname">けんた</div><div class="cmeta">大阪大学 · 2時間前</div></div>
+          </div>
+          <div class="ctitle">線形代数の楽単情報まとめ</div>
+          <div class="cbody">山田先生の授業は出席さえすれば単位来ます。試験はテキストから...</div>
+          <div class="ctags"><span class="tag">#楽単</span><span class="tag">#数学</span></div>
+          <div class="cact"><span class="like">♥ 42</span><span>💬 8</span><span>⟳</span></div>
+        </div>
+        <div class="card">
+          <div class="ctop">
+            <div class="av av2">S</div>
+            <div><div class="cname">さくら</div><div class="cmeta">京都大学 · 5時間前</div></div>
+          </div>
+          <div class="ctitle">英語の過去問持ってる人いる？</div>
+          <div class="cbody">去年の前期試験を探しています。PDFでも...</div>
+          <div class="ctags"><span class="tag">#テスト対策</span></div>
+          <div class="cact"><span>♥ 17</span><span>💬 23</span><span>⟳</span></div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni on" style="color:${navActiveColor}"><div class="nicon on" style="color:${navActiveColor}">${NAV_ICONS.homeF}</div>ホーム</div>
+        <div class="ni" style="color:${navInactiveColor}"><div class="nicon" style="color:${navInactiveColor}">${NAV_ICONS.search}</div>検索</div>
+        <div class="ni" style="color:${navInactiveColor}"><div class="nicon" style="color:${navInactiveColor}">${NAV_ICONS.cal}</div>時間割</div>
+        <div class="ni" style="color:${navInactiveColor}"><div class="nicon" style="color:${navInactiveColor}">${NAV_ICONS.book}</div>対策</div>
+        <div class="ni" style="color:${navInactiveColor}"><div class="nicon" style="color:${navInactiveColor}">${NAV_ICONS.user}</div>マイページ</div>
+      </div>
+    </div>
+  </div>`;
+}
+</script>
+
+<!-- PATTERN A -->
+<div class="section">
+  <div class="section-title">A — ホワイト × インディゴ（Notion系）</div>
+  <div class="pair" id="pairA"></div>
+</div>
+
+<!-- PATTERN B -->
+<div class="section">
+  <div class="section-title">B — グラデーション × ティール（Instagram系）</div>
+  <div class="pair" id="pairB"></div>
+</div>
+
+<!-- PATTERN C -->
+<div class="section">
+  <div class="section-title">C — ネイビー × ブルー（Discord系）</div>
+  <div class="pair" id="pairC"></div>
+</div>
+
+<script>
+function wrap(inner, label) {
+  return `<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <span class="mode-label">${label}</span>${inner}</div>`;
+}
+document.getElementById('pairA').innerHTML =
+  wrap(makePhone('aL','a'), '☀️ ライト') +
+  wrap(makePhone('aD','a'), '🌙 ダーク');
+document.getElementById('pairB').innerHTML =
+  wrap(makePhone('bL','b'), '☀️ ライト') +
+  wrap(makePhone('bD','b'), '🌙 ダーク');
+document.getElementById('pairC').innerHTML =
+  wrap(makePhone('cL','c'), '☀️ ライト') +
+  wrap(makePhone('cD','c'), '🌙 ダーク');
+</script>
+
+</body>
+</html>

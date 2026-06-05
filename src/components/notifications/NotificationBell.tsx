@@ -6,6 +6,7 @@ import { Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import { getNotifications } from '@/lib/actions/notifications'
+import { createClient } from '@/lib/supabase/client'
 
 interface NotificationBellProps {
   className?: string
@@ -24,17 +25,30 @@ export function NotificationBell({ className }: NotificationBellProps = {}) {
   }, [])
 
   useEffect(() => {
-    // 初回取得
     fetchCount()
-    // 30秒ごとにポーリング
-    const interval = setInterval(fetchCount, 30_000)
-    // タブがアクティブになったときも取得
+
+    // Supabase Realtimeで通知をリアルタイム受信（30秒ポーリング廃止）
+    const supabase = createClient()
+    const channel = supabase
+      .channel('notifications-bell')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications' },
+        () => {
+          // 新しい通知が挿入されたら件数を再取得（RLSで自分の分のみ返る）
+          fetchCount()
+        }
+      )
+      .subscribe()
+
+    // タブがアクティブになったときも再取得
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') fetchCount()
     }
     document.addEventListener('visibilitychange', handleVisibility)
+
     return () => {
-      clearInterval(interval)
+      supabase.removeChannel(channel)
       document.removeEventListener('visibilitychange', handleVisibility)
     }
   }, [fetchCount])

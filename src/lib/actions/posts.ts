@@ -269,6 +269,17 @@ export async function getPost(id: string) {
   return { post: { ...data, likes_count: realCount ?? data.likes_count ?? 0 }, error: null }
 }
 
+export async function incrementPostView(postId: string) {
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { db = createAdminClient() } catch { db = await createClient() }
+  const { data } = await db.from('posts').select('views_count').eq('id', postId).single()
+  if (data !== null) {
+    await db.from('posts')
+      .update({ views_count: ((data as { views_count?: number | null }).views_count ?? 0) + 1 })
+      .eq('id', postId)
+  }
+}
+
 export async function toggleLike(postId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
