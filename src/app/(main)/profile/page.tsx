@@ -5,13 +5,11 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser, getLikedPosts } from '@/lib/actions/user'
 import { getBookmarkedPosts } from '@/lib/actions/bookmarks'
 import { getFollowRequests, getFollowStats } from '@/lib/actions/follow'
-import { getMyPoints } from '@/lib/actions/points'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PostCard } from '@/components/posts/PostCard'
 import { FollowRequestList } from '@/components/users/FollowRequestList'
-import { BadgeProgress } from '@/components/profile/BadgeProgress'
 import { ProfileShareButton } from '@/components/users/ProfileShareButton'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -23,7 +21,7 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests, { points, badge }, followStats] = await Promise.all([
+  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests, followStats] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
@@ -33,7 +31,6 @@ export default async function ProfilePage() {
     getBookmarkedPosts(),
     getLikedPosts(),
     user.is_private ? getFollowRequests() : Promise.resolve([]),
-    getMyPoints(),
     getFollowStats(user.id),
   ])
 
@@ -77,13 +74,7 @@ export default async function ProfilePage() {
           {user.is_private && (
             <Badge variant="outline" className="text-xs">非公開</Badge>
           )}
-          <Badge variant="outline" className="text-xs gap-1">
-            {badge.emoji}{badge.label}
-          </Badge>
         </div>
-
-        <p className="text-xs text-muted-foreground mt-2">{points} pt</p>
-        <BadgeProgress points={points} />
 
         <div className="mt-4 flex gap-6 text-sm">
           <div>

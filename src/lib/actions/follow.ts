@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { createNotification } from './notifications'
 import { getBlockedAndMutedIds } from './block'
 
+
 export async function toggleFollow(targetUserId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -81,8 +82,6 @@ export async function toggleFollow(targetUserId: string) {
     return { error: 'フォローに失敗しました' }
   }
   await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow' })
-  // フォローされた相手にポイント付与
-  await awardPoints(targetUserId, 5, 'フォローされた')
   revalidatePath(`/user/${targetUserId}`)
   revalidatePath('/profile')
   return { following: true, requested: false }

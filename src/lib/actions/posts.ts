@@ -6,7 +6,6 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { PostCategory, PostFilter } from '@/types'
 import { createNotification } from './notifications'
-import { awardPoints } from './points'
 import { getBlockedAndMutedIds } from './block'
 
 export async function getBuySellEligibility() {
@@ -105,8 +104,6 @@ export async function createPost(formData: FormData) {
   }).select().single()
 
   if (error) return { error: error.message }
-
-  await awardPoints(user.id, 10, '投稿した')
 
   revalidatePath('/home')
   redirect(`/post/${data.id}`)
@@ -312,10 +309,6 @@ export async function toggleLike(postId: string) {
     const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
     if (post) {
       await createNotification({ userId: post.user_id, actorId: user.id, type: 'like', postId })
-      // いいねをもらった投稿主にポイント付与
-      if (post.user_id !== user.id) {
-        await awardPoints(post.user_id, 2, 'いいねをもらった')
-      }
     }
     revalidatePath('/home')
     return { liked: true, likesCount: count ?? 0 }

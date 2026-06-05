@@ -98,8 +98,8 @@ export async function getSuggestedUsers(limit = 5) {
 
   let query = supabase
     .from('users')
-    .select('id, nickname, avatar_url, points, universities(name)')
-    .order('points', { ascending: false })
+    .select('id, nickname, avatar_url, universities(name)')
+    .order('created_at', { ascending: false })
     .limit(30)
 
   if (profile?.university_id) {
