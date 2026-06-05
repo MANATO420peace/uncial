@@ -2,13 +2,13 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { toast } from 'sonner'
-import { Plus, Users, CheckSquare, Square, Trash2, BookOpen, Pencil, Settings, Clock } from 'lucide-react'
+import { Plus, CheckSquare, Square, Trash2, BookOpen, Pencil, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
-  upsertTimetableEntry, deleteTimetableEntry, findUsersBySlot,
+  upsertTimetableEntry, deleteTimetableEntry,
   addCourseTask, toggleCourseTask, deleteCourseTask,
 } from '@/lib/actions/timetable'
 import Link from 'next/link'
@@ -46,12 +46,6 @@ interface Props {
 export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
   const [selected, setSelected] = useState<{ day: number; period: number } | null>(null)
   const [focusedEntryId, setFocusedEntryId] = useState<string | null>(null)
-  const [matchUsers, setMatchUsers] = useState<{
-    id: string; nickname: string; avatar_url: string | null
-    universities: { name: string } | null
-    course_name: string; is_same_course: boolean
-  }[] | null>(null)
-  const [matchSlot, setMatchSlot] = useState<{ day: number; period: number; myCourseName: string } | null>(null)
   const [isPending, startTransition] = useTransition()
   const [newTaskText, setNewTaskText] = useState('')
   const [tasks, setTasks] = useState(initialTasks)
@@ -126,14 +120,6 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
     })
   }
 
-  function handleFindUsers(entry: Entry) {
-    const DAYS_LABEL = ['月', '火', '水', '木', '金', '土']
-    setMatchSlot({ day: entry.day_of_week, period: entry.period, myCourseName: entry.course_name })
-    startTransition(async () => {
-      const users = await findUsersBySlot(entry.day_of_week, entry.period)
-      setMatchUsers(users as never)
-    })
-  }
 
   async function handleAddTask(e: React.FormEvent) {
     e.preventDefault()
@@ -287,13 +273,6 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => handleFindUsers(focusedEntry)}
-                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors py-1 px-1.5 rounded-lg hover:bg-primary/10"
-                  >
-                    <Users className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline text-[11px]">同じ時限の人</span>
-                  </button>
                   <button
                     onClick={() => setSelected({ day: focusedEntry.day_of_week, period: focusedEntry.period })}
                     className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors py-1 px-1.5 rounded-lg hover:bg-muted"
@@ -476,65 +455,6 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
         </DialogContent>
       </Dialog>
 
-      {/* ── 授業マッチングダイアログ ── */}
-      <Dialog open={matchUsers !== null} onOpenChange={() => { setMatchUsers(null); setMatchSlot(null) }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {matchSlot && (() => {
-                const DAYS_L = ['月','火','水','木','金','土']
-                return `${DAYS_L[matchSlot.day - 1]}曜${matchSlot.period}限に授業がある人`
-              })()}
-            </DialogTitle>
-          </DialogHeader>
-          {matchSlot && (
-            <p className="text-xs text-muted-foreground -mt-2">
-              自分の登録：<span className="font-medium text-foreground">{matchSlot.myCourseName}</span>
-              <br />相手の授業名を確認して同じかどうか判断してください
-            </p>
-          )}
-          {isPending ? (
-            <p className="text-center text-sm text-muted-foreground py-4">検索中...</p>
-          ) : matchUsers && matchUsers.length === 0 ? (
-            <p className="text-center text-sm text-muted-foreground py-4">
-              同じ時限に授業を登録しているユーザーはいません
-            </p>
-          ) : (
-            <ul className="divide-y">
-              {matchUsers?.map(u => (
-                <li key={u.id}>
-                  <Link
-                    href={`/user/${u.id}`}
-                    className="flex items-center gap-3 py-3 hover:bg-muted/50 transition-colors rounded-lg px-2"
-                    onClick={() => { setMatchUsers(null); setMatchSlot(null) }}
-                  >
-                    <Avatar className="h-9 w-9">
-                      {u.avatar_url && <AvatarImage src={u.avatar_url} />}
-                      <AvatarFallback className="text-sm bg-primary text-primary-foreground">
-                        {u.nickname[0]?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium truncate">{u.nickname}</p>
-                        {u.is_same_course && (
-                          <span className="shrink-0 text-[10px] bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 px-1.5 py-0.5 rounded-full font-medium">
-                            同じかも
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-primary font-medium truncate">{u.course_name}</p>
-                      {u.universities?.name && (
-                        <p className="text-xs text-muted-foreground">{u.universities.name}</p>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
