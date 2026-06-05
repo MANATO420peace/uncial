@@ -2,16 +2,29 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { ShoppingBag, Plus } from 'lucide-react'
 import { getPosts } from '@/lib/actions/posts'
-import { PostList } from '@/components/posts/PostList'
+import { ListingCard } from '@/components/posts/ListingCard'
 import { Button } from '@/components/ui/button'
+import type { Post } from '@/types'
 
 export const metadata: Metadata = { title: '販売・購入' }
 
-export default async function BuySellPage() {
-  const { posts } = await getPosts({ category: 'buy_sell', sort: 'new' })
+interface Props {
+  searchParams: Promise<{ status?: string }>
+}
+
+export default async function BuySellPage({ searchParams }: Props) {
+  const { status } = await searchParams
+  const showSold = status === 'sold'
+
+  const { posts } = await getPosts({ category: 'buy_sell', sort: 'new', limit: 40 } as never)
+
+  const filtered = showSold
+    ? posts.filter((p: Post) => !!p.sold_at)
+    : posts.filter((p: Post) => !p.sold_at)
 
   return (
     <div>
+      {/* ヘッダー */}
       <div className="px-4 py-3 border-b flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ShoppingBag className="h-5 w-5" />
@@ -25,14 +38,46 @@ export default async function BuySellPage() {
         </Link>
       </div>
 
-      {posts.length === 0 ? (
+      {/* タブ: 販売中 / 売り切れ */}
+      <div className="flex border-b">
+        <Link
+          href="/buy-sell"
+          className={`flex-1 py-2.5 text-sm font-medium text-center transition-colors ${
+            !showSold
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          販売中
+        </Link>
+        <Link
+          href="/buy-sell?status=sold"
+          className={`flex-1 py-2.5 text-sm font-medium text-center transition-colors ${
+            showSold
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          売り切れ
+        </Link>
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground">
           <ShoppingBag className="h-12 w-12 opacity-30" />
-          <p className="text-sm">まだ投稿がありません</p>
-          <p className="text-xs">出品ボタンから最初の投稿をしてみましょう</p>
+          <p className="text-sm">
+            {showSold ? '売り切れの商品はありません' : 'まだ出品がありません'}
+          </p>
+          {!showSold && (
+            <p className="text-xs">出品ボタンから最初の投稿をしてみましょう</p>
+          )}
         </div>
       ) : (
-        <PostList posts={posts} />
+        <div className="p-3 grid grid-cols-2 gap-3">
+          {filtered.map((post: Post) => (
+            <ListingCard key={post.id} post={post} />
+          ))}
+        </div>
       )}
     </div>
   )

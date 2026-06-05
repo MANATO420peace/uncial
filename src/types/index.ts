@@ -55,6 +55,16 @@ export interface User {
   universities?: University
 }
 
+export type ItemCondition = 'new' | 'like_new' | 'good' | 'fair' | 'poor'
+
+export const ITEM_CONDITION_LABELS: Record<ItemCondition, string> = {
+  new: '未使用・新品',
+  like_new: 'ほぼ未使用',
+  good: '良好',
+  fair: 'やや傷あり',
+  poor: '傷・汚れあり',
+}
+
 export interface Post {
   id: string
   user_id: string
@@ -64,9 +74,14 @@ export interface Post {
   content: string
   tags: string[]
   images?: string[] | null
+  location?: string | null
   anonymous: boolean
   likes_count: number
   comments_count: number
+  // 販売・購入専用
+  price?: number | null
+  item_condition?: ItemCondition | null
+  sold_at?: string | null
   created_at: string
   updated_at: string
   users?: User

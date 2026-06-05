@@ -11,6 +11,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { ImageUpload } from '@/components/posts/ImageUpload'
 import { createPost, getBuySellEligibility } from '@/lib/actions/posts'
 import { uploadImages } from '@/lib/uploadImages'
+import { ITEM_CONDITION_LABELS, type ItemCondition } from '@/types'
+
+const CONDITIONS = Object.entries(ITEM_CONDITION_LABELS) as [ItemCondition, string][]
 
 const TERMS = `【販売・購入 利用規約】
 
@@ -120,32 +123,78 @@ export default function BuySellNewPage() {
 
         {step === 'form' && (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* 商品画像 */}
             <div className="space-y-1.5">
-              <Label htmlFor="title">タイトル</Label>
-              <Input id="title" name="title" placeholder="例: 教科書「経済学入門」売ります" required maxLength={100} />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="content">詳細・価格</Label>
-              <Textarea id="content" name="content" placeholder="商品の状態、価格、受け渡し方法などを記載してください" required rows={7} maxLength={2000} className="resize-none" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label>画像（任意・最大4枚）</Label>
+              <Label>商品画像（最大4枚）</Label>
               <ImageUpload files={imageFiles} onChange={setImageFiles} />
             </div>
 
+            {/* タイトル */}
             <div className="space-y-1.5">
-              <Label htmlFor="tags">タグ（カンマ区切り）</Label>
+              <Label htmlFor="title">商品名 <span className="text-destructive">*</span></Label>
+              <Input id="title" name="title" placeholder="例: 教科書「経済学入門 第3版」" required maxLength={100} />
+            </div>
+
+            {/* 価格 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="price">価格（円） <span className="text-destructive">*</span></Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">¥</span>
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  min={0}
+                  max={9999999}
+                  placeholder="3000"
+                  required
+                  className="pl-7"
+                />
+              </div>
+            </div>
+
+            {/* 商品の状態 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="item_condition">商品の状態 <span className="text-destructive">*</span></Label>
+              <select
+                id="item_condition"
+                name="item_condition"
+                required
+                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="">選択してください</option>
+                {CONDITIONS.map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 説明 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="content">商品説明 <span className="text-destructive">*</span></Label>
+              <Textarea
+                id="content"
+                name="content"
+                placeholder="商品の詳細、状態の補足、受け渡し方法（手渡し / 郵送）、配送料の負担などを記載してください"
+                required
+                rows={6}
+                maxLength={2000}
+                className="resize-none"
+              />
+            </div>
+
+            {/* タグ */}
+            <div className="space-y-1.5">
+              <Label htmlFor="tags">タグ（カンマ区切り・任意）</Label>
               <Input id="tags" name="tags" placeholder="例: 教科書, 経済学, 美品" />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 pt-2">
               <Button type="button" variant="outline" className="flex-1" onClick={() => setStep('check')}>
                 戻る
               </Button>
               <Button type="submit" className="flex-1" disabled={isPending}>
-                {isPending ? '投稿中...' : '出品する'}
+                {isPending ? '出品中...' : '出品する'}
               </Button>
             </div>
           </form>

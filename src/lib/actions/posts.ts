@@ -86,6 +86,11 @@ export async function createPost(formData: FormData) {
 
   const location = (formData.get('location') as string) || null
 
+  // 販売・購入専用フィールド
+  const priceRaw = formData.get('price') as string | null
+  const price = priceRaw ? parseInt(priceRaw, 10) : null
+  const item_condition = (formData.get('item_condition') as string) || null
+
   const { data, error } = await supabase.from('posts').insert({
     user_id: user.id,
     university_id: profile.university_id,
@@ -96,6 +101,7 @@ export async function createPost(formData: FormData) {
     anonymous: formData.get('anonymous') === 'true',
     images,
     location,
+    ...(category === 'buy_sell' ? { price, item_condition } : {}),
   }).select().single()
 
   if (error) return { error: error.message }
@@ -104,6 +110,46 @@ export async function createPost(formData: FormData) {
 
   revalidatePath('/home')
   redirect(`/post/${data.id}`)
+}
+
+export async function markAsSold(postId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { db = createAdminClient() } catch { db = supabase }
+
+  const { error } = await db
+    .from('posts')
+    .update({ sold_at: new Date().toISOString() })
+    .eq('id', postId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath(`/post/${postId}`)
+  revalidatePath('/buy-sell')
+  return { error: null }
+}
+
+export async function markAsAvailable(postId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
+  try { db = createAdminClient() } catch { db = supabase }
+
+  const { error } = await db
+    .from('posts')
+    .update({ sold_at: null })
+    .eq('id', postId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath(`/post/${postId}`)
+  revalidatePath('/buy-sell')
+  return { error: null }
 }
 
 export async function getPosts(filter: PostFilter = {}) {

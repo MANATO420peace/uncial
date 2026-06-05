@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { LikeButton } from '@/components/posts/LikeButton'
 import { PostActions } from '@/components/posts/PostActions'
+import { SoldButton } from '@/components/posts/SoldButton'
 import { CommentSection } from '@/components/comments/CommentSection'
 import { getPost } from '@/lib/actions/posts'
 import { getComments } from '@/lib/actions/comments'
 import { createClient } from '@/lib/supabase/server'
 import { timeAgo } from '@/lib/utils'
-import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
+import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS, ITEM_CONDITION_LABELS } from '@/types'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -34,11 +35,12 @@ export default async function PostPage({ params }: Props) {
   const postCategory = post.category as import('@/types').PostCategory
   const isOwner = user?.id === post.user_id
   const authorName = post.anonymous ? '匿名の学生' : (post.users?.nickname ?? '不明')
+  const isBuySell = postCategory === 'buy_sell'
 
   return (
     <div>
       <div className="sticky top-14 z-10 bg-background border-b px-4 h-10 flex items-center justify-between gap-2">
-        <Link href="/home" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <Link href={isBuySell ? '/buy-sell' : '/home'} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" />
           戻る
         </Link>
@@ -58,9 +60,33 @@ export default async function PostPage({ params }: Props) {
           {post.universities && (
             <span className="text-xs text-muted-foreground">{post.universities.name}</span>
           )}
+          {isBuySell && post.sold_at && (
+            <span className="text-xs font-bold text-muted-foreground border rounded px-1.5 py-0.5">
+              SOLD
+            </span>
+          )}
         </div>
 
         <h1 className="text-lg font-bold leading-snug mb-3">{post.title}</h1>
+
+        {/* 販売・購入専用: 価格・状態 */}
+        {isBuySell && (
+          <div className="mb-4 p-3 rounded-xl bg-muted/50 border space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-primary">
+                {post.price != null ? `¥${post.price.toLocaleString()}` : '価格応相談'}
+              </span>
+              {isOwner && (
+                <SoldButton postId={post.id} initialSold={!!post.sold_at} />
+              )}
+            </div>
+            {post.item_condition && (
+              <p className="text-xs text-muted-foreground">
+                状態：{ITEM_CONDITION_LABELS[post.item_condition] ?? post.item_condition}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center gap-3 mb-4 text-xs text-muted-foreground">
           <span>{authorName}</span>
