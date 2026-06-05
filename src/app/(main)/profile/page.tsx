@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PostCard } from '@/components/posts/PostCard'
 import { FollowRequestList } from '@/components/users/FollowRequestList'
+import { BadgeProgress } from '@/components/profile/BadgeProgress'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -73,11 +74,12 @@ export default async function ProfilePage() {
             <Badge variant="outline" className="text-xs">非公開</Badge>
           )}
           <Badge variant="outline" className="text-xs gap-1">
-            <span>🏅</span>{badge.label}
+            {badge.emoji}{badge.label}
           </Badge>
         </div>
 
-        <p className="text-xs text-muted-foreground mt-2">{points} ポイント</p>
+        <p className="text-xs text-muted-foreground mt-2">{points} pt</p>
+        <BadgeProgress points={points} />
 
         <div className="mt-4 flex gap-6 text-sm">
           <div>

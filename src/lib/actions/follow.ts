@@ -81,6 +81,8 @@ export async function toggleFollow(targetUserId: string) {
     return { error: 'フォローに失敗しました' }
   }
   await createNotification({ userId: targetUserId, actorId: user.id, type: 'follow' })
+  // フォローされた相手にポイント付与
+  await awardPoints(targetUserId, 5, 'フォローされた')
   revalidatePath(`/user/${targetUserId}`)
   revalidatePath('/profile')
   return { following: true, requested: false }

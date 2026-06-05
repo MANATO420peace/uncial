@@ -106,7 +106,7 @@ export async function createPost(formData: FormData) {
 
   if (error) return { error: error.message }
 
-  await awardPoints(user.id, 10)
+  await awardPoints(user.id, 10, '投稿した')
 
   revalidatePath('/home')
   redirect(`/post/${data.id}`)
@@ -299,7 +299,13 @@ export async function toggleLike(postId: string) {
       .from('likes').select('*', { count: 'exact', head: true }).eq('post_id', postId)
     await admin.from('posts').update({ likes_count: count ?? 0 }).eq('id', postId)
     const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
-    if (post) await createNotification({ userId: post.user_id, actorId: user.id, type: 'like', postId })
+    if (post) {
+      await createNotification({ userId: post.user_id, actorId: user.id, type: 'like', postId })
+      // いいねをもらった投稿主にポイント付与
+      if (post.user_id !== user.id) {
+        await awardPoints(post.user_id, 2, 'いいねをもらった')
+      }
+    }
     revalidatePath('/home')
     return { liked: true, likesCount: count ?? 0 }
   }

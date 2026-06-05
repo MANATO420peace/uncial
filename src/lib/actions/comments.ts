@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createNotification } from './notifications'
+import { awardPoints } from './points'
 
 export async function createComment(formData: FormData) {
   const supabase = await createClient()
@@ -27,7 +28,15 @@ export async function createComment(formData: FormData) {
   if (error) return { error: error.message }
 
   const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
-  if (post) await createNotification({ userId: post.user_id, actorId: user.id, type: 'comment', postId })
+  if (post) {
+    await createNotification({ userId: post.user_id, actorId: user.id, type: 'comment', postId })
+    // コメントをもらった投稿主にポイント付与
+    if (post.user_id !== user.id) {
+      await awardPoints(post.user_id, 3, 'コメントをもらった')
+    }
+  }
+  // コメントした本人にもポイント付与
+  await awardPoints(user.id, 5, 'コメントした')
 
   revalidatePath(`/post/${postId}`)
   return { error: null }
