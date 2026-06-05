@@ -9,5 +9,11 @@ export default async function ReviewsPage() {
   const user = await getCurrentUser()
   const { reviews } = await getReviews(user?.university_id ?? undefined)
 
-  return <ReviewsClient initialReviews={reviews} universityName={user?.universities?.name} />
+  return (
+    <ReviewsClient
+      initialReviews={reviews}
+      universityName={user?.universities?.name}
+      currentUserId={user?.id}
+    />
+  )
 }

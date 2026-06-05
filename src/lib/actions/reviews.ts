@@ -37,6 +37,22 @@ export async function createReview(formData: FormData) {
   return { error: null }
 }
 
+export async function deleteReview(reviewId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  const { error } = await supabase
+    .from('course_reviews')
+    .delete()
+    .eq('id', reviewId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/reviews')
+  return { error: null }
+}
+
 export async function getReviews(universityId?: string, search?: string) {
   const supabase = await createClient()
 
