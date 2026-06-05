@@ -98,9 +98,15 @@ export function RegisterForm({ universities }: Props) {
             value={email}
             onChange={e => { setEmail(e.target.value); if (!e.target.value.toLowerCase().endsWith('.ac.jp')) setGrade('') }}
           />
-          {email && (
-            <p className={`text-xs ${isUniversityEmail ? 'text-green-600' : 'text-muted-foreground'}`}>
-              {isUniversityEmail ? '✅ 大学メールアドレス — 学年を選択できます' : '大学メール（.ac.jp）以外はOB・OGとして登録されます'}
+          {email ? (
+            <p className={`text-xs ${isUniversityEmail ? 'text-green-600' : 'text-destructive'}`}>
+              {isUniversityEmail
+                ? '✅ 大学メールアドレスが確認されました'
+                : '❌ 大学のメールアドレス（〜@〜.ac.jp）が必要です'}
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              大学のメールアドレス（〜@〜.ac.jp）のみ登録できます
             </p>
           )}
         </div>

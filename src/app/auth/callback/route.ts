@@ -11,6 +11,16 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data.user) {
+      const email = data.user.email ?? ''
+
+      // 大学メールアドレス（.ac.jp）以外はログインを拒否
+      if (!email.toLowerCase().endsWith('.ac.jp')) {
+        await supabase.auth.signOut()
+        return NextResponse.redirect(
+          `${origin}/login?error=university_email_required`
+        )
+      }
+
       const { data: existing } = await supabase
         .from('users')
         .select('id')
@@ -20,7 +30,7 @@ export async function GET(request: Request) {
       if (!existing) {
         const nickname =
           data.user.user_metadata?.full_name ||
-          data.user.email?.split('@')[0] ||
+          email.split('@')[0] ||
           '匿名ユーザー'
 
         await supabase.from('users').insert({

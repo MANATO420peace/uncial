@@ -14,6 +14,11 @@ export async function signUpWithEmail(formData: FormData) {
   const faculty = formData.get('faculty') as string
   const grade = formData.get('grade') as string
 
+  // 大学メールアドレス（.ac.jp）のみ登録を許可
+  if (!email.toLowerCase().endsWith('.ac.jp')) {
+    return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみ登録できます' }
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -55,6 +60,11 @@ export async function signInWithEmail(formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+
+  // 大学メールアドレス（.ac.jp）のみログインを許可
+  if (!email.toLowerCase().endsWith('.ac.jp')) {
+    return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみログインできます' }
+  }
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
