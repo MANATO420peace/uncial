@@ -81,6 +81,23 @@ export async function getComments(postId: string) {
   return { comments, error: null }
 }
 
+export async function deleteComment(commentId: string, postId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: '認証が必要です' }
+
+  const { error } = await supabase
+    .from('comments')
+    .delete()
+    .eq('id', commentId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath(`/post/${postId}`)
+  return { error: null }
+}
+
 export async function toggleCommentLike(commentId: string, postId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

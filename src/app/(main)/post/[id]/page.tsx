@@ -100,7 +100,7 @@ export default async function PostPage({ params }: Props) {
         </div>
       </article>
 
-      <CommentSection comments={comments ?? []} postId={post.id} />
+      <CommentSection comments={comments ?? []} postId={post.id} currentUserId={user?.id} />
     </div>
   )
 }

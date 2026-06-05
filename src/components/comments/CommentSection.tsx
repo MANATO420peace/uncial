@@ -2,34 +2,36 @@
 
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
-import { Heart, CornerDownRight } from 'lucide-react'
+import { Heart, CornerDownRight, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn, timeAgo } from '@/lib/utils'
-import { createComment, toggleCommentLike } from '@/lib/actions/comments'
+import { createComment, deleteComment, toggleCommentLike } from '@/lib/actions/comments'
 import type { Comment } from '@/types'
 
 interface CommentItemProps {
   comment: Comment
   postId: string
+  currentUserId?: string
   isReply?: boolean
 }
 
-function CommentItem({ comment, postId, isReply = false }: CommentItemProps) {
+function CommentItem({ comment, postId, currentUserId, isReply = false }: CommentItemProps) {
   const [showReplyForm, setShowReplyForm] = useState(false)
   const [liked, setLiked] = useState(comment.liked ?? false)
   const [likeCount, setLikeCount] = useState(comment.likes_count)
+  const [deleted, setDeleted] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const authorName = comment.anonymous ? '匿名の学生' : (comment.users?.nickname ?? '不明')
+  const isOwner = !comment.anonymous && currentUserId && currentUserId === comment.user_id
+
+  if (deleted) return null
 
   function handleLike() {
     startTransition(async () => {
       const result = await toggleCommentLike(comment.id, postId)
-      if (result?.error) {
-        toast.error(result.error)
-        return
-      }
+      if (result?.error) { toast.error(result.error); return }
       if (result?.liked !== undefined) {
         setLiked(result.liked)
         setLikeCount(c => result.liked ? c + 1 : c - 1)
@@ -37,13 +39,35 @@ function CommentItem({ comment, postId, isReply = false }: CommentItemProps) {
     })
   }
 
+  function handleDelete() {
+    if (!confirm('このコメントを削除しますか？')) return
+    startTransition(async () => {
+      const result = await deleteComment(comment.id, postId)
+      if (result?.error) { toast.error(result.error); return }
+      setDeleted(true)
+      toast.success('コメントを削除しました')
+    })
+  }
+
   return (
     <div className={cn('py-3', isReply && 'pl-8 border-l-2 border-muted ml-4')}>
       <div className="flex items-start gap-2">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-medium">{authorName}</span>
-            <span className="text-[11px] text-muted-foreground">{timeAgo(comment.created_at)}</span>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium">{authorName}</span>
+              <span className="text-[11px] text-muted-foreground">{timeAgo(comment.created_at)}</span>
+            </div>
+            {isOwner && (
+              <button
+                onClick={handleDelete}
+                disabled={isPending}
+                className="text-muted-foreground hover:text-destructive transition-colors p-0.5 shrink-0"
+                aria-label="コメントを削除"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.content}</p>
           <div className="flex items-center gap-3 mt-2">
@@ -73,14 +97,25 @@ function CommentItem({ comment, postId, isReply = false }: CommentItemProps) {
 
       {showReplyForm && (
         <div className="mt-2 pl-0">
-          <CommentForm postId={postId} parentId={comment.id} onSuccess={() => setShowReplyForm(false)} compact />
+          <CommentForm
+            postId={postId}
+            parentId={comment.id}
+            onSuccess={() => setShowReplyForm(false)}
+            compact
+          />
         </div>
       )}
 
       {comment.replies && comment.replies.length > 0 && (
         <div className="mt-2 space-y-0 divide-y">
           {comment.replies.map(reply => (
-            <CommentItem key={reply.id} comment={reply} postId={postId} isReply />
+            <CommentItem
+              key={reply.id}
+              comment={reply}
+              postId={postId}
+              currentUserId={currentUserId}
+              isReply
+            />
           ))}
         </div>
       )}
@@ -150,9 +185,10 @@ function CommentForm({ postId, parentId, onSuccess, compact }: FormProps) {
 interface Props {
   comments: Comment[]
   postId: string
+  currentUserId?: string
 }
 
-export function CommentSection({ comments, postId }: Props) {
+export function CommentSection({ comments, postId, currentUserId }: Props) {
   return (
     <div>
       <div className="px-4 py-3 border-b">
@@ -170,7 +206,11 @@ export function CommentSection({ comments, postId }: Props) {
         ) : (
           comments.map(comment => (
             <div key={comment.id} className="px-4">
-              <CommentItem comment={comment} postId={postId} />
+              <CommentItem
+                comment={comment}
+                postId={postId}
+                currentUserId={currentUserId}
+              />
             </div>
           ))
         )}
