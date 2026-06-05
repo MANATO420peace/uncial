@@ -7,6 +7,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import type { PostCategory, PostFilter } from '@/types'
 import { createNotification } from './notifications'
 import { awardPoints } from './points'
+import { getBlockedAndMutedIds } from './block'
 
 export async function getBuySellEligibility() {
   const supabase = await createClient()
@@ -108,6 +109,10 @@ export async function createPost(formData: FormData) {
 export async function getPosts(filter: PostFilter = {}) {
   const supabase = await createClient()
 
+  // ブロック・ミュートユーザーをフィードから除外
+  const { blockedIds, mutedIds } = await getBlockedAndMutedIds()
+  const excludeIds = [...new Set([...blockedIds, ...mutedIds])]
+
   let query = supabase
     .from('posts')
     .select(`
@@ -115,6 +120,11 @@ export async function getPosts(filter: PostFilter = {}) {
       users(id, nickname, university_id),
       universities(id, name)
     `)
+
+  // 匿名投稿はuser_idを持つが匿名として表示。ブロック対象はuser_idで除外
+  if (excludeIds.length > 0) {
+    query = query.not('user_id', 'in', `(${excludeIds.join(',')})`)
+  }
 
   if (filter.university_id) {
     query = query.eq('university_id', filter.university_id)

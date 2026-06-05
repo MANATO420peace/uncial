@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createNotification } from './notifications'
+import { getBlockedAndMutedIds } from './block'
 
 export async function toggleFollow(targetUserId: string) {
   const supabase = await createClient()
@@ -126,7 +127,15 @@ export async function getFollowingPosts() {
 
   if (!follows || follows.length === 0) return { posts: [] }
 
-  const followingIds = follows.map(f => f.following_id)
+  // ブロック・ミュートユーザーを除外
+  const { blockedIds, mutedIds } = await getBlockedAndMutedIds()
+  const excludeIds = new Set([...blockedIds, ...mutedIds])
+
+  const followingIds = follows
+    .map(f => f.following_id)
+    .filter(id => !excludeIds.has(id))
+
+  if (followingIds.length === 0) return { posts: [] }
 
   const { data } = await supabase
     .from('posts')

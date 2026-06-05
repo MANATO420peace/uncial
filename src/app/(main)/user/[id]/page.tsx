@@ -1,15 +1,17 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { Lock } from 'lucide-react'
+import { Lock, ShieldBan } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/actions/user'
 import { getFollowStats } from '@/lib/actions/follow'
+import { getBlockMuteStatus } from '@/lib/actions/block'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { PostCard } from '@/components/posts/PostCard'
 import { FollowButton } from '@/components/users/FollowButton'
 import { DMButton } from '@/components/users/DMButton'
+import { UserActionMenu } from '@/components/users/UserActionMenu'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -35,6 +37,22 @@ export default async function UserProfilePage({ params }: Props) {
   if (!profile) notFound()
 
   const isOwnProfile = currentUser?.id === id
+
+  // ブロック・ミュート状態を取得
+  const blockMuteStatus = (!isOwnProfile && currentUser)
+    ? await getBlockMuteStatus(id)
+    : { isBlocked: false, isMuted: false, isBlockedByThem: false }
+
+  // 相手にブロックされている場合はコンテンツを非表示
+  if (blockMuteStatus.isBlockedByThem) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground">
+        <ShieldBan className="h-10 w-10 opacity-30" />
+        <p className="text-sm font-medium">このコンテンツは表示できません</p>
+      </div>
+    )
+  }
+
   const isPrivate = profile.is_private && !followStats.isFollowing && !isOwnProfile
 
   const { data: posts } = isPrivate ? { data: null } : await supabase
@@ -56,12 +74,20 @@ export default async function UserProfilePage({ params }: Props) {
             </AvatarFallback>
           </Avatar>
           {!isOwnProfile && currentUser && (
-            <div className="flex gap-2">
-              <DMButton targetUserId={id} />
-              <FollowButton
+            <div className="flex items-center gap-2">
+              {!blockMuteStatus.isBlocked && <DMButton targetUserId={id} />}
+              {!blockMuteStatus.isBlocked && (
+                <FollowButton
+                  targetUserId={id}
+                  initialFollowing={followStats.isFollowing}
+                  initialRequestPending={followStats.hasPendingRequest}
+                />
+              )}
+              <UserActionMenu
                 targetUserId={id}
-                initialFollowing={followStats.isFollowing}
-                initialRequestPending={followStats.hasPendingRequest}
+                initialBlocked={blockMuteStatus.isBlocked}
+                initialMuted={blockMuteStatus.isMuted}
+                targetNickname={profile.nickname}
               />
             </div>
           )}
@@ -70,6 +96,12 @@ export default async function UserProfilePage({ params }: Props) {
         <div className="flex items-center gap-2">
           <h1 className="font-bold text-lg">{profile.nickname}</h1>
           {profile.is_private && <Lock className="h-4 w-4 text-muted-foreground" />}
+          {blockMuteStatus.isBlocked && (
+            <span className="text-xs text-muted-foreground border rounded px-1.5 py-0.5">ブロック中</span>
+          )}
+          {blockMuteStatus.isMuted && !blockMuteStatus.isBlocked && (
+            <span className="text-xs text-muted-foreground border rounded px-1.5 py-0.5">ミュート中</span>
+          )}
         </div>
 
         {profile.bio && (
@@ -108,7 +140,12 @@ export default async function UserProfilePage({ params }: Props) {
         </div>
       </div>
 
-      {isPrivate ? (
+      {blockMuteStatus.isBlocked ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
+          <ShieldBan className="h-8 w-8 opacity-30" />
+          <p className="text-sm">このユーザーをブロックしています</p>
+        </div>
+      ) : isPrivate ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
           <Lock className="h-8 w-8 opacity-30" />
           <p className="text-sm font-medium">このアカウントは非公開です</p>
