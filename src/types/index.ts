@@ -81,6 +81,9 @@ export interface Post {
   // 販売・購入専用
   price?: number | null
   item_condition?: ItemCondition | null
+  item_category?: string | null
+  price_negotiable?: boolean | null
+  delivery_method?: string | null
   sold_at?: string | null
   created_at: string
   updated_at: string

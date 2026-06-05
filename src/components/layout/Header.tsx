@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Plus } from 'lucide-react'
+import { ShoppingBag, Plus } from 'lucide-react'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { NewPostDialog } from '@/components/posts/NewPostDialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -88,11 +88,11 @@ export function Header({ user }: Props) {
           {/* Right actions */}
           <div className="flex items-center gap-0.5">
             <Link
-              href="/search"
+              href="/buy-sell"
               className="h-9 w-9 flex items-center justify-center rounded-full text-white/75 hover:text-white hover:bg-white/10 transition-colors"
-              aria-label="検索"
+              aria-label="販売・購入"
             >
-              <Search className="h-4 w-4" />
+              <ShoppingBag className="h-4 w-4" />
             </Link>
 
             <NotificationBell className="text-white/75 hover:text-white hover:bg-white/10" />

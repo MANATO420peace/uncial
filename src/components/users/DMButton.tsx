@@ -8,9 +8,10 @@ import { toast } from 'sonner'
 
 interface Props {
   targetUserId: string
+  label?: string
 }
 
-export function DMButton({ targetUserId }: Props) {
+export function DMButton({ targetUserId, label = 'DM' }: Props) {
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
@@ -21,9 +22,9 @@ export function DMButton({ targetUserId }: Props) {
   }
 
   return (
-    <Button size="sm" variant="outline" onClick={handleClick} disabled={isPending}>
-      <MessageCircle className="h-4 w-4 mr-1" />
-      DM
+    <Button size="sm" variant="outline" onClick={handleClick} disabled={isPending} className="w-full">
+      <MessageCircle className="h-4 w-4 mr-1.5" />
+      {isPending ? '移動中...' : label}
     </Button>
   )
 }

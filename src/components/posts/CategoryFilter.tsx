@@ -4,12 +4,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, type PostCategory } from '@/types'
 
+// buy_sell は専用ページ（/buy-sell）から利用するためホームフィードには表示しない
 const ALL_CATEGORIES: { value: PostCategory | 'all'; label: string }[] = [
   { value: 'all', label: 'すべて' },
-  ...Object.entries(POST_CATEGORY_LABELS).map(([value, label]) => ({
-    value: value as PostCategory,
-    label,
-  })),
+  ...Object.entries(POST_CATEGORY_LABELS)
+    .filter(([value]) => value !== 'buy_sell')
+    .map(([value, label]) => ({ value: value as PostCategory, label })),
 ]
 
 export function CategoryFilter() {

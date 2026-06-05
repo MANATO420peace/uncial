@@ -8,6 +8,7 @@ import { PostActions } from '@/components/posts/PostActions'
 import { SoldButton } from '@/components/posts/SoldButton'
 import { ImageCarousel } from '@/components/posts/ImageCarousel'
 import { ViewIncrementer } from '@/components/posts/ViewIncrementer'
+import { DMButton } from '@/components/users/DMButton'
 import { CommentSection } from '@/components/comments/CommentSection'
 import { getPost } from '@/lib/actions/posts'
 import { getComments } from '@/lib/actions/comments'
@@ -15,7 +16,13 @@ import { createClient } from '@/lib/supabase/server'
 import { timeAgo } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS, ITEM_CONDITION_LABELS } from '@/types'
 import { cn } from '@/lib/utils'
-import { Eye } from 'lucide-react'
+import { Eye, Truck } from 'lucide-react'
+
+const DELIVERY_LABELS: Record<string, string> = {
+  handover: '手渡しのみ',
+  shipping: '郵送のみ',
+  both:     '手渡し・郵送どちらも可',
+}
 
 interface Props {
   params: Promise<{ id: string }>
@@ -72,21 +79,47 @@ export default async function PostPage({ params }: Props) {
 
         <h1 className="text-lg font-bold leading-snug mb-3">{post.title}</h1>
 
-        {/* 販売・購入専用: 価格・状態 */}
+        {/* 販売・購入専用: 価格・状態・受け渡し・DM */}
         {isBuySell && (
-          <div className="mb-4 p-3 rounded-xl bg-muted/50 border space-y-2">
+          <div className="mb-4 p-3 rounded-xl bg-muted/50 border space-y-2.5">
+            {/* 価格 + 売り切れボタン */}
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold text-primary">
-                {post.price != null ? `¥${post.price.toLocaleString()}` : '価格応相談'}
-              </span>
+              <div>
+                <span className="text-2xl font-bold text-primary">
+                  {post.price != null ? `¥${post.price.toLocaleString()}` : '価格応相談'}
+                </span>
+                {post.price_negotiable && (
+                  <span className="ml-2 text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 px-2 py-0.5 rounded-full font-medium">
+                    値下げ交渉あり
+                  </span>
+                )}
+              </div>
               {isOwner && (
                 <SoldButton postId={post.id} initialSold={!!post.sold_at} />
               )}
             </div>
-            {post.item_condition && (
-              <p className="text-xs text-muted-foreground">
-                状態：{ITEM_CONDITION_LABELS[post.item_condition] ?? post.item_condition}
-              </p>
+
+            {/* 詳細情報 */}
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              {post.item_category && (
+                <span>カテゴリ：{post.item_category}</span>
+              )}
+              {post.item_condition && (
+                <span>状態：{ITEM_CONDITION_LABELS[post.item_condition] ?? post.item_condition}</span>
+              )}
+              {post.delivery_method && (
+                <span className="flex items-center gap-1">
+                  <Truck className="h-3.5 w-3.5" />
+                  {DELIVERY_LABELS[post.delivery_method] ?? post.delivery_method}
+                </span>
+              )}
+            </div>
+
+            {/* 出品者へのDMボタン（自分の投稿でない場合のみ） */}
+            {!isOwner && !post.anonymous && post.user_id && user && !post.sold_at && (
+              <div className="pt-1">
+                <DMButton targetUserId={post.user_id} label="出品者にDMする" />
+              </div>
             )}
           </div>
         )}

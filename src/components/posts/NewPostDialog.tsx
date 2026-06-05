@@ -61,9 +61,11 @@ export function NewPostDialog({ open, onOpenChange }: Props) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(Object.entries(POST_CATEGORY_LABELS) as [PostCategory, string][]).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>{label}</SelectItem>
-                ))}
+                {(Object.entries(POST_CATEGORY_LABELS) as [PostCategory, string][])
+                  .filter(([value]) => value !== 'buy_sell')
+                  .map(([value, label]) => (
+                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>

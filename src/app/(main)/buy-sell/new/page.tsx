@@ -15,6 +15,25 @@ import { ITEM_CONDITION_LABELS, type ItemCondition } from '@/types'
 
 const CONDITIONS = Object.entries(ITEM_CONDITION_LABELS) as [ItemCondition, string][]
 
+const ITEM_CATEGORIES = [
+  '教科書・参考書',
+  'ノート・プリント',
+  'PC・タブレット',
+  'スマートフォン',
+  '家具・家電',
+  '衣類・ファッション',
+  'スポーツ・アウトドア',
+  '自転車・乗り物',
+  '食品・飲料',
+  'その他',
+]
+
+const DELIVERY_METHODS = [
+  { value: 'handover', label: '手渡しのみ' },
+  { value: 'shipping', label: '郵送のみ' },
+  { value: 'both',     label: '手渡し・郵送どちらも可' },
+]
+
 const TERMS = `【販売・購入 利用規約】
 
 1. 本カテゴリは大学のメールアドレス（.ac.jp）を持つユーザーのみ利用できます。
@@ -153,6 +172,22 @@ export default function BuySellNewPage() {
               </div>
             </div>
 
+            {/* 商品カテゴリ */}
+            <div className="space-y-1.5">
+              <Label htmlFor="item_category">商品カテゴリ <span className="text-destructive">*</span></Label>
+              <select
+                id="item_category"
+                name="item_category"
+                required
+                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="">選択してください</option>
+                {ITEM_CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
             {/* 商品の状態 */}
             <div className="space-y-1.5">
               <Label htmlFor="item_condition">商品の状態 <span className="text-destructive">*</span></Label>
@@ -169,15 +204,45 @@ export default function BuySellNewPage() {
               </select>
             </div>
 
+            {/* 受け渡し方法 */}
+            <div className="space-y-1.5">
+              <Label htmlFor="delivery_method">受け渡し方法 <span className="text-destructive">*</span></Label>
+              <select
+                id="delivery_method"
+                name="delivery_method"
+                required
+                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="">選択してください</option>
+                {DELIVERY_METHODS.map(m => (
+                  <option key={m.value} value={m.value}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 値下げ交渉 */}
+            <div className="flex items-center gap-3 py-1">
+              <input
+                type="checkbox"
+                id="price_negotiable"
+                name="price_negotiable"
+                value="true"
+                className="h-4 w-4 rounded border-input accent-primary"
+              />
+              <Label htmlFor="price_negotiable" className="cursor-pointer font-normal">
+                値下げ交渉あり
+              </Label>
+            </div>
+
             {/* 説明 */}
             <div className="space-y-1.5">
               <Label htmlFor="content">商品説明 <span className="text-destructive">*</span></Label>
               <Textarea
                 id="content"
                 name="content"
-                placeholder="商品の詳細、状態の補足、受け渡し方法（手渡し / 郵送）、配送料の負担などを記載してください"
+                placeholder="商品の詳細、状態の補足、配送料の負担などを記載してください"
                 required
-                rows={6}
+                rows={5}
                 maxLength={2000}
                 className="resize-none"
               />

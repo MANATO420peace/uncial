@@ -89,6 +89,9 @@ export async function createPost(formData: FormData) {
   const priceRaw = formData.get('price') as string | null
   const price = priceRaw ? parseInt(priceRaw, 10) : null
   const item_condition = (formData.get('item_condition') as string) || null
+  const item_category = (formData.get('item_category') as string) || null
+  const delivery_method = (formData.get('delivery_method') as string) || null
+  const price_negotiable = formData.get('price_negotiable') === 'true'
 
   const { data, error } = await supabase.from('posts').insert({
     user_id: user.id,
@@ -100,7 +103,7 @@ export async function createPost(formData: FormData) {
     anonymous: formData.get('anonymous') === 'true',
     images,
     location,
-    ...(category === 'buy_sell' ? { price, item_condition } : {}),
+    ...(category === 'buy_sell' ? { price, item_condition, item_category, delivery_method, price_negotiable } : {}),
   }).select().single()
 
   if (error) return { error: error.message }
@@ -163,6 +166,8 @@ export async function getPosts(filter: PostFilter = {}) {
       users(id, nickname, university_id),
       universities(id, name)
     `)
+    // buy_sell は専用ページ（/buy-sell）のみに表示し、ホームフィードから除外
+    .neq('category', 'buy_sell')
 
   // 匿名投稿はuser_idを持つが匿名として表示。ブロック対象はuser_idで除外
   if (excludeIds.length > 0) {

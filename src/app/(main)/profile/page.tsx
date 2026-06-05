@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PostCard } from '@/components/posts/PostCard'
+import { ListingCard } from '@/components/posts/ListingCard'
 import { FollowRequestList } from '@/components/users/FollowRequestList'
 import { ProfileShareButton } from '@/components/users/ProfileShareButton'
 import { buttonVariants } from '@/components/ui/button'
@@ -21,11 +22,19 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, bookmarkedPosts, likedPosts, followRequests, followStats] = await Promise.all([
+  const [{ data: posts }, { data: listings }, bookmarkedPosts, likedPosts, followRequests, followStats] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
       .eq('user_id', user.id)
+      .neq('category', 'buy_sell')
+      .order('created_at', { ascending: false })
+      .limit(20),
+    supabase
+      .from('posts')
+      .select('*, universities(id, name)')
+      .eq('user_id', user.id)
+      .eq('category', 'buy_sell')
       .order('created_at', { ascending: false })
       .limit(20),
     getBookmarkedPosts(),
@@ -97,9 +106,12 @@ export default async function ProfilePage() {
       )}
 
       <Tabs defaultValue="posts" className="w-full">
-        <TabsList className="w-full rounded-none border-b h-10 bg-transparent px-4 justify-start gap-6">
+        <TabsList className="w-full rounded-none border-b h-10 bg-transparent px-4 justify-start gap-5">
           <TabsTrigger value="posts" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
             投稿
+          </TabsTrigger>
+          <TabsTrigger value="listings" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
+            出品
           </TabsTrigger>
           <TabsTrigger value="liked" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
             いいね
@@ -114,6 +126,16 @@ export default async function ProfilePage() {
             posts.map(post => <PostCard key={post.id} post={post as never} isOwner={true} />)
           ) : (
             <p className="text-center py-10 text-sm text-muted-foreground">まだ投稿がありません</p>
+          )}
+        </TabsContent>
+
+        <TabsContent value="listings" className="mt-0">
+          {listings && listings.length > 0 ? (
+            <div className="p-3 grid grid-cols-2 gap-3">
+              {listings.map(post => <ListingCard key={post.id} post={post as never} />)}
+            </div>
+          ) : (
+            <p className="text-center py-10 text-sm text-muted-foreground">まだ出品がありません</p>
           )}
         </TabsContent>
 
