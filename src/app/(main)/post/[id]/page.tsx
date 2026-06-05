@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { LikeButton } from '@/components/posts/LikeButton'
 import { PostActions } from '@/components/posts/PostActions'
 import { SoldButton } from '@/components/posts/SoldButton'
+import { ImageCarousel } from '@/components/posts/ImageCarousel'
 import { CommentSection } from '@/components/comments/CommentSection'
 import { getPost } from '@/lib/actions/posts'
 import { getComments } from '@/lib/actions/comments'
@@ -96,11 +97,7 @@ export default async function PostPage({ params }: Props) {
         <p className="text-sm leading-7 whitespace-pre-wrap text-foreground">{post.content}</p>
 
         {post.images && post.images.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 mt-4">
-            {post.images.map((url: string, i: number) => (
-              <img key={i} src={url} alt="" className="w-full rounded-lg object-cover aspect-square" />
-            ))}
-          </div>
+          <ImageCarousel images={post.images} />
         )}
 
         {post.tags && post.tags.length > 0 && (

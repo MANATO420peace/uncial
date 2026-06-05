@@ -153,13 +153,43 @@ export function PostCard({ post, isOwner = false }: Props) {
           )}
         </div>
 
-        {/* ── 画像サムネイル ── */}
+        {/* ── 画像サムネイル（複数対応） ── */}
         {post.images && post.images.length > 0 && (
-          <img
-            src={post.images[0]}
-            alt=""
-            className="w-full h-44 rounded-xl object-cover mb-3"
-          />
+          <div
+            className="mb-3 rounded-xl overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            {post.images.length === 1 && (
+              <img src={post.images[0]} alt="" className="w-full h-48 object-cover" />
+            )}
+            {post.images.length === 2 && (
+              <div className="grid grid-cols-2 gap-0.5">
+                {post.images.map((url, i) => (
+                  <img key={i} src={url} alt="" className="w-full h-40 object-cover" />
+                ))}
+              </div>
+            )}
+            {post.images.length >= 3 && (
+              <div className="flex gap-0.5 h-48">
+                <img
+                  src={post.images[0]}
+                  alt=""
+                  className="w-2/3 h-full object-cover"
+                />
+                <div className="flex flex-col gap-0.5 w-1/3">
+                  <img src={post.images[1]} alt="" className="flex-1 w-full object-cover" />
+                  <div className="relative flex-1">
+                    <img src={post.images[2]} alt="" className="w-full h-full object-cover" />
+                    {post.images.length > 3 && (
+                      <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">+{post.images.length - 3}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {/* ── タイトル ── */}
