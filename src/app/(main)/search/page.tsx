@@ -6,16 +6,28 @@ import { getUniversities } from '@/lib/actions/user'
 export const metadata: Metadata = { title: '検索' }
 
 interface Props {
-  searchParams: Promise<{ q?: string; university_id?: string }>
+  searchParams: Promise<{ q?: string; university_id?: string; category?: string; sort?: string }>
 }
 
 export default async function SearchPage({ searchParams }: Props) {
-  const { q, university_id } = await searchParams
+  const { q, university_id, category, sort } = await searchParams
   const [results, universities, popularTags] = await Promise.all([
-    q ? searchAll(q, university_id) : Promise.resolve({ posts: [], reviews: [], users: [] }),
+    q
+      ? searchAll(q, university_id, category, (sort as 'new' | 'popular') ?? 'new')
+      : Promise.resolve({ posts: [], reviews: [], users: [] }),
     getUniversities(),
     getPopularTags(),
   ])
 
-  return <SearchClient query={q ?? ''} results={results} universities={universities} selectedUniversityId={university_id ?? ''} popularTags={popularTags} />
+  return (
+    <SearchClient
+      query={q ?? ''}
+      results={results}
+      universities={universities}
+      selectedUniversityId={university_id ?? ''}
+      selectedCategory={category ?? ''}
+      selectedSort={(sort as 'new' | 'popular') ?? 'new'}
+      popularTags={popularTags}
+    />
+  )
 }

@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { getBlockedAndMutedIds } from './block'
 
 export async function getPopularTags(limit = 15) {
   const supabase = await createClient()
@@ -24,54 +25,68 @@ export async function getPopularTags(limit = 15) {
     .map(([tag]) => tag)
 }
 
-export async function searchAll(query: string, universityId?: string) {
+export async function searchAll(
+  query: string,
+  universityId?: string,
+  category?: string,
+  sort: 'new' | 'popular' = 'new',
+) {
   if (!query.trim()) return { posts: [], reviews: [], users: [] }
 
   const supabase = await createClient()
   const isTagSearch = query.startsWith('#')
   const cleanQuery = isTagSearch ? query.slice(1) : query
 
-  // 現在のユーザーを取得（非公開アカウントのフィルタリング用）
   const { data: { user } } = await supabase.auth.getUser()
 
-  // 現在のユーザーがフォローしているユーザーIDの一覧を取得
-  let followingIds: string[] = []
-  if (user) {
-    const { data: follows } = await supabase
-      .from('follows')
-      .select('following_id')
-      .eq('follower_id', user.id)
-    followingIds = follows?.map(f => f.following_id) ?? []
-  }
+  // ブロック・ミュートユーザーと、フォロー中ユーザーを並行取得
+  const [{ blockedIds, mutedIds }, followsResult] = await Promise.all([
+    getBlockedAndMutedIds(),
+    user
+      ? supabase.from('follows').select('following_id').eq('follower_id', user.id)
+      : Promise.resolve({ data: [] }),
+  ])
 
+  const excludeIds = new Set([...blockedIds, ...mutedIds])
+  const followingIds = followsResult.data?.map(f => f.following_id) ?? []
+
+  // 投稿検索
   let postsQuery = supabase
     .from('posts')
     .select('*, users(id, nickname, is_private), universities(id, name)')
-    .order('created_at', { ascending: false })
-    .limit(50) // 後でフィルタするので多めに取得
+    .limit(60)
+
+  if (sort === 'popular') {
+    postsQuery = postsQuery.order('likes_count', { ascending: false })
+  } else {
+    postsQuery = postsQuery.order('created_at', { ascending: false })
+  }
 
   if (isTagSearch) {
     postsQuery = postsQuery.contains('tags', [cleanQuery])
   } else {
-    postsQuery = postsQuery.or(`title.ilike.%${cleanQuery}%,content.ilike.%${cleanQuery}%,tags.cs.{${cleanQuery}}`)
+    postsQuery = postsQuery.or(`title.ilike.%${cleanQuery}%,content.ilike.%${cleanQuery}%`)
   }
 
   if (universityId) postsQuery = postsQuery.eq('university_id', universityId)
+  if (category && category !== 'all') postsQuery = postsQuery.eq('category', category)
 
+  // レビュー検索
   let reviewsQuery = supabase
     .from('course_reviews')
     .select('*, universities(id, name)')
     .or(`course_name.ilike.%${query}%,professor_name.ilike.%${query}%`)
     .order('created_at', { ascending: false })
-    .limit(10)
+    .limit(15)
 
   if (universityId) reviewsQuery = reviewsQuery.eq('university_id', universityId)
 
+  // ユーザー検索
   let usersQuery = supabase
     .from('users')
-    .select('id, nickname, university_id, universities(name)')
+    .select('id, nickname, university_id, avatar_url, universities(name)')
     .ilike('nickname', `%${query}%`)
-    .limit(10)
+    .limit(15)
 
   if (universityId) usersQuery = usersQuery.eq('university_id', universityId)
 
@@ -81,23 +96,22 @@ export async function searchAll(query: string, universityId?: string) {
     usersQuery,
   ])
 
-  // 非公開アカウントの投稿をフィルタリング:
-  // - 自分の投稿は常に表示
-  // - フォローしているユーザーの投稿は表示
-  // - 非公開アカウントのそれ以外の投稿は非表示
-  const allPosts = postsResult.data ?? []
-  const filteredPosts = allPosts.filter(post => {
-    const poster = post.users as { id: string; nickname: string; is_private?: boolean } | null
-    if (!poster) return true // ユーザー情報がなければ表示
-    if (!poster.is_private) return true // 公開アカウントは表示
-    if (user && poster.id === user.id) return true // 自分の投稿は表示
-    if (followingIds.includes(poster.id)) return true // フォロー中なら表示
-    return false // 非公開アカウントの投稿は非表示
+  // ブロック・非公開フィルター
+  const filteredPosts = (postsResult.data ?? []).filter(post => {
+    const poster = post.users as { id: string; is_private?: boolean } | null
+    if (excludeIds.has(post.user_id)) return false
+    if (!poster?.is_private) return true
+    if (user && poster.id === user.id) return true
+    if (followingIds.includes(poster.id)) return true
+    return false
   }).slice(0, 20)
+
+  // ブロックユーザーをユーザー一覧からも除外
+  const filteredUsers = (usersResult.data ?? []).filter(u => !excludeIds.has(u.id))
 
   return {
     posts: filteredPosts,
     reviews: reviewsResult.data ?? [],
-    users: usersResult.data ?? [],
+    users: filteredUsers,
   }
 }
