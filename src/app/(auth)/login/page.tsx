@@ -25,7 +25,9 @@ export default async function LoginPage({ searchParams }: Props) {
   return (
     <div className="w-full max-w-sm space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">ユニキャン</h1>
+        <h1 className="text-2xl font-black tracking-tight">
+          <span className="text-foreground">uni</span><span className="text-[#4299e1]">can</span>
+        </h1>
         <p className="text-sm text-muted-foreground">大学生のコミュニティ</p>
       </div>
       {!isConfigured && <SetupBanner />}
