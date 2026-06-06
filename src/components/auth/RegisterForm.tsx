@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,15 +17,6 @@ interface Props {
   universities: University[]
 }
 
-const TERMS = `【利用規約】
-
-1. 本サービスは大学生・大学院生を対象としたコミュニティです。
-2. 他のユーザーへの誹謗中傷・ハラスメントを禁止します。
-3. 個人情報（氏名・住所・電話番号等）の無断公開を禁止します。
-4. 違法コンテンツや著作権を侵害するコンテンツの投稿を禁止します。
-5. 収集した個人情報は本サービスの運営目的にのみ使用します。
-6. 規約違反が確認された場合、アカウントを停止することがあります。
-7. 本規約は予告なく変更される場合があります。`
 
 export function RegisterForm({ universities }: Props) {
   const [loading, setLoading] = useState(false)
@@ -155,13 +147,14 @@ export function RegisterForm({ universities }: Props) {
         </div>
 
         <div className="rounded-lg border p-3 space-y-2">
-          <p className="text-xs font-semibold">利用規約</p>
-          <div className="bg-muted rounded p-2.5 text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed max-h-36 overflow-y-auto">
-            {TERMS}
-          </div>
           <div className="flex items-center gap-2">
             <input type="checkbox" id="terms" checked={termsAgreed} onChange={e => setTermsAgreed(e.target.checked)} className="h-4 w-4 rounded border-input" />
-            <Label htmlFor="terms" className="cursor-pointer font-normal text-sm">利用規約に同意する</Label>
+            <Label htmlFor="terms" className="cursor-pointer font-normal text-sm">
+              <Link href="/legal/terms" target="_blank" className="underline hover:text-foreground">利用規約</Link>
+              ・
+              <Link href="/legal/privacy" target="_blank" className="underline hover:text-foreground">プライバシーポリシー</Link>
+              に同意する
+            </Label>
           </div>
         </div>
 

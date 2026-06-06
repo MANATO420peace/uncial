@@ -3,6 +3,8 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://uncial-2026.vercel.app'
+
 export const metadata: Metadata = {
   title: {
     default: 'ユニキャン - 大学コミュニティ',
@@ -10,6 +12,22 @@ export const metadata: Metadata = {
   },
   description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
   keywords: ['大学', '楽単', 'テスト', 'サークル', '大学生', 'コミュニティ'],
+  metadataBase: new URL(baseUrl),
+  openGraph: {
+    title: 'ユニキャン - 大学コミュニティ',
+    description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
+    url: baseUrl,
+    siteName: 'ユニキャン',
+    images: [{ url: '/api/og', width: 1200, height: 630, alt: 'ユニキャン' }],
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ユニキャン - 大学コミュニティ',
+    description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
+    images: ['/api/og'],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
