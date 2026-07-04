@@ -97,10 +97,10 @@ function FleaMockup() {
 function TimetableMockup() {
   const days = ['月','火','水','木','金']
   const grid: (string | null)[][] = [
-    ['英語基礎', null,     '線形代数', null,     '社会学'],
-    [null,       '経営学', null,       '英語基礎', null   ],
-    ['情報処理', null,     '経営学',   null,       '統計学'],
-    [null,       '情報処理', null,     '社会学',   null   ],
+    ['英語基礎', null,     '線形代数', null,      null    ],
+    [null,       '経営学', null,       null,       '社会学'],
+    ['情報処理', null,     null,       '心理学',   null   ],
+    [null,       '統計学', null,       null,       '哲学'  ],
   ]
   const colors: Record<string, string> = {
     '英語基礎': 'bg-blue-500/20 text-blue-300',
@@ -109,6 +109,8 @@ function TimetableMockup() {
     '経営学':   'bg-orange-500/20 text-orange-300',
     '情報処理': 'bg-purple-500/20 text-purple-300',
     '統計学':   'bg-teal-500/20 text-teal-300',
+    '心理学':   'bg-amber-500/20 text-amber-300',
+    '哲学':     'bg-rose-500/20 text-rose-300',
   }
   return (
     <div className="w-full h-full flex flex-col bg-[#0d0d14]">
