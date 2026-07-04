@@ -97,17 +97,18 @@ function FleaMockup() {
 function TimetableMockup() {
   const days = ['月','火','水','木','金']
   const grid: (string | null)[][] = [
-    ['英語I', null, '統計学', null, '哲学'],
-    [null, '経営学', null, '英語I', null],
-    ['情報処理', null, '経営学', null, '統計学'],
-    [null, '情報処理', null, '哲学', null],
+    ['英語基礎', null,     '線形代数', null,     '社会学'],
+    [null,       '経営学', null,       '英語基礎', null   ],
+    ['情報処理', null,     '経営学',   null,       '統計学'],
+    [null,       '情報処理', null,     '社会学',   null   ],
   ]
   const colors: Record<string, string> = {
-    '英語I': 'bg-blue-500/20 text-blue-300',
-    '統計学': 'bg-green-600/20 text-green-300',
-    '哲学': 'bg-pink-500/20 text-pink-300',
-    '経営学': 'bg-orange-500/20 text-orange-300',
+    '英語基礎': 'bg-blue-500/20 text-blue-300',
+    '線形代数': 'bg-green-600/20 text-green-300',
+    '社会学':   'bg-pink-500/20 text-pink-300',
+    '経営学':   'bg-orange-500/20 text-orange-300',
     '情報処理': 'bg-purple-500/20 text-purple-300',
+    '統計学':   'bg-teal-500/20 text-teal-300',
   }
   return (
     <div className="w-full h-full flex flex-col bg-[#0d0d14]">
@@ -256,7 +257,7 @@ export function OnboardingModal() {
             <Button onClick={next}
               className={`${isLast ? 'w-full' : 'flex-1'} rounded-xl h-11 font-bold text-white border-0 gap-1`}
               style={{ background: current.accent }}>
-              {isLast ? 'はじめる 🎉' : <>次へ <ChevronRight className="w-4 h-4" /></>}
+              {isLast ? 'はじめる' : <>次へ <ChevronRight className="w-4 h-4" /></>}
             </Button>
           </div>
         </div>

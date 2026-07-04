@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PWAアイコン案</title>
+<style>
+  body { background: #1a1a2e; font-family: 'Helvetica Neue', Arial, sans-serif; padding: 60px 80px 80px; display: grid; grid-template-columns: repeat(5, 200px); gap: 32px; align-items: start; }
+  .group { display: flex; flex-direction: column; align-items: center; gap: 16px; overflow: hidden; }
+  .label { color: rgba(255,255,255,0.5); font-size: 13px; letter-spacing: 1px; text-align: center; }
+  .name { color: #fff; font-size: 15px; font-weight: 700; text-align: center; }
+
+  /* 512pxを180pxに縮小して表示 */
+  .icon { width: 512px; height: 512px; border-radius: 108px; transform: scale(0.35); transform-origin: top center; margin-bottom: -333px; }
+
+  /* === 案1: ダークグラデーション × "U" モノグラム === */
+  .ic1 {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .ic1::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,179,237,0.2) 0%, transparent 70%);
+    top: -100px; right: -100px;
+  }
+  .ic1 .mono {
+    font-size: 280px; font-weight: 900; color: #fff; line-height: 1;
+    position: relative; z-index: 1; letter-spacing: -10px;
+  }
+  .ic1 .mono span { color: #63b3ed; }
+
+  /* === 案2: ネオン × uc ロゴタイプ === */
+  .ic2 {
+    background: #0d0d0d;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .ic2::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: conic-gradient(from 120deg, rgba(66,153,225,0.3), rgba(159,122,234,0.3), rgba(66,153,225,0.3));
+    filter: blur(80px);
+  }
+  .ic2 .text {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .ic2 .main { font-size: 200px; font-weight: 900; color: #fff; line-height: 0.9; letter-spacing: -8px; }
+  .ic2 .main span { color: #63b3ed; }
+  .ic2 .sub { font-size: 42px; font-weight: 700; color: rgba(255,255,255,0.35); letter-spacing: 12px; margin-top: 16px; }
+
+  /* === 案3: ホワイト × ブルーアクセント（ライトモード） === */
+  .ic3 {
+    background: #f0f7ff;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .ic3::before {
+    content: '';
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(66,153,225,0.15) 0%, transparent 70%);
+    bottom: -80px; right: -80px;
+  }
+  .ic3 .text {
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .ic3 .main { font-size: 180px; font-weight: 900; color: #1a202c; line-height: 1; letter-spacing: -6px; }
+  .ic3 .main em { color: #4299e1; font-style: normal; }
+  .ic3 .dot { width: 24px; height: 24px; background: #4299e1; border-radius: 50%; margin-top: 20px; }
+
+  /* === 案4: サークル × uc イニシャル === */
+  .ic4 {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .ic4 .ring {
+    width: 380px; height: 380px; border-radius: 50%;
+    border: 12px solid rgba(66,153,225,0.3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .ic4 .ring::before {
+    content: '';
+    position: absolute;
+    width: 380px; height: 380px; border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #4299e1;
+    border-right-color: #9f7aea;
+  }
+  .ic4 .letters { font-size: 220px; font-weight: 900; letter-spacing: -12px; display: flex; align-items: baseline; }
+  .ic4 .letters .u { color: #fff; }
+  .ic4 .letters .c { color: #63b3ed; }
+
+  /* === 案5: グラデーション丸アイコン × wordmark === */
+  .ic5 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .ic5::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(0,0,0,0.2) 0%, transparent 50%);
+  }
+  .ic5 .text {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .ic5 .main { font-size: 190px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -8px; }
+  .ic5 .bar { width: 120px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 3px; margin-top: 20px; }
+  .ic5 .sub2 { font-size: 40px; font-weight: 600; color: rgba(255,255,255,0.7); letter-spacing: 8px; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<div class="group">
+  <div class="icon ic1">
+    <div class="mono">u<span>c</span></div>
+  </div>
+  <div class="name">案1</div>
+  <div class="label">ダークグラデーション<br>× UCモノグラム</div>
+</div>
+
+<div class="group">
+  <div class="icon ic2">
+    <div class="text">
+      <div class="main">uni<span>c</span></div>
+      <div class="sub">UNICAN</div>
+    </div>
+  </div>
+  <div class="name">案2</div>
+  <div class="label">ネオンダーク<br>× ロゴタイプ</div>
+</div>
+
+<div class="group">
+  <div class="icon ic3">
+    <div class="text">
+      <div class="main">u<em>c</em></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+  <div class="name">案3</div>
+  <div class="label">ライトブルー<br>× ミニマル</div>
+</div>
+
+<div class="group">
+  <div class="icon ic4">
+    <div class="ring">
+      <div class="letters">
+        <span class="u">u</span><span class="c">c</span>
+      </div>
+    </div>
+  </div>
+  <div class="name">案4</div>
+  <div class="label">リングデザイン<br>× UCイニシャル</div>
+</div>
+
+<div class="group">
+  <div class="icon ic5">
+    <div class="text">
+      <div class="main">uc</div>
+      <div class="bar"></div>
+      <div class="sub2">UNICAN</div>
+    </div>
+  </div>
+  <div class="name">案5</div>
+  <div class="label">ビビッドグラデーション<br>× ワードマーク</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>OGP デザイン案</title>
+<style>
+  body { background: #1a1a2e; font-family: 'Helvetica Neue', Arial, sans-serif; padding: 40px; }
+  h2 { color: #fff; margin: 40px 0 12px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
+  .ogp { width: 1200px; height: 630px; transform-origin: top left; transform: scale(0.5); margin-bottom: -315px; display: block; position: relative; overflow: hidden; }
+
+  /* === 案1: グラデーション×幾何学 === */
+  .og1 {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+  }
+  .og1::before {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,179,237,0.15) 0%, transparent 70%);
+    top: -150px; right: -150px;
+  }
+  .og1::after {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(154,230,180,0.1) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+  }
+  .og1 .inner { position: relative; z-index: 1; text-align: center; }
+  .og1 .logo { font-size: 96px; font-weight: 900; letter-spacing: -2px; color: #fff; }
+  .og1 .logo span { color: #63b3ed; }
+  .og1 .tagline { font-size: 28px; color: rgba(255,255,255,0.7); margin-top: 16px; letter-spacing: 4px; }
+  .og1 .badge { margin-top: 32px; display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 10px 28px; }
+  .og1 .badge-dot { width: 10px; height: 10px; background: #68d391; border-radius: 50%; }
+  .og1 .badge-text { color: rgba(255,255,255,0.8); font-size: 20px; letter-spacing: 1px; }
+
+  /* === 案2: タイポグラフィ重視 === */
+  .og2 {
+    background: #fff;
+    display: flex; align-items: stretch;
+  }
+  .og2-left {
+    width: 480px; background: #1a1a2e;
+    display: flex; flex-direction: column; justify-content: center; padding: 80px;
+  }
+  .og2-right {
+    flex: 1; padding: 80px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .og2 .u-mark { font-size: 200px; font-weight: 900; color: rgba(255,255,255,0.07); line-height: 1; position: absolute; top: 20px; left: 20px; }
+  .og2-left .wordmark { font-size: 72px; font-weight: 900; color: #fff; line-height: 1; position: relative; }
+  .og2-left .wordmark em { color: #63b3ed; font-style: normal; }
+  .og2-left .sub { font-size: 18px; color: rgba(255,255,255,0.5); margin-top: 16px; letter-spacing: 3px; }
+  .og2-right h2 { font-size: 36px; color: #1a1a2e; font-weight: 800; line-height: 1.4; margin: 0; }
+  .og2-right p { font-size: 20px; color: #666; margin-top: 20px; line-height: 1.6; }
+  .og2-right .tags { display: flex; gap: 10px; margin-top: 32px; flex-wrap: wrap; }
+  .og2-right .tag { background: #f0f7ff; color: #2b6cb0; border-radius: 6px; padding: 6px 16px; font-size: 16px; font-weight: 600; }
+
+  /* === 案3: ミニマル×アクセントカラー === */
+  .og3 {
+    background: #fafafa;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 100px 120px;
+    border-left: 20px solid #4299e1;
+  }
+  .og3 .eyebrow { font-size: 18px; letter-spacing: 6px; color: #4299e1; font-weight: 700; margin-bottom: 24px; }
+  .og3 .main { font-size: 110px; font-weight: 900; color: #1a202c; line-height: 1; letter-spacing: -4px; }
+  .og3 .main span { color: #4299e1; }
+  .og3 .desc { font-size: 26px; color: #718096; margin-top: 28px; max-width: 700px; line-height: 1.5; }
+  .og3 .url { position: absolute; bottom: 60px; right: 120px; font-size: 20px; color: #a0aec0; letter-spacing: 1px; }
+
+  /* === 案4: ダーク×ネオン === */
+  .og4 {
+    background: #0d0d0d;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 80px 100px;
+    overflow: hidden;
+  }
+  .og4::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: conic-gradient(from 0deg, #4299e1, #9f7aea, #ed64a6, #4299e1);
+    border-radius: 50%;
+    right: -200px;
+    opacity: 0.15;
+    filter: blur(60px);
+  }
+  .og4-left { z-index: 1; }
+  .og4 .logo-block { font-size: 100px; font-weight: 900; color: #fff; line-height: 1; }
+  .og4 .logo-block span {
+    background: linear-gradient(90deg, #4299e1, #9f7aea);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .og4 .tagline { font-size: 24px; color: rgba(255,255,255,0.4); margin-top: 16px; letter-spacing: 3px; }
+  .og4-right { z-index: 1; display: flex; flex-direction: column; gap: 20px; }
+  .og4 .feature {
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 18px 28px;
+    min-width: 380px;
+  }
+  .og4 .feature-icon { font-size: 28px; }
+  .og4 .feature-text { font-size: 20px; color: rgba(255,255,255,0.8); font-weight: 500; }
+
+  /* === 案4+2 ミックス: ダーク×ネオン × 案2文面 === */
+  .og42 {
+    background: #0d0d0d;
+    display: flex; align-items: stretch;
+    overflow: hidden;
+  }
+  .og42::before {
+    content: '';
+    position: absolute;
+    width: 700px; height: 700px;
+    background: conic-gradient(from 0deg, #4299e1, #9f7aea, #ed64a6, #4299e1);
+    border-radius: 50%;
+    right: -250px; top: -100px;
+    opacity: 0.12;
+    filter: blur(80px);
+  }
+  .og42::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(66,153,225,0.2) 0%, transparent 70%);
+    left: -100px; bottom: -100px;
+    filter: blur(60px);
+  }
+  .og42-left {
+    width: 420px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 70px 60px;
+    position: relative; z-index: 1;
+  }
+  .og42-left .u-bg {
+    font-size: 260px; font-weight: 900;
+    color: rgba(255,255,255,0.03);
+    line-height: 1; position: absolute;
+    top: -20px; left: -10px; pointer-events: none;
+  }
+  .og42-left .wordmark {
+    font-size: 76px; font-weight: 900; color: #fff; line-height: 1; position: relative;
+  }
+  .og42-left .wordmark span {
+    background: linear-gradient(90deg, #4299e1, #9f7aea);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .og42-left .sub { font-size: 15px; color: rgba(255,255,255,0.3); margin-top: 14px; letter-spacing: 4px; }
+  .og42-right {
+    flex: 1; padding: 70px 64px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; z-index: 1;
+  }
+  .og42-right h2 { font-size: 38px; color: #fff; font-weight: 800; line-height: 1.45; margin: 0; }
+  .og42-right p { font-size: 20px; color: rgba(255,255,255,0.45); margin-top: 20px; line-height: 1.7; }
+  .og42-right .tags { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .og42-right .tag {
+    background: rgba(66,153,225,0.15);
+    border: 1px solid rgba(66,153,225,0.35);
+    color: #63b3ed;
+    border-radius: 8px; padding: 8px 20px;
+    font-size: 17px; font-weight: 600;
+  }
+
+  /* === 案5: キャンパスフォト風 === */
+  .og5 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f64f59 100%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 60px 80px;
+  }
+  .og5::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2) 0%, transparent 50%);
+  }
+  .og5-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .og5 .content { position: relative; z-index: 1; }
+  .og5 .chips { display: flex; gap: 12px; margin-bottom: 24px; }
+  .og5 .chip { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 8px 20px; font-size: 16px; color: #fff; font-weight: 500; }
+  .og5 .wordmark { font-size: 88px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -2px; }
+  .og5 .wordmark small { font-size: 36px; font-weight: 400; opacity: 0.8; display: block; margin-top: 4px; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+
+<h2>案1 — ダーク宇宙グラデーション × シンプルロゴ</h2>
+<div class="ogp og1">
+  <div class="inner">
+    <div class="logo">uni<span>can</span></div>
+    <div class="tagline">大学生のコミュニティ</div>
+    <div class="badge">
+      <div class="badge-dot"></div>
+      <div class="badge-text">大学メール限定 · .ac.jp のみ</div>
+    </div>
+  </div>
+</div>
+
+<h2>案2 — 左右分割 × タイポグラフィ</h2>
+<div class="ogp og2">
+  <div class="og2-left">
+    <div class="u-mark">U</div>
+    <div class="wordmark">uni<em>can</em></div>
+    <div class="sub">UNIVERSITY CAMPUS</div>
+  </div>
+  <div class="og2-right">
+    <h2>大学生だけの<br>クローズドコミュニティ</h2>
+    <p>楽単・テスト情報・フリマ・時間割など<br>キャンパスライフを充実させる場所</p>
+    <div class="tags">
+      <span class="tag">掲示板</span>
+      <span class="tag">フリマ</span>
+      <span class="tag">時間割</span>
+      <span class="tag">メッセージ</span>
+    </div>
+  </div>
+</div>
+
+<h2>案3 — ミニマル × ブルーアクセント</h2>
+<div class="ogp og3">
+  <div class="eyebrow">UNIVERSITY COMMUNITY</div>
+  <div class="main">uni<span>can</span></div>
+  <div class="desc">大学メールで繋がる、<br>学生だけのコミュニティ</div>
+  <div class="url">unicampus.jp</div>
+</div>
+
+<h2>案4+2 — ダーク × ネオン × 案2の文面</h2>
+<div class="ogp og42">
+  <div class="og42-left">
+    <div class="u-bg">U</div>
+    <div class="wordmark">uni<span>can</span></div>
+    <div class="sub">UNIVERSITY CAMPUS</div>
+  </div>
+  <div class="og42-right">
+    <h2>大学生だけの<br>クローズドコミュニティ</h2>
+    <p>楽単・テスト情報・フリマ・時間割など<br>キャンパスライフを充実させる場所</p>
+    <div class="tags">
+      <span class="tag">掲示板</span>
+      <span class="tag">フリマ</span>
+      <span class="tag">時間割</span>
+      <span class="tag">メッセージ</span>
+    </div>
+  </div>
+</div>
+
+<h2>案4（元） — ダーク × ネオングラデーション × 機能紹介</h2>
+<div class="ogp og4">
+  <div class="og4-left">
+    <div class="logo-block">uni<span>can</span></div>
+    <div class="tagline">大学生コミュニティ</div>
+  </div>
+  <div class="og4-right">
+    <div class="feature"><span class="feature-icon">📋</span><span class="feature-text">掲示板・楽単情報</span></div>
+    <div class="feature"><span class="feature-icon">🛍️</span><span class="feature-text">フリマ・教科書売買</span></div>
+    <div class="feature"><span class="feature-icon">📅</span><span class="feature-text">時間割シェア</span></div>
+    <div class="feature"><span class="feature-icon">💬</span><span class="feature-text">DM・メッセージ</span></div>
+  </div>
+</div>
+
+<h2>案5 — ビビッドグラデーション × グリッド</h2>
+<div class="ogp og5">
+  <div class="og5-grid"></div>
+  <div class="content">
+    <div class="chips">
+      <span class="chip">掲示板</span>
+      <span class="chip">フリマ</span>
+      <span class="chip">時間割</span>
+      <span class="chip">.ac.jp限定</span>
+    </div>
+    <div class="wordmark">
+      unican
+      <small>大学生のコミュニティ</small>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
