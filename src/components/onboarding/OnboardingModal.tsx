@@ -68,10 +68,70 @@ function BoardMockup() {
 
 function FleaMockup() {
   const items = [
-    { emoji:'📗', name:'基礎化学 改訂版', price:'¥800', sub:'経済学部 3年', bg:'rgba(249,115,22,0.08)' },
-    { emoji:'📘', name:'統計学テキスト', price:'¥1,200', sub:'理工学部 2年', bg:'rgba(245,158,11,0.08)' },
-    { emoji:'📙', name:'英語リーディング', price:'¥500', sub:'文学部 1年', bg:'rgba(249,115,22,0.08)' },
-    { emoji:'🖊️', name:'製図セット', price:'¥2,000', sub:'工学部 4年', bg:'rgba(245,158,11,0.08)' },
+    {
+      name:'基礎化学 改訂版', price:'¥800', sub:'経済学部 3年',
+      bg:'linear-gradient(160deg,#0d2010,#0a1a0d)',
+      svg: <svg width="36" height="44" viewBox="0 0 36 44" fill="none">
+        <rect x="5" y="2" width="24" height="40" rx="3" fill="#1a4a1a"/>
+        <rect x="5" y="2" width="5" height="40" rx="2" fill="#22c55e" opacity="0.8"/>
+        <rect x="12" y="10" width="13" height="1.5" rx="1" fill="#4ade80" opacity="0.6"/>
+        <rect x="12" y="14" width="10" height="1.5" rx="1" fill="#4ade80" opacity="0.4"/>
+        <rect x="12" y="18" width="12" height="1.5" rx="1" fill="#4ade80" opacity="0.4"/>
+        <rect x="12" y="22" width="8"  height="1.5" rx="1" fill="#4ade80" opacity="0.3"/>
+        <rect x="5" y="2" width="24" height="40" rx="3" stroke="#22c55e" strokeWidth="0.5" strokeOpacity="0.4"/>
+      </svg>,
+    },
+    {
+      name:'統計学テキスト', price:'¥1,200', sub:'理工学部 2年',
+      bg:'linear-gradient(160deg,#0d1a2e,#080f1c)',
+      svg: <svg width="36" height="44" viewBox="0 0 36 44" fill="none">
+        <rect x="5" y="2" width="24" height="40" rx="3" fill="#1a2d4a"/>
+        <rect x="5" y="2" width="5" height="40" rx="2" fill="#3b82f6" opacity="0.8"/>
+        <rect x="12" y="10" width="13" height="1.5" rx="1" fill="#93c5fd" opacity="0.6"/>
+        <rect x="12" y="14" width="9"  height="1.5" rx="1" fill="#93c5fd" opacity="0.4"/>
+        <rect x="12" y="18" width="11" height="1.5" rx="1" fill="#93c5fd" opacity="0.4"/>
+        <rect x="12" y="22" width="7"  height="1.5" rx="1" fill="#93c5fd" opacity="0.3"/>
+        <rect x="12" y="26" width="10" height="1.5" rx="1" fill="#93c5fd" opacity="0.3"/>
+        <rect x="5" y="2" width="24" height="40" rx="3" stroke="#3b82f6" strokeWidth="0.5" strokeOpacity="0.4"/>
+      </svg>,
+    },
+    {
+      name:'英語リーディング', price:'¥500', sub:'文学部 1年',
+      bg:'linear-gradient(160deg,#1e1000,#150c00)',
+      svg: <svg width="38" height="44" viewBox="0 0 38 44" fill="none">
+        <rect x="7" y="3" width="24" height="38" rx="2" fill="#292000"/>
+        <rect x="7" y="3" width="24" height="38" rx="2" stroke="#f97316" strokeWidth="0.5" strokeOpacity="0.5"/>
+        <circle cx="7" cy="9"  r="2" fill="none" stroke="#f97316" strokeWidth="1.2" opacity="0.7"/>
+        <circle cx="7" cy="16" r="2" fill="none" stroke="#f97316" strokeWidth="1.2" opacity="0.7"/>
+        <circle cx="7" cy="23" r="2" fill="none" stroke="#f97316" strokeWidth="1.2" opacity="0.7"/>
+        <circle cx="7" cy="30" r="2" fill="none" stroke="#f97316" strokeWidth="1.2" opacity="0.7"/>
+        <circle cx="7" cy="37" r="2" fill="none" stroke="#f97316" strokeWidth="1.2" opacity="0.7"/>
+        <rect x="12" y="12" width="14" height="1" rx="0.5" fill="#f97316" opacity="0.3"/>
+        <rect x="12" y="17" width="16" height="1" rx="0.5" fill="#f97316" opacity="0.3"/>
+        <rect x="12" y="22" width="12" height="1" rx="0.5" fill="#f97316" opacity="0.3"/>
+        <rect x="12" y="27" width="15" height="1" rx="0.5" fill="#f97316" opacity="0.3"/>
+        <rect x="12" y="32" width="11" height="1" rx="0.5" fill="#f97316" opacity="0.3"/>
+      </svg>,
+    },
+    {
+      name:'製図セット', price:'¥2,000', sub:'工学部 4年',
+      bg:'linear-gradient(160deg,#150d2e,#0d0820)',
+      svg: <svg width="34" height="44" viewBox="0 0 34 44" fill="none">
+        <rect x="5" y="2" width="24" height="40" rx="4" fill="#1e1040"/>
+        <rect x="5" y="2" width="24" height="40" rx="4" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.5"/>
+        <rect x="9" y="6" width="16" height="10" rx="2" fill="#2d1a60"/>
+        <rect x="11" y="9" width="10" height="2" rx="1" fill="#a78bfa" opacity="0.8"/>
+        <rect x="15" y="12" width="6" height="1.5" rx="0.75" fill="#a78bfa" opacity="0.5"/>
+        <rect x="9"  y="20" width="4" height="4" rx="1" fill="#312060" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.4"/>
+        <rect x="15" y="20" width="4" height="4" rx="1" fill="#312060" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.4"/>
+        <rect x="21" y="20" width="4" height="4" rx="1" fill="#7c3aed" opacity="0.6"/>
+        <rect x="9"  y="26" width="4" height="4" rx="1" fill="#312060" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.4"/>
+        <rect x="15" y="26" width="4" height="4" rx="1" fill="#312060" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.4"/>
+        <rect x="21" y="26" width="4" height="4" rx="1" fill="#7c3aed" opacity="0.6"/>
+        <rect x="9"  y="32" width="10" height="4" rx="1" fill="#312060" stroke="#8b5cf6" strokeWidth="0.5" strokeOpacity="0.4"/>
+        <rect x="21" y="32" width="4" height="4" rx="1" fill="#7c3aed" opacity="0.6"/>
+      </svg>,
+    },
   ]
   return (
     <div className="w-full h-full flex flex-col bg-[#0d0d14]">
@@ -79,8 +139,8 @@ function FleaMockup() {
       <div className="grid grid-cols-2 gap-2 p-2.5">
         {items.map((item) => (
           <div key={item.name} className="rounded-xl overflow-hidden border border-white/6 bg-white/[0.02]">
-            <div className="h-12 flex items-center justify-center text-2xl" style={{background: item.bg}}>
-              {item.emoji}
+            <div className="h-12 flex items-center justify-center" style={{background: item.bg}}>
+              {item.svg}
             </div>
             <div className="px-2 py-1.5">
               <div className="text-[8.5px] font-semibold text-white/75 mb-0.5">{item.name}</div>
