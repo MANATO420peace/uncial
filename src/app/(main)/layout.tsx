@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { Header } from '@/components/layout/Header'
 import { getUnreadMessageCount } from '@/lib/actions/messages'
+import { OnboardingModal } from '@/components/onboarding/OnboardingModal'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -28,6 +29,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
         {children}
       </main>
       <BottomNav unreadDmCount={unreadDmCount} />
+      <OnboardingModal />
     </div>
   )
 }

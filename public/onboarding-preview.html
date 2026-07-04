@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0f;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 32px 16px;
+  }
+
+  .slide-card {
+    width: 340px;
+    background: #0d0d14;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  }
+
+  .glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0.2;
+    border-radius: 28px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── mockup window ── */
+  .mockup-wrap {
+    position: relative;
+    margin: 24px 20px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #111118;
+    height: 200px;
+  }
+
+  /* スライド1: ウェルカム */
+  .welcome-bg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(160deg, #0d1b2e 0%, #0a0a0f 100%);
+  }
+  .welcome-logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+  .welcome-logo .uni { color: white; }
+  .welcome-logo .can { color: #63b3ed; }
+  .welcome-tag {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .welcome-badge {
+    margin-top: 4px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(99,179,237,0.3);
+    color: #63b3ed;
+    font-size: 10px;
+  }
+  .welcome-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .welcome-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .welcome-dot.on { background: #63b3ed; }
+
+  /* スライド2: 掲示板 */
+  .board-ui {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0d0d14;
+  }
+  .board-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    gap: 8px;
+  }
+  .board-header-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex: 1;
+  }
+  .board-tabs {
+    display: flex;
+    padding: 0 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .board-tab {
+    padding: 6px 12px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+  }
+  .board-tab.active {
+    color: #63b3ed;
+    border-bottom: 2px solid #63b3ed;
+  }
+  .board-cats {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    overflow: hidden;
+  }
+  .board-cat {
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 9px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+  }
+  .board-cat.on {
+    background: rgba(99,179,237,0.15);
+    color: #63b3ed;
+  }
+  .board-post {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .board-post-tag {
+    font-size: 8px;
+    color: #63b3ed;
+    margin-bottom: 3px;
+  }
+  .board-post-title {
+    font-size: 10px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .board-post-meta {
+    font-size: 8px;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* スライド3: フリマ */
+  .flea-ui {
+    width: 100%;
+    height: 100%;
+    background: #0d0d14;
+    display: flex;
+    flex-direction: column;
+  }
+  .flea-header {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+  }
+  .flea-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .flea-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .flea-img {
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .flea-info {
+    padding: 5px 7px;
+  }
+  .flea-name {
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+  .flea-price {
+    font-size: 10px;
+    color: #f6ad55;
+    font-weight: 700;
+  }
+  .flea-badge {
+    font-size: 7px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* スライド4: 時間割 */
+  .tt-ui {
+    width: 100%;
+    height: 100%;
+    background: #0d0d14;
+    display: flex;
+    flex-direction: column;
+  }
+  .tt-header {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tt-week {
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+  }
+  .tt-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 28px repeat(5, 1fr);
+    gap: 2px;
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+  .tt-head {
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    padding: 2px 0;
+    font-size: 9px;
+  }
+  .tt-period {
+    color: rgba(255,255,255,0.2);
+    text-align: right;
+    padding-right: 4px;
+    padding-top: 6px;
+    font-size: 8px;
+  }
+  .tt-cell {
+    border-radius: 6px;
+    padding: 4px 3px;
+    font-size: 7.5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    color: white;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .tt-empty {
+    border-radius: 6px;
+    min-height: 26px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* content area */
+  .content {
+    position: relative;
+    padding: 16px 24px 24px;
+    text-align: center;
+  }
+
+  .slide-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .slide-desc {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+  .dot { height: 5px; border-radius: 999px; background: rgba(255,255,255,0.15); }
+  .dot.active { width: 18px; background: #63b3ed; }
+  .dot:not(.active) { width: 5px; }
+
+  .btns { display: flex; gap: 10px; align-items: center; }
+  .btn-skip { flex: 1; padding: 10px; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 13px; cursor: pointer; }
+  .btn-next { flex: 1; height: 44px; background: #3b82f6; border: none; border-radius: 12px; color: white; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-next.full { flex: none; width: 100%; }
+
+  .label { color: rgba(255,255,255,0.2); font-size: 10px; text-align: center; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Welcome -->
+<div>
+  <div class="slide-card">
+    <div class="glow" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)"></div>
+    <button class="close-btn">✕</button>
+    <div class="mockup-wrap">
+      <div class="welcome-bg">
+        <div class="welcome-logo"><span class="uni">uni</span><span class="can">can</span></div>
+        <div class="welcome-tag">University Campus</div>
+        <div class="welcome-badge">🎓 大学メール限定</div>
+        <div class="welcome-dots">
+          <div class="welcome-dot on"></div>
+          <div class="welcome-dot"></div>
+          <div class="welcome-dot"></div>
+          <div class="welcome-dot"></div>
+          <div class="welcome-dot"></div>
+          <div class="welcome-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="slide-title">unicanへようこそ</div>
+      <div class="slide-desc">大学メール（.ac.jp）で登録した学生だけが使えるクローズドコミュニティです。</div>
+      <div class="dots">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="btns">
+        <button class="btn-skip">スキップ</button>
+        <button class="btn-next">次へ →</button>
+      </div>
+    </div>
+  </div>
+  <div class="label">Slide 1 / 4</div>
+</div>
+
+<!-- Slide 2: 掲示板 -->
+<div>
+  <div class="slide-card">
+    <div class="glow" style="background:linear-gradient(135deg,#10b981,#14b8a6)"></div>
+    <button class="close-btn">✕</button>
+    <div class="mockup-wrap">
+      <div class="board-ui">
+        <div class="board-header">
+          <div class="board-header-title">掲示板</div>
+          <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:10px">✏️</div>
+        </div>
+        <div class="board-tabs">
+          <div class="board-tab active">みんなの投稿</div>
+          <div class="board-tab">フォロー中</div>
+        </div>
+        <div class="board-cats">
+          <div class="board-cat on">すべて</div>
+          <div class="board-cat">楽単情報</div>
+          <div class="board-cat">テスト対策</div>
+          <div class="board-cat">サークル</div>
+        </div>
+        <div class="board-post">
+          <div class="board-post-tag">楽単情報</div>
+          <div class="board-post-title">データサイエンス入門、出席さえすれば余裕でした</div>
+          <div class="board-post-meta">12分前 · 💬 8 · ❤️ 24</div>
+        </div>
+        <div class="board-post">
+          <div class="board-post-tag">テスト対策</div>
+          <div class="board-post-title">経営学のテスト、昨年の過去問ほぼそのまま出た</div>
+          <div class="board-post-meta">1時間前 · 💬 3 · ❤️ 11</div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="slide-title">掲示板で情報交換</div>
+      <div class="slide-desc">楽単・テスト情報・サークルなど、同じ大学の学生と気軽に情報交換できます。</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot active" style="background:#34d399"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="btns">
+        <button class="btn-skip">スキップ</button>
+        <button class="btn-next" style="background:#10b981">次へ →</button>
+      </div>
+    </div>
+  </div>
+  <div class="label">Slide 2 / 4</div>
+</div>
+
+<!-- Slide 3: フリマ -->
+<div>
+  <div class="slide-card">
+    <div class="glow" style="background:linear-gradient(135deg,#f97316,#f59e0b)"></div>
+    <button class="close-btn">✕</button>
+    <div class="mockup-wrap">
+      <div class="flea-ui">
+        <div class="flea-header">フリマ</div>
+        <div class="flea-grid">
+          <div class="flea-item">
+            <div class="flea-img" style="background:rgba(249,115,22,0.08)">📗</div>
+            <div class="flea-info">
+              <div class="flea-name">基礎化学 改訂版</div>
+              <div class="flea-price">¥800</div>
+              <div class="flea-badge">経済学部 3年</div>
+            </div>
+          </div>
+          <div class="flea-item">
+            <div class="flea-img" style="background:rgba(245,158,11,0.08)">📘</div>
+            <div class="flea-info">
+              <div class="flea-name">統計学テキスト</div>
+              <div class="flea-price">¥1,200</div>
+              <div class="flea-badge">理工学部 2年</div>
+            </div>
+          </div>
+          <div class="flea-item">
+            <div class="flea-img" style="background:rgba(249,115,22,0.08)">📙</div>
+            <div class="flea-info">
+              <div class="flea-name">英語リーディング</div>
+              <div class="flea-price">¥500</div>
+              <div class="flea-badge">文学部 1年</div>
+            </div>
+          </div>
+          <div class="flea-item">
+            <div class="flea-img" style="background:rgba(245,158,11,0.08)">🖊️</div>
+            <div class="flea-info">
+              <div class="flea-name">製図セット</div>
+              <div class="flea-price">¥2,000</div>
+              <div class="flea-badge">工学部 4年</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="slide-title">フリマで教科書を売買</div>
+      <div class="slide-desc">同じ大学の学生同士で教科書・参考書・不用品を売買できます。</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot active" style="background:#fb923c"></div><div class="dot"></div>
+      </div>
+      <div class="btns">
+        <button class="btn-skip">スキップ</button>
+        <button class="btn-next" style="background:#f97316">次へ →</button>
+      </div>
+    </div>
+  </div>
+  <div class="label">Slide 3 / 4</div>
+</div>
+
+<!-- Slide 4: 時間割 -->
+<div>
+  <div class="slide-card">
+    <div class="glow" style="background:linear-gradient(135deg,#ec4899,#f43f5e)"></div>
+    <button class="close-btn">✕</button>
+    <div class="mockup-wrap">
+      <div class="tt-ui">
+        <div class="tt-header">
+          <span>時間割</span>
+          <span class="tt-week">前期 2026</span>
+        </div>
+        <div class="tt-grid">
+          <!-- header row -->
+          <div class="tt-head"></div>
+          <div class="tt-head">月</div>
+          <div class="tt-head">火</div>
+          <div class="tt-head">水</div>
+          <div class="tt-head">木</div>
+          <div class="tt-head">金</div>
+          <!-- row1 -->
+          <div class="tt-period">1</div>
+          <div class="tt-cell" style="background:rgba(99,179,237,0.25);color:#90cdf4">英語I</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(154,205,50,0.2);color:#b5e44e">統計学</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(236,72,153,0.2);color:#f472b6">哲学</div>
+          <!-- row2 -->
+          <div class="tt-period">2</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(249,115,22,0.2);color:#fb923c">経営学</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(99,179,237,0.25);color:#90cdf4">英語I</div>
+          <div class="tt-empty"></div>
+          <!-- row3 -->
+          <div class="tt-period">3</div>
+          <div class="tt-cell" style="background:rgba(168,85,247,0.2);color:#c084fc">情報処理</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(249,115,22,0.2);color:#fb923c">経営学</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(154,205,50,0.2);color:#b5e44e">統計学</div>
+          <!-- row4 -->
+          <div class="tt-period">4</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(168,85,247,0.2);color:#c084fc">情報処理</div>
+          <div class="tt-empty"></div>
+          <div class="tt-cell" style="background:rgba(236,72,153,0.2);color:#f472b6">哲学</div>
+          <div class="tt-empty"></div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="slide-title">時間割をシェア</div>
+      <div class="slide-desc">自分の時間割を登録して同じ大学の友達と共有できます。</div>
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active" style="background:#f472b6"></div>
+      </div>
+      <div class="btns">
+        <button class="btn-next full" style="background:#ec4899">はじめる 🎉</button>
+      </div>
+    </div>
+  </div>
+  <div class="label">Slide 4 / 4</div>
+</div>
+
+</body>
+</html>
