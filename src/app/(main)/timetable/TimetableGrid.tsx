@@ -14,6 +14,28 @@ import {
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
+// 科目名から一貫した色を生成する
+const COURSE_COLORS = [
+  { bg: 'bg-blue-500/20',   border: 'border-blue-400/60',   text: 'text-blue-300',   focusBg: 'bg-blue-500/35',   focusBorder: 'border-blue-400' },
+  { bg: 'bg-emerald-500/20', border: 'border-emerald-400/60', text: 'text-emerald-300', focusBg: 'bg-emerald-500/35', focusBorder: 'border-emerald-400' },
+  { bg: 'bg-violet-500/20', border: 'border-violet-400/60', text: 'text-violet-300', focusBg: 'bg-violet-500/35', focusBorder: 'border-violet-400' },
+  { bg: 'bg-orange-500/20', border: 'border-orange-400/60', text: 'text-orange-300', focusBg: 'bg-orange-500/35', focusBorder: 'border-orange-400' },
+  { bg: 'bg-pink-500/20',   border: 'border-pink-400/60',   text: 'text-pink-300',   focusBg: 'bg-pink-500/35',   focusBorder: 'border-pink-400' },
+  { bg: 'bg-teal-500/20',   border: 'border-teal-400/60',   text: 'text-teal-300',   focusBg: 'bg-teal-500/35',   focusBorder: 'border-teal-400' },
+  { bg: 'bg-amber-500/20',  border: 'border-amber-400/60',  text: 'text-amber-300',  focusBg: 'bg-amber-500/35',  focusBorder: 'border-amber-400' },
+  { bg: 'bg-rose-500/20',   border: 'border-rose-400/60',   text: 'text-rose-300',   focusBg: 'bg-rose-500/35',   focusBorder: 'border-rose-400' },
+  { bg: 'bg-cyan-500/20',   border: 'border-cyan-400/60',   text: 'text-cyan-300',   focusBg: 'bg-cyan-500/35',   focusBorder: 'border-cyan-400' },
+  { bg: 'bg-lime-500/20',   border: 'border-lime-400/60',   text: 'text-lime-300',   focusBg: 'bg-lime-500/35',   focusBorder: 'border-lime-400' },
+]
+
+function getCourseColor(courseName: string) {
+  let hash = 0
+  for (let i = 0; i < courseName.length; i++) {
+    hash = (hash * 31 + courseName.charCodeAt(i)) >>> 0
+  }
+  return COURSE_COLORS[hash % COURSE_COLORS.length]
+}
+
 // 月〜土を常時表示（土曜にも授業を追加できる）
 const DAYS = ['月', '火', '水', '木', '金', '土']
 const PERIODS = [1, 2, 3, 4, 5, 6]
@@ -212,10 +234,10 @@ export function TimetableGrid({ entries, tasks: initialTasks, isOwn }: Props) {
                         <div className={[
                           'p-1.5 h-full relative border-l-[3px] flex flex-col',
                           isFocused
-                            ? 'bg-primary/20 border-primary'
-                            : 'bg-primary/10 border-primary/50',
+                            ? `${getCourseColor(entry.course_name).focusBg} ${getCourseColor(entry.course_name).focusBorder}`
+                            : `${getCourseColor(entry.course_name).bg} ${getCourseColor(entry.course_name).border}`,
                         ].join(' ')}>
-                          <p className="font-semibold text-[11px] leading-tight line-clamp-2">
+                          <p className={`font-semibold text-[11px] leading-tight line-clamp-2 ${getCourseColor(entry.course_name).text}`}>
                             {entry.course_name}
                           </p>
                           {entry.professor_name && (
