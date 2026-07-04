@@ -72,17 +72,17 @@ export function Header({ user }: Props) {
 
   return (
     <>
-      <header className="header-gradient sticky top-0 z-50 border-b border-white/10">
+      <header className="header-gradient sticky top-0 z-50 border-b border-black/8 dark:border-white/8">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
           {/* Logo + App name */}
           <Link href="/home" className="flex items-center gap-2 shrink-0">
             <LotusLogo size={32} />
             <div className="flex flex-col leading-none">
               <span className="font-black text-[19px] tracking-tight leading-none">
-                <span className="text-white">uni</span><span className="text-[#63b3ed]">can</span>
+                <span className="text-gray-900 dark:text-white">uni</span><span className="text-[#3b82f6] dark:text-[#63b3ed]">can</span>
               </span>
               {isHome && user?.universities?.name && (
-                <span className="text-white/55 text-[10px] tracking-wide mt-0.5">{user.universities.name}</span>
+                <span className="text-black/40 dark:text-white/55 text-[10px] tracking-wide mt-0.5">{user.universities.name}</span>
               )}
             </div>
           </Link>
@@ -91,17 +91,17 @@ export function Header({ user }: Props) {
           <div className="flex items-center gap-0.5">
             <Link
               href="/buy-sell"
-              className="h-9 w-9 flex items-center justify-center rounded-full text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-full text-black/50 hover:text-black hover:bg-black/5 dark:text-white/75 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
               aria-label="販売・購入"
             >
               <Tag className="h-4 w-4" />
             </Link>
 
-            <NotificationBell className="text-white/75 hover:text-white hover:bg-white/10" />
+            <NotificationBell className="text-black/50 hover:text-black hover:bg-black/5 dark:text-white/75 dark:hover:text-white dark:hover:bg-white/10" />
 
             <button
               onClick={() => setDialogOpen(true)}
-              className="h-9 w-9 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors ml-1"
+              className="h-9 w-9 flex items-center justify-center rounded-full bg-black/8 text-black hover:bg-black/15 dark:bg-white/20 dark:text-white dark:hover:bg-white/30 transition-colors ml-1"
               aria-label="投稿する"
             >
               <Plus className="h-4 w-4" />
@@ -112,9 +112,9 @@ export function Header({ user }: Props) {
               className="ml-1 flex items-center justify-center min-w-[44px] min-h-[44px]"
               aria-label="プロフィール"
             >
-              <Avatar className="h-7 w-7 ring-2 ring-white/30">
+              <Avatar className="h-7 w-7 ring-2 ring-black/15 dark:ring-white/30">
                 {user?.avatar_url && <AvatarImage src={user.avatar_url} />}
-                <AvatarFallback className="text-xs bg-white/20 text-white font-semibold">
+                <AvatarFallback className="text-xs bg-black/8 text-black dark:bg-white/20 dark:text-white font-semibold">
                   {user?.nickname?.[0]?.toUpperCase() ?? '?'}
                 </AvatarFallback>
               </Avatar>
