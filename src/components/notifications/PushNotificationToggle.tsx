@@ -1,10 +1,21 @@
 'use client'
 
-import { Bell, BellOff, Share } from 'lucide-react'
+import { useState } from 'react'
+import { Bell, BellOff, Share, FlaskConical, CheckCircle2, XCircle } from 'lucide-react'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
+import { runNotificationDiagnostics } from '@/lib/actions/debug'
 
 export function PushNotificationToggle() {
   const { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone, iosVersion } = usePushNotifications()
+  const [diagResult, setDiagResult] = useState<{ label: string; ok: boolean; detail: string }[] | null>(null)
+  const [diagLoading, setDiagLoading] = useState(false)
+
+  async function runDiag() {
+    setDiagLoading(true)
+    const result = await runNotificationDiagnostics()
+    setDiagResult(result.steps ?? [])
+    setDiagLoading(false)
+  }
 
   // iOSでPWAとしてインストールされていない場合
   if (isIOS && !isStandalone) {
@@ -59,24 +70,57 @@ export function PushNotificationToggle() {
   }
 
   return (
-    <div className="flex items-center justify-between py-2 border rounded-lg px-3">
-      <div className="flex items-center gap-2">
-        {subscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4 text-muted-foreground" />}
-        <div>
-          <p className="text-sm font-medium">プッシュ通知</p>
-          <p className="text-xs text-muted-foreground">
-            {subscribed ? '有効 — いいね・コメント・フォローを通知' : 'オフ — タップして許可する'}
-          </p>
+    <div className="space-y-3">
+      {/* トグル */}
+      <div className="flex items-center justify-between py-2 border rounded-lg px-3">
+        <div className="flex items-center gap-2">
+          {subscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4 text-muted-foreground" />}
+          <div>
+            <p className="text-sm font-medium">プッシュ通知</p>
+            <p className="text-xs text-muted-foreground">
+              {subscribed ? '有効 — いいね・コメント・フォローを通知' : 'オフ — タップして許可する'}
+            </p>
+          </div>
         </div>
+        <button
+          type="button"
+          onClick={subscribed ? unsubscribe : subscribe}
+          disabled={loading}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${subscribed ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${subscribed ? 'translate-x-6' : 'translate-x-1'}`} />
+        </button>
       </div>
+
+      {/* 診断ボタン */}
       <button
         type="button"
-        onClick={subscribed ? unsubscribe : subscribe}
-        disabled={loading}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${subscribed ? 'bg-primary' : 'bg-muted-foreground/30'}`}
+        onClick={runDiag}
+        disabled={diagLoading}
+        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors px-1"
       >
-        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${subscribed ? 'translate-x-6' : 'translate-x-1'}`} />
+        <FlaskConical className="h-3.5 w-3.5" />
+        {diagLoading ? '診断中...' : '通知が届かない場合はここをタップ（テスト送信）'}
       </button>
+
+      {/* 診断結果 */}
+      {diagResult && (
+        <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
+          <p className="text-xs font-semibold">診断結果</p>
+          {diagResult.map((step, i) => (
+            <div key={i} className="flex items-start gap-2">
+              {step.ok
+                ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                : <XCircle className="h-3.5 w-3.5 text-red-500 shrink-0 mt-0.5" />
+              }
+              <div>
+                <p className="text-xs font-medium leading-tight">{step.label}</p>
+                <p className="text-[11px] text-muted-foreground leading-tight">{step.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
