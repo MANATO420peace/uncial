@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { getConversations } from '@/lib/actions/messages'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { timeAgo } from '@/lib/utils'
+
+export const dynamic = 'force-dynamic'
 import { MessageCircle } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'メッセージ' }
