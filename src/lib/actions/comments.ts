@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createNotification } from './notifications'
 
 export async function createComment(formData: FormData) {
@@ -125,6 +126,10 @@ export async function toggleCommentLike(commentId: string, postId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '認証が必要です' }
 
+  // adminクライアントでlikes_countを確実に更新（RLSで他人のコメントを更新できない問題を回避）
+  let admin: ReturnType<typeof createAdminClient> | typeof supabase
+  try { admin = createAdminClient() } catch { admin = supabase }
+
   const { data: existing } = await supabase
     .from('comment_likes')
     .select('id')
@@ -134,15 +139,25 @@ export async function toggleCommentLike(commentId: string, postId: string) {
 
   if (existing) {
     await supabase.from('comment_likes').delete().eq('id', existing.id)
+    const { count } = await supabase
+      .from('comment_likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('comment_id', commentId)
+    await admin.from('comments').update({ likes_count: count ?? 0 }).eq('id', commentId)
     revalidatePath(`/post/${postId}`)
-    return { liked: false }
+    return { liked: false, likesCount: count ?? 0 }
   } else {
     await supabase.from('comment_likes').insert({ user_id: user.id, comment_id: commentId })
+    const { count } = await supabase
+      .from('comment_likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('comment_id', commentId)
+    await admin.from('comments').update({ likes_count: count ?? 0 }).eq('id', commentId)
 
     // コメント投稿者に「いいね」通知を送る
     const { data: comment } = await supabase
       .from('comments')
-      .select('user_id, anonymous')
+      .select('user_id')
       .eq('id', commentId)
       .single()
     if (comment && comment.user_id !== user.id) {
@@ -152,13 +167,12 @@ export async function toggleCommentLike(commentId: string, postId: string) {
         type: 'comment_like',
         postId,
         commentId,
-        // コメント自体が匿名でもいいねアクション自体は匿名ではない
         isAnonymous: false,
       } as never)
     }
 
     revalidatePath(`/post/${postId}`)
-    return { liked: true }
+    return { liked: true, likesCount: count ?? 0 }
   }
 }
 

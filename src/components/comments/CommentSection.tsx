@@ -34,7 +34,12 @@ function CommentItem({ comment, postId, currentUserId, isReply = false }: Commen
       if (result?.error) { toast.error(result.error); return }
       if (result?.liked !== undefined) {
         setLiked(result.liked)
-        setLikeCount(c => result.liked ? c + 1 : c - 1)
+        // サーバーから返ってきた正確なカウントを使う（RLS起因のずれを防止）
+        if ('likesCount' in result && result.likesCount !== undefined) {
+          setLikeCount(result.likesCount as number)
+        } else {
+          setLikeCount(c => result.liked ? c + 1 : c - 1)
+        }
       }
     })
   }
