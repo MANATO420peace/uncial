@@ -16,19 +16,39 @@ export async function createComment(formData: FormData) {
 
   if (!content.trim()) return { error: 'コメントを入力してください' }
 
-  const { error } = await supabase.from('comments').insert({
+  const { data: newComment, error } = await supabase.from('comments').insert({
     post_id: postId,
     user_id: user.id,
     parent_id: parentId || null,
     content,
     anonymous,
-  })
+  }).select('id').single()
 
   if (error) return { error: error.message }
 
-  const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
-  if (post) {
-    await createNotification({ userId: post.user_id, actorId: user.id, type: 'comment', postId, isAnonymous: anonymous })
+  if (parentId) {
+    // 返信の場合: 親コメントの投稿者に返信通知
+    const { data: parentComment } = await supabase
+      .from('comments')
+      .select('user_id')
+      .eq('id', parentId)
+      .single()
+    if (parentComment && parentComment.user_id !== user.id) {
+      await createNotification({
+        userId: parentComment.user_id,
+        actorId: user.id,
+        type: 'comment_reply',
+        postId,
+        commentId: newComment?.id,
+        isAnonymous: anonymous,
+      } as never)
+    }
+  } else {
+    // 通常コメントの場合: 投稿者に通知
+    const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
+    if (post) {
+      await createNotification({ userId: post.user_id, actorId: user.id, type: 'comment', postId, commentId: newComment?.id, isAnonymous: anonymous })
+    }
   }
 
   revalidatePath(`/post/${postId}`)
@@ -118,7 +138,51 @@ export async function toggleCommentLike(commentId: string, postId: string) {
     return { liked: false }
   } else {
     await supabase.from('comment_likes').insert({ user_id: user.id, comment_id: commentId })
+
+    // コメント投稿者に「いいね」通知を送る
+    const { data: comment } = await supabase
+      .from('comments')
+      .select('user_id, anonymous')
+      .eq('id', commentId)
+      .single()
+    if (comment && comment.user_id !== user.id) {
+      await createNotification({
+        userId: comment.user_id,
+        actorId: user.id,
+        type: 'comment_like',
+        postId,
+        commentId,
+        // コメント自体が匿名でもいいねアクション自体は匿名ではない
+        isAnonymous: false,
+      } as never)
+    }
+
     revalidatePath(`/post/${postId}`)
     return { liked: true }
   }
+}
+
+export async function getRepliedPosts(userId: string) {
+  const supabase = await createClient()
+
+  // 自分がコメントした投稿（親コメント・返信どちらも含む）を取得（重複なし）
+  const { data: comments } = await supabase
+    .from('comments')
+    .select('post_id, posts(*, users(id, nickname), universities(id, name))')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (!comments) return []
+
+  // 投稿IDで重複を除く
+  const seen = new Set<string>()
+  const posts = []
+  for (const c of comments) {
+    const post = c.posts as { id: string } | null
+    if (post && !seen.has(post.id)) {
+      seen.add(post.id)
+      posts.push(post)
+    }
+  }
+  return posts
 }

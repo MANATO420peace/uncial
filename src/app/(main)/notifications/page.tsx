@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Bell, Heart, MessageSquare, UserPlus } from 'lucide-react'
+import { Bell, Heart, MessageSquare, UserPlus, Reply } from 'lucide-react'
 import { getNotifications, markAllNotificationsRead } from '@/lib/actions/notifications'
 import { FollowRequestActions } from '@/components/notifications/FollowRequestActions'
 import { timeAgo } from '@/lib/utils'
@@ -11,6 +11,8 @@ export const metadata: Metadata = { title: '通知' }
 const TYPE_ICON = {
   like: Heart,
   comment: MessageSquare,
+  comment_like: Heart,
+  comment_reply: Reply,
   follow: UserPlus,
   follow_request: UserPlus,
 }
@@ -18,6 +20,8 @@ const TYPE_ICON = {
 const TYPE_TEXT = {
   like: 'があなたの投稿にいいねしました',
   comment: 'があなたの投稿にコメントしました',
+  comment_like: 'があなたのコメントにいいねしました',
+  comment_reply: 'があなたのコメントに返信しました',
   follow: 'があなたをフォローしました',
   follow_request: 'からフォローリクエストが届きました',
 }

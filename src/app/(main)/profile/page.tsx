@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getCurrentUser, getLikedPosts } from '@/lib/actions/user'
-import { getBookmarkedPosts } from '@/lib/actions/bookmarks'
+import { getCurrentUser } from '@/lib/actions/user'
+import { getRepliedPosts } from '@/lib/actions/comments'
 import { getFollowRequests, getFollowStats } from '@/lib/actions/follow'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -22,7 +22,7 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, { data: listings }, bookmarkedPosts, likedPosts, followRequests, followStats] = await Promise.all([
+  const [{ data: posts }, { data: listings }, repliedPosts, followRequests, followStats] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
@@ -37,11 +37,12 @@ export default async function ProfilePage() {
       .eq('category', 'buy_sell')
       .order('created_at', { ascending: false })
       .limit(20),
-    getBookmarkedPosts(),
-    getLikedPosts(),
+    getRepliedPosts(user.id),
     user.is_private ? getFollowRequests() : Promise.resolve([]),
     getFollowStats(user.id),
   ])
+
+  const tabTriggerClass = "rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm"
 
   return (
     <div>
@@ -107,18 +108,9 @@ export default async function ProfilePage() {
 
       <Tabs defaultValue="posts" className="w-full">
         <TabsList className="w-full rounded-none border-b h-10 bg-transparent px-4 justify-start gap-5">
-          <TabsTrigger value="posts" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
-            投稿
-          </TabsTrigger>
-          <TabsTrigger value="listings" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
-            出品
-          </TabsTrigger>
-          <TabsTrigger value="liked" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
-            いいね
-          </TabsTrigger>
-          <TabsTrigger value="bookmarks" className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm">
-            保存済み
-          </TabsTrigger>
+          <TabsTrigger value="posts" className={tabTriggerClass}>投稿</TabsTrigger>
+          <TabsTrigger value="listings" className={tabTriggerClass}>出品</TabsTrigger>
+          <TabsTrigger value="replies" className={tabTriggerClass}>返信</TabsTrigger>
         </TabsList>
 
         <TabsContent value="posts" className="mt-0">
@@ -139,19 +131,11 @@ export default async function ProfilePage() {
           )}
         </TabsContent>
 
-        <TabsContent value="liked" className="mt-0">
-          {likedPosts.length > 0 ? (
-            likedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={post as never} />)
+        <TabsContent value="replies" className="mt-0">
+          {repliedPosts.length > 0 ? (
+            repliedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={post as never} />)
           ) : (
-            <p className="text-center py-10 text-sm text-muted-foreground">いいねした投稿がありません</p>
-          )}
-        </TabsContent>
-
-        <TabsContent value="bookmarks" className="mt-0">
-          {bookmarkedPosts.length > 0 ? (
-            bookmarkedPosts.map(post => post && <PostCard key={(post as never as { id: string }).id} post={Object.assign({}, post, { bookmarked: true }) as never} />)
-          ) : (
-            <p className="text-center py-10 text-sm text-muted-foreground">保存した投稿はありません</p>
+            <p className="text-center py-10 text-sm text-muted-foreground">まだコメント・返信した投稿がありません</p>
           )}
         </TabsContent>
       </Tabs>

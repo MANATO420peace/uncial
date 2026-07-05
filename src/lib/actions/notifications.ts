@@ -5,10 +5,12 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { sendPushToUser } from './push'
 
 const PUSH_MESSAGES: Record<string, { title: string; body: (actor: string) => string; anonymousBody: string }> = {
-  like:           { title: 'いいね',               body: (a) => `${a}さんがあなたの投稿にいいねしました`,    anonymousBody: '匿名ユーザーがあなたの投稿にいいねしました' },
-  comment:        { title: 'コメント',             body: (a) => `${a}さんがコメントしました`,               anonymousBody: '匿名ユーザーがコメントしました' },
-  follow:         { title: 'フォロー',             body: (a) => `${a}さんにフォローされました`,             anonymousBody: '匿名ユーザーにフォローされました' },
-  follow_request: { title: 'フォローリクエスト', body: (a) => `${a}さんからフォローリクエストが届きました`, anonymousBody: '匿名ユーザーからフォローリクエストが届きました' },
+  like:           { title: 'いいね',               body: (a) => `${a}さんがあなたの投稿にいいねしました`,      anonymousBody: '匿名ユーザーがあなたの投稿にいいねしました' },
+  comment:        { title: 'コメント',             body: (a) => `${a}さんがコメントしました`,                 anonymousBody: '匿名ユーザーがコメントしました' },
+  comment_like:   { title: 'コメントいいね',       body: (a) => `${a}さんがあなたのコメントにいいねしました`, anonymousBody: '匿名ユーザーがあなたのコメントにいいねしました' },
+  comment_reply:  { title: '返信',                 body: (a) => `${a}さんがあなたのコメントに返信しました`,   anonymousBody: '匿名ユーザーがあなたのコメントに返信しました' },
+  follow:         { title: 'フォロー',             body: (a) => `${a}さんにフォローされました`,               anonymousBody: '匿名ユーザーにフォローされました' },
+  follow_request: { title: 'フォローリクエスト', body: (a) => `${a}さんからフォローリクエストが届きました`,   anonymousBody: '匿名ユーザーからフォローリクエストが届きました' },
 }
 
 export async function createNotification({
@@ -21,7 +23,7 @@ export async function createNotification({
 }: {
   userId: string
   actorId: string
-  type: 'like' | 'comment' | 'follow' | 'follow_request'
+  type: 'like' | 'comment' | 'comment_like' | 'comment_reply' | 'follow' | 'follow_request'
   postId?: string
   commentId?: string
   isAnonymous?: boolean
@@ -29,7 +31,6 @@ export async function createNotification({
   if (userId === actorId) return
 
   // adminクライアント優先（RLS無視で他ユーザーへの通知を書き込む）
-  // 失敗した場合は通常クライアントで試みる（Supabaseに INSERT ポリシーが必要）
   let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
   let usingAdmin = false
   try {
@@ -42,7 +43,6 @@ export async function createNotification({
 
   const { error } = await db.from('notifications').insert({
     user_id: userId,
-    // 匿名の場合は actor_id を null にして誰がアクションしたか秘匿する
     actor_id: isAnonymous ? null : actorId,
     type,
     post_id: postId ?? null,
@@ -56,7 +56,6 @@ export async function createNotification({
 
   console.log('[createNotification] created:', type, 'for user:', userId, isAnonymous ? '(anonymous)' : '')
 
-  // プッシュ通知を送信
   const msg = PUSH_MESSAGES[type]
   if (msg) {
     if (isAnonymous) {
@@ -75,7 +74,6 @@ export async function getNotifications() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { notifications: [], unreadCount: 0 }
 
-  // adminクライアントでRLSを回避（SELECT ポリシー未設定環境でも動作させるため）
   let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
   try {
     db = createAdminClient()
@@ -108,7 +106,6 @@ export async function markAllNotificationsRead() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
 
-  // adminクライアントでRLSを回避
   let db: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>
   try {
     db = createAdminClient()
