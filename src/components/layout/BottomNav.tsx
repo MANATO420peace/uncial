@@ -42,6 +42,9 @@ export function BottomNav({ unreadDmCount = 0 }: Props) {
     }
   }, [pathname])
 
+  // チャット詳細画面ではボトムナビを非表示
+  if (CHAT_DETAIL_RE.test(pathname)) return null
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-md">
       <div className="max-w-2xl mx-auto px-1 h-16 flex items-center justify-around">

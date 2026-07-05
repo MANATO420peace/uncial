@@ -132,7 +132,7 @@ export function ChatRoom({ conversationId, currentUserId, otherUser }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-7rem)]">
+    <div className="flex flex-col h-[calc(100dvh-3.5rem)]">
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {!loaded && (
           <p className="text-center text-sm text-muted-foreground py-8">読み込み中...</p>
