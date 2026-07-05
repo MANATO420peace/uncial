@@ -150,6 +150,7 @@ export default async function PostPage({ params }: Props) {
             postId={post.id}
             initialLiked={post.liked ?? false}
             initialCount={post.likes_count}
+            currentUserId={user?.id}
           />
           <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <MessageSquare className="h-4 w-4" />

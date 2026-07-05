@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Heart, MessageSquare, MapPin, Pencil, Trash2, ChevronRight } from 'lucide-react'
@@ -23,15 +23,17 @@ import { cn, timeAgo, truncate } from '@/lib/utils'
 import { POST_CATEGORY_LABELS, POST_CATEGORY_COLORS } from '@/types'
 import { toggleLike, deletePost } from '@/lib/actions/posts'
 import { getLikeState, setLikeState } from '@/lib/client/likeStore'
+import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import type { Post } from '@/types'
 
 interface Props {
   post: Post
   isOwner?: boolean
+  currentUserId?: string
 }
 
-export function PostCard({ post, isOwner = false }: Props) {
+export function PostCard({ post, isOwner = false, currentUserId }: Props) {
   const router = useRouter()
   const [isDeleting, startDeleteTransition] = useTransition()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -45,6 +47,34 @@ export function PostCard({ post, isOwner = false }: Props) {
   const [liked, setLiked] = useState(initialState.liked)
   const [likesCount, setLikesCount] = useState(initialState.count)
   const [isLiking, setIsLiking] = useState(false)
+
+  // 他端末・他ユーザーのいいねをリアルタイムで受信
+  useEffect(() => {
+    const supabase = createClient()
+    const channel = supabase
+      .channel(`post-likes:${post.id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'likes', filter: `post_id=eq.${post.id}` },
+        (payload) => {
+          // 自分の操作は楽観的更新済みなのでスキップ
+          const changedUserId =
+            payload.eventType === 'INSERT'
+              ? (payload.new as { user_id: string }).user_id
+              : (payload.old as { user_id: string }).user_id
+          if (currentUserId && changedUserId === currentUserId) return
+
+          if (payload.eventType === 'INSERT') {
+            setLikesCount(c => c + 1)
+          } else if (payload.eventType === 'DELETE') {
+            setLikesCount(c => Math.max(0, c - 1))
+          }
+        }
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [post.id, currentUserId])
 
   async function handleLike(e: React.MouseEvent) {
     e.stopPropagation()
