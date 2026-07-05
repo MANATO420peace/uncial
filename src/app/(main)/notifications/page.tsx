@@ -22,6 +22,8 @@ const TYPE_TEXT = {
   follow_request: 'からフォローリクエストが届きました',
 }
 
+const ANONYMOUS_LABEL = '匿名ユーザー'
+
 export default async function NotificationsPage() {
   const { notifications } = await getNotifications()
   await markAllNotificationsRead()
@@ -52,6 +54,9 @@ export default async function NotificationsPage() {
             const text = TYPE_TEXT[notif.type] ?? ''
             const isFollowRequest = notif.type === 'follow_request'
 
+            const isAnonymous = !notif.actor
+            const displayName = isAnonymous ? ANONYMOUS_LABEL : notif.actor!.nickname
+
             const href = (notif.type === 'follow' || notif.type === 'follow_request') && notif.actor
               ? `/user/${notif.actor.id}`
               : notif.post?.id
@@ -62,19 +67,19 @@ export default async function NotificationsPage() {
               <div className="flex items-start gap-3 w-full">
                 <Avatar className="h-9 w-9 shrink-0">
                   <AvatarFallback className="text-xs bg-muted">
-                    {notif.actor?.nickname?.[0]?.toUpperCase() ?? '?'}
+                    {isAnonymous ? '?' : displayName[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm">
-                    <span className="font-semibold">{notif.actor?.nickname}</span>
+                    <span className="font-semibold">{displayName}</span>
                     {text}
                   </p>
                   {notif.post?.title && (
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">「{notif.post.title}」</p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1">{timeAgo(notif.created_at)}</p>
-                  {isFollowRequest && notif.actor && (
+                  {isFollowRequest && !isAnonymous && notif.actor && (
                     <FollowRequestActions requesterId={notif.actor.id} />
                   )}
                 </div>

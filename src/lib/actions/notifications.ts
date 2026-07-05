@@ -4,11 +4,11 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendPushToUser } from './push'
 
-const PUSH_MESSAGES: Record<string, { title: string; body: (actor: string) => string }> = {
-  like: { title: 'いいね', body: (a) => `${a}さんがあなたの投稿にいいねしました` },
-  comment: { title: 'コメント', body: (a) => `${a}さんがコメントしました` },
-  follow: { title: 'フォロー', body: (a) => `${a}さんにフォローされました` },
-  follow_request: { title: 'フォローリクエスト', body: (a) => `${a}さんからフォローリクエストが届きました` },
+const PUSH_MESSAGES: Record<string, { title: string; body: (actor: string) => string; anonymousBody: string }> = {
+  like:           { title: 'いいね',               body: (a) => `${a}さんがあなたの投稿にいいねしました`,    anonymousBody: '匿名ユーザーがあなたの投稿にいいねしました' },
+  comment:        { title: 'コメント',             body: (a) => `${a}さんがコメントしました`,               anonymousBody: '匿名ユーザーがコメントしました' },
+  follow:         { title: 'フォロー',             body: (a) => `${a}さんにフォローされました`,             anonymousBody: '匿名ユーザーにフォローされました' },
+  follow_request: { title: 'フォローリクエスト', body: (a) => `${a}さんからフォローリクエストが届きました`, anonymousBody: '匿名ユーザーからフォローリクエストが届きました' },
 }
 
 export async function createNotification({
@@ -17,12 +17,14 @@ export async function createNotification({
   type,
   postId,
   commentId,
+  isAnonymous = false,
 }: {
   userId: string
   actorId: string
   type: 'like' | 'comment' | 'follow' | 'follow_request'
   postId?: string
   commentId?: string
+  isAnonymous?: boolean
 }) {
   if (userId === actorId) return
 
@@ -40,7 +42,8 @@ export async function createNotification({
 
   const { error } = await db.from('notifications').insert({
     user_id: userId,
-    actor_id: actorId,
+    // 匿名の場合は actor_id を null にして誰がアクションしたか秘匿する
+    actor_id: isAnonymous ? null : actorId,
     type,
     post_id: postId ?? null,
     comment_id: commentId ?? null,
@@ -51,13 +54,19 @@ export async function createNotification({
     return
   }
 
-  console.log('[createNotification] created:', type, 'for user:', userId)
+  console.log('[createNotification] created:', type, 'for user:', userId, isAnonymous ? '(anonymous)' : '')
 
-  // アクター名を取得してプッシュ通知を送信
-  const { data: actor } = await db.from('users').select('nickname').eq('id', actorId).single()
+  // プッシュ通知を送信
   const msg = PUSH_MESSAGES[type]
-  if (msg && actor) {
-    await sendPushToUser(userId, msg.title, msg.body(actor.nickname), '/notifications')
+  if (msg) {
+    if (isAnonymous) {
+      await sendPushToUser(userId, msg.title, msg.anonymousBody, '/notifications')
+    } else {
+      const { data: actor } = await db.from('users').select('nickname').eq('id', actorId).single()
+      if (actor) {
+        await sendPushToUser(userId, msg.title, msg.body(actor.nickname), '/notifications')
+      }
+    }
   }
 }
 

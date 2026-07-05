@@ -28,7 +28,7 @@ export async function createComment(formData: FormData) {
 
   const { data: post } = await supabase.from('posts').select('user_id').eq('id', postId).single()
   if (post) {
-    await createNotification({ userId: post.user_id, actorId: user.id, type: 'comment', postId })
+    await createNotification({ userId: post.user_id, actorId: user.id, type: 'comment', postId, isAnonymous: anonymous })
   }
 
   revalidatePath(`/post/${postId}`)
