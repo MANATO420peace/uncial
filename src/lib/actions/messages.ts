@@ -150,6 +150,12 @@ export async function sendMessage(conversationId: string, content: string, image
 
   if (error) return { error: error.message }
 
+  // conversations.last_message_at を現在時刻に更新
+  await supabase
+    .from('conversations')
+    .update({ last_message_at: new Date().toISOString() })
+    .eq('id', conversationId)
+
   // 相手ユーザーへプッシュ通知を送信
   const { data: conv } = await supabase
     .from('conversations')
