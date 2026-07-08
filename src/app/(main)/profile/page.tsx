@@ -22,25 +22,33 @@ export default async function ProfilePage() {
   if (!user) return null
 
   const supabase = await createClient()
-  const [{ data: posts }, { data: listings }, repliedPosts, followRequests, followStats] = await Promise.all([
+
+  const [postsResult, listingsResult, repliedPosts, followRequests, followStats] = await Promise.all([
     supabase
       .from('posts')
       .select('*, universities(id, name)')
       .eq('user_id', user.id)
       .neq('category', 'buy_sell')
       .order('created_at', { ascending: false })
-      .limit(20),
+      .limit(20)
+      .then(r => r)
+      .catch(() => ({ data: [] })),
     supabase
       .from('posts')
       .select('*, universities(id, name)')
       .eq('user_id', user.id)
       .eq('category', 'buy_sell')
       .order('created_at', { ascending: false })
-      .limit(20),
-    getRepliedPosts(user.id),
-    user.is_private ? getFollowRequests() : Promise.resolve([]),
-    getFollowStats(user.id),
+      .limit(20)
+      .then(r => r)
+      .catch(() => ({ data: [] })),
+    getRepliedPosts(user.id).catch(() => []),
+    (user.is_private ? getFollowRequests() : Promise.resolve([])).catch(() => []),
+    getFollowStats(user.id).catch(() => ({ followersCount: 0, followingCount: 0, isFollowing: false, hasPendingRequest: false })),
   ])
+
+  const posts = postsResult.data
+  const listings = listingsResult.data
 
   const tabTriggerClass = "rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-0 pb-0 text-sm"
 
