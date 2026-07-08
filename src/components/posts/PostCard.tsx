@@ -4,7 +4,6 @@ import { useState, useEffect, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Heart, MessageSquare, MapPin, Pencil, Trash2, ChevronRight } from 'lucide-react'
-import { ReportButton } from './ReportButton'
 import { BookmarkButton } from './BookmarkButton'
 import { ShareButton } from './ShareButton'
 import { Badge } from '@/components/ui/badge'
@@ -292,9 +291,6 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
               <BookmarkButton postId={post.id} initialBookmarked={post.bookmarked ?? false} />
             </span>
             <ShareButton postId={post.id} title={post.title} />
-            <span onClick={e => e.stopPropagation()}>
-              <ReportButton postId={post.id} />
-            </span>
           </div>
         </div>
 
