@@ -177,26 +177,30 @@ export async function toggleCommentLike(commentId: string, postId: string) {
 }
 
 export async function getRepliedPosts(userId: string) {
-  const supabase = await createClient()
+  try {
+    const supabase = await createClient()
 
-  // 自分がコメントした投稿（親コメント・返信どちらも含む）を取得（重複なし）
-  const { data: comments } = await supabase
-    .from('comments')
-    .select('post_id, posts(*, users(id, nickname), universities(id, name))')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
+    // 自分がコメントした投稿（親コメント・返信どちらも含む）を取得（重複なし）
+    const { data: comments, error } = await supabase
+      .from('comments')
+      .select('post_id, posts(*, users(id, nickname), universities(id, name))')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
 
-  if (!comments) return []
+    if (error || !comments) return []
 
-  // 投稿IDで重複を除く
-  const seen = new Set<string>()
-  const posts = []
-  for (const c of comments) {
-    const post = c.posts as { id: string } | null
-    if (post && !seen.has(post.id)) {
-      seen.add(post.id)
-      posts.push(post)
+    // 投稿IDで重複を除く
+    const seen = new Set<string>()
+    const posts = []
+    for (const c of comments) {
+      const post = c.posts as { id: string } | null
+      if (post && !seen.has(post.id)) {
+        seen.add(post.id)
+        posts.push(post)
+      }
     }
+    return posts
+  } catch {
+    return []
   }
-  return posts
 }
