@@ -56,7 +56,7 @@ export default function BuySellNewPage() {
     })
   }, [])
 
-  const canProceed = eligibility?.isUniversityEmail && termsAgreed
+  const canProceed = termsAgreed
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
