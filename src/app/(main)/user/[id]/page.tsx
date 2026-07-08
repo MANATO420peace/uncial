@@ -124,14 +124,17 @@ export default async function UserProfilePage({ params }: Props) {
 
         {/* DM・フォロー・通知ボタン */}
         {!isOwnProfile && currentUser && !blockMuteStatus.isBlocked && (
-          <div className="flex gap-2 mt-4">
-            <DMButton targetUserId={id} />
-            <FollowButton
-              targetUserId={id}
-              initialFollowing={followStats.isFollowing}
-              initialRequestPending={followStats.hasPendingRequest}
-            />
-            <PostNotificationButton targetUserId={id} initialStatus={postNotificationEnabled} />
+          <div className="flex gap-2 mt-4 w-full">
+            <div className="flex-1"><DMButton targetUserId={id} className="w-full" /></div>
+            <div className="flex-1">
+              <FollowButton
+                targetUserId={id}
+                initialFollowing={followStats.isFollowing}
+                initialRequestPending={followStats.hasPendingRequest}
+                className="w-full"
+              />
+            </div>
+            <div className="flex-1"><PostNotificationButton targetUserId={id} initialStatus={postNotificationEnabled} /></div>
           </div>
         )}
 

@@ -39,7 +39,7 @@ export function PostNotificationButton({ targetUserId, initialStatus }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={anyOn ? 'default' : 'outline'} size="sm" disabled={loading} className="gap-1">
+        <Button variant={anyOn ? 'default' : 'outline'} size="sm" disabled={loading} className="gap-1 w-full">
           {anyOn ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
           通知
           <ChevronDown className="h-3 w-3" />
