@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { LayoutList, ShoppingBag, CalendarDays, MessageCircle } from 'lucide-react'
 
 export default async function RootPage() {
   const supabase = await createClient()
@@ -28,7 +29,7 @@ export default async function RootPage() {
         {/* ロゴ */}
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-400/30 text-blue-400 text-xs mb-2">
-            🎓 大学メール限定
+            大学メール限定
           </div>
           <h1 className="text-5xl font-black tracking-tight leading-none">
             <span className="text-white">uni</span><span className="text-blue-400">can</span>
@@ -43,16 +44,16 @@ export default async function RootPage() {
         {/* 機能カード */}
         <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
           {[
-            { icon: '📋', title: '掲示板', desc: '楽単・テスト情報を共有' },
-            { icon: '🛍️', title: 'フリマ', desc: '教科書・参考書を売買' },
-            { icon: '📅', title: '時間割', desc: '友達と時間割をシェア' },
-            { icon: '💬', title: 'DM', desc: '学生同士でメッセージ' },
+            { icon: LayoutList, title: '掲示板', desc: '楽単・テスト情報を共有', color: 'text-blue-400' },
+            { icon: ShoppingBag, title: 'フリマ', desc: '教科書・参考書を売買', color: 'text-orange-400' },
+            { icon: CalendarDays, title: '時間割', desc: '友達と時間割をシェア', color: 'text-pink-400' },
+            { icon: MessageCircle, title: 'DM', desc: '学生同士でメッセージ', color: 'text-green-400' },
           ].map(f => (
             <div
               key={f.title}
               className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-4 text-left"
             >
-              <div className="text-2xl mb-2">{f.icon}</div>
+              <f.icon className={`h-6 w-6 mb-2 ${f.color}`} strokeWidth={1.5} />
               <div className="text-sm font-bold text-white mb-0.5">{f.title}</div>
               <div className="text-xs text-white/40">{f.desc}</div>
             </div>
