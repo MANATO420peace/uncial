@@ -57,11 +57,21 @@ export async function getFollowList(userId: string, type: 'followers' | 'followi
 
 export async function getUniversities() {
   const supabase = await createClient()
-  const { data } = await supabase
+  const { data: unis } = await supabase
     .from('universities')
-    .select('id, name, domain, university_domains(domain)')
+    .select('id, name, domain')
     .order('name')
-  return data ?? []
+  if (!unis) return []
+
+  // 各大学のドメイン一覧を取得
+  const { data: domainRows } = await supabase
+    .from('university_domains')
+    .select('university_id, domain')
+
+  return unis.map(u => ({
+    ...u,
+    university_domains: domainRows?.filter(d => d.university_id === u.id).map(d => ({ domain: d.domain })) ?? [],
+  }))
 }
 
 export async function getCurrentUser() {

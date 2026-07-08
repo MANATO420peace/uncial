@@ -170,7 +170,9 @@ export function SearchClient({
 
         <Select value={universityId || 'all'} onValueChange={handleUniversityChange}>
           <SelectTrigger className="h-8 text-xs">
-            <SelectValue placeholder="大学で絞り込み" />
+            <span className="text-xs">
+              {universityId ? (universities.find(u => u.id === universityId)?.name ?? 'すべての大学') : 'すべての大学'}
+            </span>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">すべての大学</SelectItem>
