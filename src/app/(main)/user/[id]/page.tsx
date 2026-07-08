@@ -82,17 +82,6 @@ export default async function UserProfilePage({ params }: Props) {
           </Avatar>
           {!isOwnProfile && currentUser ? (
             <div className="flex items-center gap-2">
-              {!blockMuteStatus.isBlocked && <DMButton targetUserId={id} />}
-              {!blockMuteStatus.isBlocked && (
-                <FollowButton
-                  targetUserId={id}
-                  initialFollowing={followStats.isFollowing}
-                  initialRequestPending={followStats.hasPendingRequest}
-                />
-              )}
-              {!blockMuteStatus.isBlocked && (
-                <PostNotificationButton targetUserId={id} initialEnabled={postNotificationEnabled} />
-              )}
               <ProfileShareButton userId={id} nickname={profile.nickname} />
               <UserActionMenu
                 targetUserId={id}
@@ -132,6 +121,19 @@ export default async function UserProfilePage({ params }: Props) {
             <Badge variant="secondary" className="text-xs">{profile.grade}</Badge>
           )}
         </div>
+
+        {/* DM・フォロー・通知ボタン */}
+        {!isOwnProfile && currentUser && !blockMuteStatus.isBlocked && (
+          <div className="flex gap-2 mt-4">
+            <DMButton targetUserId={id} />
+            <FollowButton
+              targetUserId={id}
+              initialFollowing={followStats.isFollowing}
+              initialRequestPending={followStats.hasPendingRequest}
+            />
+            <PostNotificationButton targetUserId={id} initialEnabled={postNotificationEnabled} />
+          </div>
+        )}
 
         <div className="mt-4 flex gap-6 text-sm">
           {!isPrivate && (
