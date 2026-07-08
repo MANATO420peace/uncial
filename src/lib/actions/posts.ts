@@ -164,12 +164,15 @@ export async function getPosts(filter: PostFilter = {}) {
       users(id, nickname, university_id),
       universities(id, name)
     `)
-    // buy_sell は専用ページ（/buy-sell）のみに表示し、ホームフィードから除外
-    .neq('category', 'buy_sell')
 
   // 匿名投稿はuser_idを持つが匿名として表示。ブロック対象はuser_idで除外
   if (excludeIds.length > 0) {
     query = query.not('user_id', 'in', `(${excludeIds.join(',')})`)
+  }
+
+  // buy_sell はホームフィードから除外（カテゴリ指定がない場合のみ）
+  if (!filter.category) {
+    query = query.neq('category', 'buy_sell')
   }
 
   if (filter.university_id) {
