@@ -180,25 +180,28 @@ export async function getRepliedPosts(userId: string) {
   try {
     const supabase = await createClient()
 
-    // 自分がコメントした投稿（親コメント・返信どちらも含む）を取得（重複なし）
-    const { data: comments, error } = await supabase
+    // まずコメントしたpost_idを取得
+    const { data: comments, error: commentError } = await supabase
       .from('comments')
-      .select('post_id, posts(*, users(id, nickname), universities(id, name))')
+      .select('post_id')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
 
-    if (error || !comments) return []
+    if (commentError || !comments || comments.length === 0) return []
 
-    // 投稿IDで重複を除く
-    const seen = new Set<string>()
-    const posts = []
-    for (const c of comments) {
-      const post = c.posts as { id: string } | null
-      if (post && !seen.has(post.id)) {
-        seen.add(post.id)
-        posts.push(post)
-      }
-    }
+    // 重複を除いたpost_idリスト
+    const postIds = [...new Set(comments.map(c => c.post_id).filter(Boolean))]
+    if (postIds.length === 0) return []
+
+    // 投稿を別途取得
+    const { data: posts, error: postsError } = await supabase
+      .from('posts')
+      .select('*, users(id, nickname), universities(id, name)')
+      .in('id', postIds)
+      .order('created_at', { ascending: false })
+
+    if (postsError || !posts) return []
+
     return posts
   } catch {
     return []
