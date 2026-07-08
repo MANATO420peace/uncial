@@ -18,6 +18,19 @@ interface Props {
 }
 
 
+/** メールアドレスのドメインから大学を検索する */
+function detectUniversity(email: string, universities: University[]): University | null {
+  const domain = email.toLowerCase().split('@')[1]
+  if (!domain) return null
+  for (const u of universities) {
+    // primaryドメインチェック
+    if (u.domain && domain === u.domain) return u
+    // university_domainsテーブルのドメインチェック
+    if (u.university_domains?.some(d => d.domain === domain)) return u
+  }
+  return null
+}
+
 export function RegisterForm({ universities }: Props) {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -27,18 +40,28 @@ export function RegisterForm({ universities }: Props) {
   const [termsAgreed, setTermsAgreed] = useState(false)
 
   const isUniversityEmail = email.toLowerCase().endsWith('.ac.jp')
-  const universityName = universities.find(u => u.id === universityId)?.name
+  const emailDomain = email.includes('@') ? email.toLowerCase().split('@')[1] : ''
+  const detectedUniversity = email.includes('@') ? detectUniversity(email, universities) : null
+  // 検出された大学があればそれを使い、なければ手動選択
+  const effectiveUniversityId = detectedUniversity ? detectedUniversity.id : universityId
+  const universityName = universities.find(u => u.id === effectiveUniversityId)?.name
+  // 対応大学のドメインかどうか
+  const isAllowedDomain = !email.includes('@') || !isUniversityEmail || !!detectedUniversity
 
   // .ac.jp以外はOB・OG固定
   const effectiveGrade = isUniversityEmail ? grade : 'OB・OG'
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!universityId) { toast.error('大学を選択してください'); return }
+    if (isUniversityEmail && !detectedUniversity) {
+      toast.error('現在は関西学院大学・関西大学・同志社大学・立命館大学・神戸大学のみ登録できます')
+      return
+    }
+    if (!effectiveUniversityId) { toast.error('大学を選択してください'); return }
     if (isUniversityEmail && !grade) { toast.error('学年を選択してください'); return }
     setLoading(true)
     const formData = new FormData(e.currentTarget)
-    formData.set('university_id', universityId)
+    formData.set('university_id', effectiveUniversityId)
     formData.set('grade', effectiveGrade)
     const result = await signUpWithEmail(formData)
     if (result?.error) {
@@ -88,17 +111,24 @@ export function RegisterForm({ universities }: Props) {
             placeholder="student@university.ac.jp"
             required
             value={email}
-            onChange={e => { setEmail(e.target.value); if (!e.target.value.toLowerCase().endsWith('.ac.jp')) setGrade('') }}
+            onChange={e => {
+              setEmail(e.target.value)
+              if (!e.target.value.toLowerCase().endsWith('.ac.jp')) setGrade('')
+              // メール変更時は手動選択をリセット
+              setUniversityId('')
+            }}
           />
-          {email ? (
-            <p className={`text-xs ${isUniversityEmail ? 'text-green-600' : 'text-destructive'}`}>
-              {isUniversityEmail
-                ? '✅ 大学メールアドレスが確認されました'
-                : '❌ 大学のメールアドレス（〜@〜.ac.jp）が必要です'}
-            </p>
+          {email && email.includes('@') ? (
+            !isUniversityEmail ? (
+              <p className="text-xs text-destructive">❌ 大学のメールアドレス（〜@〜.ac.jp）が必要です</p>
+            ) : detectedUniversity ? (
+              <p className="text-xs text-green-600">✅ {detectedUniversity.name}のメールアドレスが確認されました</p>
+            ) : (
+              <p className="text-xs text-destructive">❌ 現在は関西学院大学・関西大学・同志社大学・立命館大学・神戸大学のみ対応しています</p>
+            )
           ) : (
             <p className="text-xs text-muted-foreground">
-              大学のメールアドレス（〜@〜.ac.jp）のみ登録できます
+              対応大学の学生メール（〜.ac.jp）のみ登録できます
             </p>
           )}
         </div>
@@ -108,16 +138,24 @@ export function RegisterForm({ universities }: Props) {
         </div>
         <div className="space-y-1.5">
           <Label>大学 *</Label>
-          <Select value={universityId} onValueChange={v => setUniversityId(v ?? '')}>
-            <SelectTrigger>
-              <SelectValue placeholder="大学を選択">{universityName ?? ''}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {universities.map(u => (
-                <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {detectedUniversity ? (
+            // メールドメインから自動判定済み → ロック表示
+            <div className="h-10 rounded-md border bg-muted/50 px-3 flex items-center text-sm">
+              {detectedUniversity.name}
+              <span className="ml-2 text-xs text-muted-foreground">（自動検出）</span>
+            </div>
+          ) : (
+            <Select value={universityId} onValueChange={v => setUniversityId(v ?? '')}>
+              <SelectTrigger>
+                <SelectValue placeholder="大学を選択">{universityName ?? ''}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {universities.map(u => (
+                  <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -158,7 +196,7 @@ export function RegisterForm({ universities }: Props) {
           </div>
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading || !termsAgreed}>
+        <Button type="submit" className="w-full" disabled={loading || !termsAgreed || (isUniversityEmail && !detectedUniversity)}>
           {loading ? '登録中...' : 'アカウント作成'}
         </Button>
       </form>

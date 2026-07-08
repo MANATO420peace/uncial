@@ -39,7 +39,9 @@ export const POST_CATEGORY_COLORS: Record<PostCategory, string> = {
 export interface University {
   id: string
   name: string
+  domain?: string | null
   created_at: string
+  university_domains?: { domain: string }[]
 }
 
 export interface User {

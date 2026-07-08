@@ -59,7 +59,7 @@ export async function getUniversities() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('universities')
-    .select('*')
+    .select('id, name, domain, university_domains(domain)')
     .order('name')
   return data ?? []
 }

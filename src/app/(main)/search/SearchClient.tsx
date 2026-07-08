@@ -62,7 +62,11 @@ export function SearchClient({
 }: Props) {
   const router = useRouter()
   const [input, setInput] = useState(query)
-  const [universityId, setUniversityId] = useState(selectedUniversityId)
+  // selectedUniversityIdがリストに存在しない場合はallにフォールバック
+  const validUniversityId = selectedUniversityId && universities.some(u => u.id === selectedUniversityId)
+    ? selectedUniversityId
+    : ''
+  const [universityId, setUniversityId] = useState(validUniversityId)
   const [category, setCategory] = useState(selectedCategory || 'all')
   const [sort, setSort] = useState<'new' | 'popular'>(selectedSort)
   const [history, setHistory] = useState<string[]>([])
