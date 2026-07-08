@@ -52,12 +52,7 @@ export function RegisterForm({ universities }: Props) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (isUniversityEmail && !detectedUniversity) {
-      toast.error('現在は関西学院大学・関西大学・同志社大学・立命館大学・神戸大学のみ登録できます')
-      return
-    }
     if (!effectiveUniversityId) { toast.error('大学を選択してください'); return }
-    if (isUniversityEmail && !grade) { toast.error('学年を選択してください'); return }
     setLoading(true)
     const formData = new FormData(e.currentTarget)
     formData.set('university_id', effectiveUniversityId)
@@ -117,18 +112,8 @@ export function RegisterForm({ universities }: Props) {
               setUniversityId('')
             }}
           />
-          {email && email.includes('@') ? (
-            !isUniversityEmail ? (
-              <p className="text-xs text-destructive">❌ 大学のメールアドレス（〜@〜.ac.jp）が必要です</p>
-            ) : detectedUniversity ? (
-              <p className="text-xs text-green-600">✅ {detectedUniversity.name}のメールアドレスが確認されました</p>
-            ) : (
-              <p className="text-xs text-destructive">❌ 現在は関西学院大学・関西大学・同志社大学・立命館大学・神戸大学のみ対応しています</p>
-            )
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              対応大学の学生メール（〜.ac.jp）のみ登録できます
-            </p>
+          {email && email.includes('@') && isUniversityEmail && detectedUniversity && (
+            <p className="text-xs text-green-600">✅ {detectedUniversity.name}のメールアドレスが確認されました</p>
           )}
         </div>
         <div className="space-y-1.5">
