@@ -288,13 +288,13 @@ export default function LandingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col"
+      className="min-h-screen flex flex-col items-center justify-between"
       style={{ background: '#0a0a0f', fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* ── ヘッダー ── */}
-      <header className="w-full flex items-center justify-between px-6 py-4">
+      <header className="w-full flex items-center justify-between px-6 py-4 max-w-md mx-auto">
         <div className="text-xl font-black" style={{ letterSpacing: '-0.5px' }}>
           <span className="text-white">uni</span>
           <span style={{ color: '#63b3ed' }}>can</span>
@@ -308,10 +308,10 @@ export default function LandingPage() {
       </header>
 
       {/* ── スライドカード ── */}
-      <main className="flex-1 flex flex-col w-full px-4 pb-4" style={{ minHeight: 0 }}>
-        <div className="flex-1 flex flex-col w-full max-w-2xl mx-auto">
+      <main className="flex-1 flex flex-col items-center justify-center w-full px-6 py-4">
+        <div className="w-full max-w-sm">
           {/* カード */}
-          <div className="flex-1 flex flex-col relative rounded-[28px] overflow-hidden"
+          <div className="relative rounded-[28px] overflow-hidden"
             style={{
               background: '#0d0d14',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -325,9 +325,9 @@ export default function LandingPage() {
               }} />
 
             {/* モックアップ */}
-            <div className="relative flex-1 mx-5 mt-6 rounded-2xl overflow-hidden"
+            <div className="relative mx-5 mt-6 rounded-2xl overflow-hidden"
               style={{
-                minHeight: '200px',
+                height: '200px',
                 border: '1px solid rgba(255,255,255,0.08)',
                 background: '#111118',
               }}>
