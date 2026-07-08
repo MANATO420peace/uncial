@@ -10,37 +10,60 @@ export default async function AdminReportsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/home')
 
-  const reports = await getReports()
-  const pending = reports.filter((r: Record<string, unknown>) => r.status === 'pending')
-  const resolved = reports.filter((r: Record<string, unknown>) => r.status !== 'pending')
+  const [generalReports, buySellReports] = await Promise.all([
+    getReports('general'),
+    getReports('buy_sell'),
+  ])
+
+  const generalPending = generalReports.filter((r: Record<string, unknown>) => r.status === 'pending')
+  const buySellPending = buySellReports.filter((r: Record<string, unknown>) => r.status === 'pending')
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6">
-      <h1 className="text-lg font-bold mb-6">通報管理</h1>
+    <div className="max-w-2xl mx-auto px-4 py-6 space-y-10">
+      <h1 className="text-lg font-bold">通報管理</h1>
 
-      <section className="mb-8">
-        <h2 className="text-sm font-semibold text-muted-foreground mb-3">
-          未対応 ({pending.length})
-        </h2>
-        {pending.length === 0 && (
-          <p className="text-sm text-muted-foreground">未対応の通報はありません ✅</p>
-        )}
-        <div className="space-y-3">
-          {pending.map((r: Record<string, unknown>) => (
-            <ReportCard key={r.id as string} report={r} />
-          ))}
+      {/* 出品通報 */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <h2 className="text-sm font-semibold">⚠️ 出品通報</h2>
+          {buySellPending.length > 0 && (
+            <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full font-bold">
+              {buySellPending.length}件未対応
+            </span>
+          )}
         </div>
+        {buySellReports.length === 0 ? (
+          <p className="text-sm text-muted-foreground">出品への通報はありません ✅</p>
+        ) : (
+          <div className="space-y-3">
+            {buySellReports.map((r: Record<string, unknown>) => (
+              <ReportCard key={r.id as string} report={r} />
+            ))}
+          </div>
+        )}
       </section>
 
+      <div className="border-t" />
+
+      {/* 通常通報 */}
       <section>
-        <h2 className="text-sm font-semibold text-muted-foreground mb-3">
-          対応済み ({resolved.length})
-        </h2>
-        <div className="space-y-3">
-          {resolved.slice(0, 20).map((r: Record<string, unknown>) => (
-            <ReportCard key={r.id as string} report={r} />
-          ))}
+        <div className="flex items-center gap-2 mb-3">
+          <h2 className="text-sm font-semibold">📋 通常通報</h2>
+          {generalPending.length > 0 && (
+            <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-full font-bold">
+              {generalPending.length}件未対応
+            </span>
+          )}
         </div>
+        {generalReports.length === 0 ? (
+          <p className="text-sm text-muted-foreground">通報はありません ✅</p>
+        ) : (
+          <div className="space-y-3">
+            {generalReports.map((r: Record<string, unknown>) => (
+              <ReportCard key={r.id as string} report={r} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )
@@ -52,6 +75,7 @@ function ReportCard({ report }: { report: Record<string, unknown> }) {
     reason: string
     status: string
     created_at: string
+    report_type: string
     reporter?: { nickname: string }
     post?: { id: string; title: string }
     comment?: { id: string; content: string }
@@ -70,16 +94,12 @@ function ReportCard({ report }: { report: Record<string, unknown> }) {
         <span className="text-xs text-muted-foreground">{timeAgo(r.created_at)}</span>
       </div>
 
-      <div className="text-sm">
-        <span className="font-medium">理由：</span>{r.reason}
-      </div>
+      <div className="text-sm"><span className="font-medium">理由：</span>{r.reason}</div>
 
       {r.post && (
         <div className="text-sm">
           <span className="font-medium">投稿：</span>
-          <Link href={`/post/${r.post.id}`} className="text-primary underline ml-1">
-            {r.post.title}
-          </Link>
+          <Link href={`/post/${r.post.id}`} className="text-primary underline ml-1">{r.post.title}</Link>
         </div>
       )}
       {r.comment && (
@@ -89,13 +109,9 @@ function ReportCard({ report }: { report: Record<string, unknown> }) {
         </div>
       )}
 
-      <div className="text-xs text-muted-foreground">
-        通報者：{r.reporter?.nickname ?? '不明'}
-      </div>
+      <div className="text-xs text-muted-foreground">通報者：{r.reporter?.nickname ?? '不明'}</div>
 
-      {r.status === 'pending' && (
-        <ReportActions reportId={r.id} />
-      )}
+      {r.status === 'pending' && <ReportActions reportId={r.id} />}
     </div>
   )
 }

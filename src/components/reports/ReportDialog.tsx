@@ -11,18 +11,21 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { createReport } from '@/lib/actions/reports'
-import { REPORT_REASONS } from '@/lib/reportReasons'
+import { REPORT_REASONS, BUY_SELL_REPORT_REASONS } from '@/lib/reportReasons'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
   postId?: string
   commentId?: string
+  isBuySell?: boolean
 }
 
-export function ReportDialog({ open, onOpenChange, postId, commentId }: Props) {
+export function ReportDialog({ open, onOpenChange, postId, commentId, isBuySell = false }: Props) {
   const [selected, setSelected] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+
+  const reasons = isBuySell ? BUY_SELL_REPORT_REASONS : REPORT_REASONS
 
   function handleSubmit() {
     if (!selected) return
@@ -31,6 +34,7 @@ export function ReportDialog({ open, onOpenChange, postId, commentId }: Props) {
         postId,
         commentId,
         reason: selected,
+        reportType: isBuySell ? 'buy_sell' : 'general',
       })
       if (result?.error) {
         toast.error(result.error)
@@ -48,12 +52,17 @@ export function ReportDialog({ open, onOpenChange, postId, commentId }: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Flag className="h-4 w-4 text-destructive" />
-            通報する
+            {isBuySell ? '出品を通報する' : '通報する'}
           </DialogTitle>
         </DialogHeader>
+        {isBuySell && (
+          <p className="text-xs text-muted-foreground bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2">
+            ⚠️ お金が絡むトラブルは運営が優先的に確認します
+          </p>
+        )}
         <p className="text-sm text-muted-foreground">通報理由を選択してください</p>
         <div className="space-y-2">
-          {REPORT_REASONS.map(reason => (
+          {reasons.map(reason => (
             <button
               key={reason}
               type="button"

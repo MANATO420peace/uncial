@@ -55,7 +55,7 @@ export default async function PostPage({ params }: Props) {
           <ChevronLeft className="h-4 w-4" />
           戻る
         </Link>
-        {isOwner ? <PostActions postId={post.id} /> : user && <PostReportButton postId={post.id} />}
+        {isOwner ? <PostActions postId={post.id} /> : user && <PostReportButton postId={post.id} isBuySell={isBuySell} />}
       </div>
 
       <article className="px-4 py-5 border-b">

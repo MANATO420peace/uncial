@@ -6,9 +6,10 @@ import { ReportDialog } from '@/components/reports/ReportDialog'
 
 interface Props {
   postId: string
+  isBuySell?: boolean
 }
 
-export function PostReportButton({ postId }: Props) {
+export function PostReportButton({ postId, isBuySell = false }: Props) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -21,7 +22,7 @@ export function PostReportButton({ postId }: Props) {
         <Flag className="h-3.5 w-3.5" />
         通報
       </button>
-      <ReportDialog open={open} onOpenChange={setOpen} postId={postId} />
+      <ReportDialog open={open} onOpenChange={setOpen} postId={postId} isBuySell={isBuySell} />
     </>
   )
 }

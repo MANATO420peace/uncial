@@ -7,10 +7,12 @@ export async function createReport({
   postId,
   commentId,
   reason,
+  reportType = 'general',
 }: {
   postId?: string
   commentId?: string
   reason: string
+  reportType?: 'general' | 'buy_sell'
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -41,23 +43,30 @@ export async function createReport({
     post_id: postId ?? null,
     comment_id: commentId ?? null,
     reason,
+    report_type: reportType,
   })
 
   if (error) return { error: error.message }
   return { error: null }
 }
 
-export async function getReports() {
+export async function getReports(reportType?: 'general' | 'buy_sell') {
   const admin = createAdminClient()
-  const { data } = await admin
+  let query = admin
     .from('reports')
     .select(`
       *,
       reporter:reporter_id(nickname),
-      post:post_id(id, title),
+      post:post_id(id, title, category),
       comment:comment_id(id, content)
     `)
     .order('created_at', { ascending: false })
+
+  if (reportType) {
+    query = query.eq('report_type', reportType)
+  }
+
+  const { data } = await query
   return data ?? []
 }
 
