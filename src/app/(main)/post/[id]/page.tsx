@@ -127,7 +127,7 @@ export default async function PostPage({ params }: Props) {
 
         <div className="flex items-center gap-3 mb-4 text-xs text-muted-foreground">
           {!post.anonymous && post.user_id ? (
-            <Link href={`/profile/${post.user_id}`} className="hover:underline hover:text-foreground transition-colors">
+            <Link href={`/user/${post.user_id}`} className="hover:underline hover:text-foreground transition-colors">
               {authorName}
             </Link>
           ) : (
