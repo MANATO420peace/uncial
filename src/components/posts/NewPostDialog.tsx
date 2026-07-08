@@ -58,9 +58,10 @@ export function NewPostDialog({ open, onOpenChange }: Props) {
             <Label>カテゴリ</Label>
             <Select value={category} onValueChange={(v) => { if (v) setCategory(v as PostCategory) }}>
               <SelectTrigger>
-                <SelectValue placeholder={POST_CATEGORY_LABELS[category]} />
+                {/* SelectValueは内部値(英語)を表示してしまうため、日本語ラベルを直接表示 */}
+                <span className="flex-1 text-left text-sm">{POST_CATEGORY_LABELS[category]}</span>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" side="bottom" align="start" sideOffset={4}>
                 {(Object.entries(POST_CATEGORY_LABELS) as [PostCategory, string][])
                   .filter(([value]) => value !== 'buy_sell')
                   .map(([value, label]) => (
