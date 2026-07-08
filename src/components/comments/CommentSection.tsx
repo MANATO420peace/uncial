@@ -2,11 +2,12 @@
 
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
-import { Heart, CornerDownRight, Trash2 } from 'lucide-react'
+import { Heart, CornerDownRight, Trash2, Flag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn, timeAgo } from '@/lib/utils'
 import { createComment, deleteComment, toggleCommentLike } from '@/lib/actions/comments'
+import { ReportDialog } from '@/components/reports/ReportDialog'
 import type { Comment } from '@/types'
 
 interface CommentItemProps {
@@ -21,6 +22,7 @@ function CommentItem({ comment, postId, currentUserId, isReply = false }: Commen
   const [liked, setLiked] = useState(comment.liked ?? false)
   const [likeCount, setLikeCount] = useState(comment.likes_count)
   const [deleted, setDeleted] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const authorName = comment.anonymous ? '匿名の学生' : (comment.users?.nickname ?? '不明')
@@ -63,16 +65,26 @@ function CommentItem({ comment, postId, currentUserId, isReply = false }: Commen
               <span className="text-xs font-medium">{authorName}</span>
               <span className="text-[11px] text-muted-foreground">{timeAgo(comment.created_at)}</span>
             </div>
-            {isOwner && (
-              <button
-                onClick={handleDelete}
-                disabled={isPending}
-                className="text-muted-foreground hover:text-destructive transition-colors p-0.5 shrink-0"
-                aria-label="コメントを削除"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            )}
+            <div className="flex items-center gap-1 shrink-0">
+              {isOwner ? (
+                <button
+                  onClick={handleDelete}
+                  disabled={isPending}
+                  className="text-muted-foreground hover:text-destructive transition-colors p-0.5"
+                  aria-label="コメントを削除"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              ) : currentUserId && (
+                <button
+                  onClick={() => setReportOpen(true)}
+                  className="text-muted-foreground hover:text-red-500 transition-colors p-0.5"
+                  aria-label="コメントを通報"
+                >
+                  <Flag className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{comment.content}</p>
           <div className="flex items-center gap-3 mt-2">
@@ -99,6 +111,8 @@ function CommentItem({ comment, postId, currentUserId, isReply = false }: Commen
           </div>
         </div>
       </div>
+
+      <ReportDialog open={reportOpen} onOpenChange={setReportOpen} commentId={comment.id} />
 
       {showReplyForm && (
         <div className="mt-2 pl-0">

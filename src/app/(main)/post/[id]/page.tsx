@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { LikeButton } from '@/components/posts/LikeButton'
 import { PostActions } from '@/components/posts/PostActions'
+import { PostReportButton } from '@/components/posts/PostReportButton'
 import { SoldButton } from '@/components/posts/SoldButton'
 import { ImageCarousel } from '@/components/posts/ImageCarousel'
 import { ViewIncrementer } from '@/components/posts/ViewIncrementer'
@@ -54,7 +55,7 @@ export default async function PostPage({ params }: Props) {
           <ChevronLeft className="h-4 w-4" />
           戻る
         </Link>
-        {isOwner && <PostActions postId={post.id} />}
+        {isOwner ? <PostActions postId={post.id} /> : user && <PostReportButton postId={post.id} />}
       </div>
 
       <article className="px-4 py-5 border-b">
