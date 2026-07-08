@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { PostCategory, PostFilter } from '@/types'
 import { createNotification } from './notifications'
+import { notifyPostFollowers } from './postNotifications'
 import { getBlockedAndMutedIds } from './block'
 
 export async function getBuySellEligibility() {
@@ -105,6 +106,11 @@ export async function createPost(formData: FormData) {
   }).select().single()
 
   if (error) return { error: error.message }
+
+  // 投稿通知をONにしているユーザーへ通知（buy_sell以外）
+  if (category !== 'buy_sell') {
+    notifyPostFollowers(user.id, data.id, data.title).catch(() => {})
+  }
 
   revalidatePath('/home')
   redirect(`/post/${data.id}`)

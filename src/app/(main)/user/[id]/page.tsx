@@ -13,6 +13,8 @@ import { FollowButton } from '@/components/users/FollowButton'
 import { DMButton } from '@/components/users/DMButton'
 import { UserActionMenu } from '@/components/users/UserActionMenu'
 import { ProfileShareButton } from '@/components/users/ProfileShareButton'
+import { PostNotificationButton } from '@/components/users/PostNotificationButton'
+import { getPostNotificationStatus } from '@/lib/actions/postNotifications'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -34,6 +36,10 @@ export default async function UserProfilePage({ params }: Props) {
     getCurrentUser(),
     getFollowStats(id),
   ])
+
+  const postNotificationEnabled = (currentUser && currentUser.id !== id)
+    ? await getPostNotificationStatus(id)
+    : false
 
   if (!profile) notFound()
 
@@ -83,6 +89,9 @@ export default async function UserProfilePage({ params }: Props) {
                   initialFollowing={followStats.isFollowing}
                   initialRequestPending={followStats.hasPendingRequest}
                 />
+              )}
+              {!blockMuteStatus.isBlocked && (
+                <PostNotificationButton targetUserId={id} initialEnabled={postNotificationEnabled} />
               )}
               <ProfileShareButton userId={id} nickname={profile.nickname} />
               <UserActionMenu
