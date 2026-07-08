@@ -107,10 +107,8 @@ export async function createPost(formData: FormData) {
 
   if (error) return { error: error.message }
 
-  // 投稿通知をONにしているユーザーへ通知（buy_sell以外）
-  if (category !== 'buy_sell') {
-    notifyPostFollowers(user.id, data.id, data.title).catch(() => {})
-  }
+  // 投稿通知をONにしているユーザーへ通知
+  notifyPostFollowers(user.id, data.id, data.title, category === 'buy_sell').catch(() => {})
 
   revalidatePath('/home')
   redirect(`/post/${data.id}`)

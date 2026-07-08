@@ -131,7 +131,7 @@ export default async function UserProfilePage({ params }: Props) {
               initialFollowing={followStats.isFollowing}
               initialRequestPending={followStats.hasPendingRequest}
             />
-            <PostNotificationButton targetUserId={id} initialEnabled={postNotificationEnabled} />
+            <PostNotificationButton targetUserId={id} initialStatus={postNotificationEnabled} />
           </div>
         )}
 
