@@ -56,13 +56,11 @@ export async function createPost(formData: FormData) {
   const category = formData.get('category') as PostCategory
 
   if (category === 'buy_sell') {
-    const isUniversityEmail = user.email?.endsWith('.ac.jp') ?? false
-    if (!isUniversityEmail) {
-      return { error: '販売・購入カテゴリは大学のメールアドレス（.ac.jp）が必要です' }
-    }
-    if (formData.get('terms_agreed') !== 'true') {
-      return { error: '利用規約に同意してください' }
-    }
+    // 一時的に本人確認チェックを無効化
+    // const isUniversityEmail = user.email?.endsWith('.ac.jp') ?? false
+    // if (!isUniversityEmail) {
+    //   return { error: '販売・購入カテゴリは大学のメールアドレス（.ac.jp）が必要です' }
+    // }
     if (!profile.buy_sell_terms_agreed_at) {
       await supabase
         .from('users')
