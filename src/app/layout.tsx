@@ -13,6 +13,16 @@ export const metadata: Metadata = {
   description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
   keywords: ['大学', '楽単', 'テスト', 'サークル', '大学生', 'コミュニティ'],
   metadataBase: new URL(baseUrl),
+  manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+  },
   openGraph: {
     title: 'ユニキャン - 大学コミュニティ',
     description: '大学生のための匿名コミュニティ。楽単情報・テスト情報・サークル・売買・雑談など',
@@ -32,6 +42,7 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: 'ユニキャン',
+    startupImage: '/icon-512.png',
   },
 }
 
