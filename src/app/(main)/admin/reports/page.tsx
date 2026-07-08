@@ -1,26 +1,18 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getReports, updateReportStatus } from '@/lib/actions/reports'
+import { getReports } from '@/lib/actions/reports'
 import { timeAgo } from '@/lib/utils'
 import Link from 'next/link'
-
-const ADMIN_USER_IDS = [
-  // ここにあなたのユーザーIDを入れる
-  // Supabase Authentication → Users から確認できます
-]
+import { ReportActions } from './ReportActions'
 
 export default async function AdminReportsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
-  // 管理者チェック（IDリストが空の場合は自分のIDでアクセス可能）
-  if (!user || (ADMIN_USER_IDS.length > 0 && !ADMIN_USER_IDS.includes(user.id))) {
-    redirect('/home')
-  }
+  if (!user) redirect('/home')
 
   const reports = await getReports()
-  const pending = reports.filter(r => r.status === 'pending')
-  const resolved = reports.filter(r => r.status !== 'pending')
+  const pending = reports.filter((r: Record<string, unknown>) => r.status === 'pending')
+  const resolved = reports.filter((r: Record<string, unknown>) => r.status !== 'pending')
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
@@ -34,8 +26,8 @@ export default async function AdminReportsPage() {
           <p className="text-sm text-muted-foreground">未対応の通報はありません ✅</p>
         )}
         <div className="space-y-3">
-          {pending.map(r => (
-            <ReportCard key={r.id} report={r} />
+          {pending.map((r: Record<string, unknown>) => (
+            <ReportCard key={r.id as string} report={r} />
           ))}
         </div>
       </section>
@@ -45,8 +37,8 @@ export default async function AdminReportsPage() {
           対応済み ({resolved.length})
         </h2>
         <div className="space-y-3">
-          {resolved.slice(0, 20).map(r => (
-            <ReportCard key={r.id} report={r} />
+          {resolved.slice(0, 20).map((r: Record<string, unknown>) => (
+            <ReportCard key={r.id as string} report={r} />
           ))}
         </div>
       </section>
@@ -102,24 +94,7 @@ function ReportCard({ report }: { report: Record<string, unknown> }) {
       </div>
 
       {r.status === 'pending' && (
-        <div className="flex gap-2 pt-1">
-          <form action={async () => {
-            'use server'
-            await updateReportStatus(r.id, 'resolved')
-          }}>
-            <button type="submit" className="text-xs px-3 py-1.5 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors">
-              解決済みにする
-            </button>
-          </form>
-          <form action={async () => {
-            'use server'
-            await updateReportStatus(r.id, 'dismissed')
-          }}>
-            <button type="submit" className="text-xs px-3 py-1.5 rounded-lg border hover:bg-muted transition-colors">
-              却下する
-            </button>
-          </form>
-        </div>
+        <ReportActions reportId={r.id} />
       )}
     </div>
   )
