@@ -10,7 +10,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { createReport, REPORT_REASONS } from '@/lib/actions/reports'
+import { createReport } from '@/lib/actions/reports'
+import { REPORT_REASONS } from '@/lib/reportReasons'
 
 interface Props {
   open: boolean
