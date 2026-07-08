@@ -50,8 +50,10 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
   // 他端末・他ユーザーのいいねをリアルタイムで受信
   useEffect(() => {
     const supabase = createClient()
+    // 同一postが複数箇所に表示される場合に備えてチャンネル名をユニークにする
+    const channelId = `post-likes:${post.id}:${Math.random().toString(36).slice(2)}`
     const channel = supabase
-      .channel(`post-likes:${post.id}`)
+      .channel(channelId)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'likes', filter: `post_id=eq.${post.id}` },
