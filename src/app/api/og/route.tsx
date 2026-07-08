@@ -3,12 +3,6 @@ import { ImageResponse } from 'next/og'
 export const runtime = 'edge'
 
 export async function GET() {
-  // Noto Sans JP (Bold) を Google Fonts から取得
-  const fontRes = await fetch(
-    'https://fonts.gstatic.com/s/notosansjp/v52/-F6jfjtqLzI2JPCgQBnw7HFyzSD-AsregP8VFBEi75vY0rv5ZTadow.0.woff'
-  ).catch(() => null)
-  const fontData = fontRes ? await fontRes.arrayBuffer() : null
-
   return new ImageResponse(
     (
       <div style={{ width: '1200px', height: '630px', display: 'flex', flexDirection: 'row', background: '#0d0d0d' }}>
@@ -36,8 +30,8 @@ export async function GET() {
             <div style={{ display: 'flex', fontSize: '44px', fontWeight: 800, color: '#ffffff', letterSpacing: '-1px', marginTop: '4px' }}>クローズドコミュニティ</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', marginTop: '28px' }}>
-            <div style={{ display: 'flex', fontSize: '20px', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.3px' }}>楽単・テスト情報・フリマ・時間割など</div>
-            <div style={{ display: 'flex', fontSize: '20px', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.3px', marginTop: '8px' }}>キャンパスライフを充実させる場所</div>
+            <div style={{ display: 'flex', fontSize: '20px', color: 'rgba(255,255,255,0.45)' }}>楽単・テスト情報・フリマ・時間割など</div>
+            <div style={{ display: 'flex', fontSize: '20px', color: 'rgba(255,255,255,0.45)', marginTop: '8px' }}>キャンパスライフを充実させる場所</div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', gap: '12px', marginTop: '44px' }}>
             {['掲示板', 'フリマ', '時間割', 'メッセージ'].map(label => (
@@ -50,24 +44,12 @@ export async function GET() {
                 padding: '10px 22px',
                 fontSize: '18px',
                 fontWeight: 600,
-                letterSpacing: '0.5px',
               }}>{label}</div>
             ))}
           </div>
         </div>
       </div>
     ),
-    {
-      width: 1200,
-      height: 630,
-      ...(fontData ? {
-        fonts: [{
-          name: 'NotoSansJP',
-          data: fontData,
-          style: 'normal',
-          weight: 700,
-        }],
-      } : {}),
-    }
+    { width: 1200, height: 630 }
   )
 }
