@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator'
 import { signUpWithEmail, signInWithGoogle } from '@/lib/actions/auth'
 import type { University } from '@/types'
 
-const STUDENT_GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D']
+const STUDENT_GRADES = ['1年', '2年', '3年', '4年', '5年以上', 'M1', 'M2', 'D', 'その他']
 
 interface Props {
   universities: University[]
@@ -48,8 +48,7 @@ export function RegisterForm({ universities }: Props) {
   // 対応大学のドメインかどうか
   const isAllowedDomain = !email.includes('@') || !isUniversityEmail || !!detectedUniversity
 
-  // .ac.jp以外はOB・OG固定
-  const effectiveGrade = isUniversityEmail ? grade : 'OB・OG'
+  const effectiveGrade = grade
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -177,9 +176,16 @@ export function RegisterForm({ universities }: Props) {
                 </SelectContent>
               </Select>
             ) : (
-              <div className="h-10 rounded-md border bg-muted/50 px-3 flex items-center text-sm text-muted-foreground">
-                OB・OG
-              </div>
+              <Select value={grade} onValueChange={v => setGrade(v ?? '')}>
+                <SelectTrigger>
+                  <SelectValue placeholder="学年を選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  {STUDENT_GRADES.map(g => (
+                    <SelectItem key={g} value={g}>{g}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
         </div>

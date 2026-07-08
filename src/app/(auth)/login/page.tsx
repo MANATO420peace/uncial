@@ -80,11 +80,6 @@ export default async function LoginPage({ searchParams }: Props) {
         </Link>
       </p>
 
-      {/* .ac.jp バッジ */}
-      <p className="text-center text-xs text-muted-foreground/60 flex items-center justify-center gap-1">
-        <span>🎓</span>
-        <span>大学メールアドレス（.ac.jp）限定</span>
-      </p>
     </div>
   )
 }
