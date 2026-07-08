@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ShoppingBag, Plus } from 'lucide-react'
 import { getPosts } from '@/lib/actions/posts'
 import { getCurrentUser } from '@/lib/actions/user'
-import { ListingCard } from '@/components/posts/ListingCard'
+import { BuySellFilter } from '@/components/posts/BuySellFilter'
 import { Button } from '@/components/ui/button'
 import type { Post } from '@/types'
 
@@ -17,7 +17,6 @@ export default async function BuySellPage({ searchParams }: Props) {
   const { status } = await searchParams
   const showSold = status === 'sold'
 
-  // ログインユーザーの大学IDを取得し、同じ大学の出品のみ表示
   const user = await getCurrentUser()
   const universityId = user?.university_id ?? undefined
 
@@ -26,10 +25,6 @@ export default async function BuySellPage({ searchParams }: Props) {
     sort: 'new',
     university_id: universityId,
   } as never)
-
-  const filtered = showSold
-    ? posts.filter((p: Post) => !!p.sold_at)
-    : posts.filter((p: Post) => !p.sold_at)
 
   const universityName = (user as { universities?: { name: string } | null } | null)?.universities?.name
 
@@ -78,23 +73,8 @@ export default async function BuySellPage({ searchParams }: Props) {
         </Link>
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground">
-          <ShoppingBag className="h-12 w-12 opacity-30" />
-          <p className="text-sm">
-            {showSold ? '売り切れの商品はありません' : 'まだ出品がありません'}
-          </p>
-          {!showSold && (
-            <p className="text-xs">出品ボタンから最初の投稿をしてみましょう</p>
-          )}
-        </div>
-      ) : (
-        <div className="p-3 grid grid-cols-2 gap-3">
-          {filtered.map((post: Post) => (
-            <ListingCard key={post.id} post={post} />
-          ))}
-        </div>
-      )}
+      {/* フィルター + グリッド */}
+      <BuySellFilter posts={posts as Post[]} showSold={showSold} />
     </div>
   )
 }
