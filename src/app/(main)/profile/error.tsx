@@ -14,12 +14,12 @@ export default function ProfileError({
   }, [error])
 
   return (
-    <div className="px-4 py-8 space-y-3">
-      <p className="text-sm font-bold text-destructive">プロフィールの読み込みに失敗しました</p>
-      <p className="text-xs text-muted-foreground break-all">{error.message}</p>
+    <div className="flex flex-col items-center justify-center py-20 gap-4 text-muted-foreground">
+      <p className="text-sm font-bold text-foreground">読み込みに失敗しました</p>
+      <p className="text-xs text-center">時間をおいてもう一度お試しください</p>
       <button
         onClick={reset}
-        className="text-xs px-3 py-1.5 rounded border hover:bg-muted"
+        className="text-xs px-4 py-2 rounded-lg border hover:bg-muted transition-colors"
       >
         再試行
       </button>
