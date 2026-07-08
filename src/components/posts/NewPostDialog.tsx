@@ -26,7 +26,7 @@ interface Props {
 export function NewPostDialog({ open, onOpenChange }: Props) {
   const [isPending, startTransition] = useTransition()
   const [category, setCategory] = useState<PostCategory>('chat')
-  const [anonymous, setAnonymous] = useState(true)
+  const [anonymous, setAnonymous] = useState(false)
   const [imageFiles, setImageFiles] = useState<File[]>([])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -58,7 +58,7 @@ export function NewPostDialog({ open, onOpenChange }: Props) {
             <Label>カテゴリ</Label>
             <Select value={category} onValueChange={(v) => { if (v) setCategory(v as PostCategory) }}>
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder={POST_CATEGORY_LABELS[category]} />
               </SelectTrigger>
               <SelectContent>
                 {(Object.entries(POST_CATEGORY_LABELS) as [PostCategory, string][])
