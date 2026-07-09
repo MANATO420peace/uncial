@@ -1,21 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { Bell, BellOff, Share, FlaskConical, CheckCircle2, XCircle } from 'lucide-react'
+import { Bell, BellOff, Share } from 'lucide-react'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
-import { runNotificationDiagnostics } from '@/lib/actions/debug'
 
 export function PushNotificationToggle() {
   const { supported, subscribed, loading, subscribe, unsubscribe, isIOS, isStandalone, iosVersion } = usePushNotifications()
-  const [diagResult, setDiagResult] = useState<{ label: string; ok: boolean; detail: string }[] | null>(null)
-  const [diagLoading, setDiagLoading] = useState(false)
-
-  async function runDiag() {
-    setDiagLoading(true)
-    const result = await runNotificationDiagnostics()
-    setDiagResult(result.steps ?? [])
-    setDiagLoading(false)
-  }
 
   // iOSでPWAとしてインストールされていない場合
   if (isIOS && !isStandalone) {
@@ -92,35 +81,6 @@ export function PushNotificationToggle() {
         </button>
       </div>
 
-      {/* 診断ボタン */}
-      <button
-        type="button"
-        onClick={runDiag}
-        disabled={diagLoading}
-        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors px-1"
-      >
-        <FlaskConical className="h-3.5 w-3.5" />
-        {diagLoading ? '診断中...' : '通知が届かない場合はここをタップ（テスト送信）'}
-      </button>
-
-      {/* 診断結果 */}
-      {diagResult && (
-        <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
-          <p className="text-xs font-semibold">診断結果</p>
-          {diagResult.map((step, i) => (
-            <div key={i} className="flex items-start gap-2">
-              {step.ok
-                ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                : <XCircle className="h-3.5 w-3.5 text-red-500 shrink-0 mt-0.5" />
-              }
-              <div>
-                <p className="text-xs font-medium leading-tight">{step.label}</p>
-                <p className="text-[11px] text-muted-foreground leading-tight">{step.detail}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
