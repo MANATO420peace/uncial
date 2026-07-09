@@ -79,6 +79,22 @@ export function ChatRoom({ conversationId, currentUserId, otherUser }: Props) {
           })
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const updated = payload.new as Message
+          // 自分が送ったメッセージに既読がついたらリアルタイムで反映
+          setMessages(prev =>
+            prev.map(m => m.id === updated.id ? { ...m, read_at: updated.read_at } : m)
+          )
+        }
+      )
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
