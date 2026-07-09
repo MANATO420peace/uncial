@@ -3,7 +3,7 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/layout/ThemeProvider'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://uncial-2026.vercel.app'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://www.uni-can.jp'
 
 export const metadata: Metadata = {
   title: {
