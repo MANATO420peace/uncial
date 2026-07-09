@@ -44,19 +44,27 @@ export async function getConversations() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { conversations: [], currentUserId: null }
 
+  // FKジョインに頼らず会話一覧を取得
   const { data } = await supabase
     .from('conversations')
-    .select(`
-      id, last_message_at,
-      user1:users!user1_id(id, nickname),
-      user2:users!user2_id(id, nickname)
-    `)
+    .select('id, last_message_at, user1_id, user2_id')
     .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
     .order('last_message_at', { ascending: false })
 
   if (!data || data.length === 0) return { conversations: [], currentUserId: user.id }
 
-  // 各会話の未読件数を一括取得
+  // 相手ユーザーのIDを収集して一括取得
+  const otherUserIds = [...new Set(data.map(c =>
+    c.user1_id === user.id ? c.user2_id : c.user1_id
+  ))]
+  const { data: usersData } = await supabase
+    .from('users')
+    .select('id, nickname')
+    .in('id', otherUserIds)
+
+  const usersMap = new Map((usersData ?? []).map(u => [u.id, u]))
+
+  // 未読件数を一括取得
   const convIds = data.map(c => c.id)
   const { data: unreadMsgs } = await supabase
     .from('messages')
@@ -71,7 +79,17 @@ export async function getConversations() {
   })
 
   return {
-    conversations: data.map(c => ({ ...c, unread_count: unreadMap.get(c.id) ?? 0 })),
+    conversations: data.map(c => {
+      const otherId = c.user1_id === user.id ? c.user2_id : c.user1_id
+      const other = usersMap.get(otherId) ?? null
+      return {
+        id: c.id,
+        last_message_at: c.last_message_at,
+        user1: c.user1_id === user.id ? { id: user.id, nickname: '' } : other,
+        user2: c.user2_id === user.id ? { id: user.id, nickname: '' } : other,
+        unread_count: unreadMap.get(c.id) ?? 0,
+      }
+    }),
     currentUserId: user.id,
   }
 }
