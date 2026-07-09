@@ -34,7 +34,7 @@ export function InstallBanner() {
       <div className="bg-background border rounded-2xl shadow-xl p-4 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-bold text-sm">📱 ホーム画面に追加しよう</p>
+            <p className="font-bold text-sm">ホーム画面に追加しよう</p>
             <p className="text-xs text-muted-foreground mt-0.5">アプリみたいにサクサク使えます</p>
           </div>
           <button onClick={dismiss} className="text-muted-foreground hover:text-foreground shrink-0">
