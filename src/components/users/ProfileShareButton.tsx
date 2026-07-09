@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { QrCode, X, Download } from 'lucide-react'
+import { QrCode, X, Download, Share2 } from 'lucide-react'
+import { toast } from 'sonner'
 import QRCode from 'qrcode'
 
 interface Props {
@@ -26,6 +27,23 @@ export function ProfileShareButton({ userId, nickname }: Props) {
     })
   }, [showQR, profileUrl])
 
+  async function handleShareService() {
+    const serviceUrl = 'https://www.uni-can.jp'
+    const text = '大学生のためのコミュニティアプリ「ユニキャン」'
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'ユニキャン', text, url: serviceUrl })
+        return
+      } catch { /* キャンセル */ }
+    }
+    try {
+      await navigator.clipboard.writeText(serviceUrl)
+      toast.success('URLをコピーしました')
+    } catch {
+      toast.error('コピーに失敗しました')
+    }
+  }
+
   function handleDownloadQR() {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -37,13 +55,22 @@ export function ProfileShareButton({ userId, nickname }: Props) {
 
   return (
     <>
-      <button
-        onClick={() => setShowQR(true)}
-        className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-        aria-label="QRコードを表示"
-      >
-        <QrCode className="h-4 w-4" />
-      </button>
+      <div className="flex items-center gap-1.5">
+        <button
+          onClick={() => setShowQR(true)}
+          className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="QRコードを表示"
+        >
+          <QrCode className="h-4 w-4" />
+        </button>
+        <button
+          onClick={handleShareService}
+          className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="ユニキャンをシェア"
+        >
+          <Share2 className="h-4 w-4" />
+        </button>
+      </div>
 
       {/* QRモーダル */}
       {showQR && (
@@ -89,3 +116,4 @@ export function ProfileShareButton({ userId, nickname }: Props) {
     </>
   )
 }
+
