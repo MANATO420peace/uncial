@@ -4,6 +4,7 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { Header } from '@/components/layout/Header'
 import { getUnreadMessageCount } from '@/lib/actions/messages'
 import { OnboardingModal } from '@/components/onboarding/OnboardingModal'
+import { InstallBanner } from '@/components/layout/InstallBanner'
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -30,6 +31,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       </main>
       <BottomNav unreadDmCount={unreadDmCount} />
       <OnboardingModal />
+      <InstallBanner />
     </div>
   )
 }
