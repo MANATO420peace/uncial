@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { sendMessage } from '@/lib/actions/messages'
 import { uploadImages } from '@/lib/uploadImages'
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export function ChatRoom({ conversationId, currentUserId, otherUser }: Props) {
+  const router = useRouter()
   const [messages, setMessages] = useState<Message[]>([])
   const [loaded, setLoaded] = useState(false)
   const [input, setInput] = useState('')
@@ -38,6 +40,12 @@ export function ChatRoom({ conversationId, currentUserId, otherUser }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
+
+  // チャットを離れたとき一覧の未読数を更新
+  useEffect(() => {
+    return () => { router.refresh() }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     supabase
