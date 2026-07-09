@@ -72,7 +72,7 @@ export function Header({ user }: Props) {
 
   return (
     <>
-      <header className="header-gradient sticky top-0 z-50 border-b border-black/8 dark:border-white/8">
+      <header className="header-gradient sticky top-0 z-50 border-b border-black/8 dark:border-white/8" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
           {/* Logo + App name */}
           <Link href="/home" className="flex items-center gap-2 shrink-0">
