@@ -14,21 +14,20 @@ export async function signUpWithEmail(formData: FormData) {
   const faculty = formData.get('faculty') as string
   const grade = formData.get('grade') as string
 
-  // 一時的にドメイン制限を無効化（テスト用）
-  // // 大学メールアドレス（.ac.jp）のみ登録を許可
-  // if (!email.toLowerCase().endsWith('.ac.jp')) {
-  //   return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみ登録できます' }
-  // }
-  // // 対応5大学のドメインチェック
-  // const emailDomain = email.toLowerCase().split('@')[1]
-  // const { data: domainRows } = await supabase
-  //   .from('university_domains')
-  //   .select('university_id')
-  //   .eq('domain', emailDomain)
-  //   .limit(1)
-  // if (!domainRows || domainRows.length === 0) {
-  //   return { error: '現在は関西学院大学・関西大学・同志社大学・立命館大学・神戸大学のみ登録できます' }
-  // }
+  // 大学メールアドレス（.ac.jp）のみ登録を許可
+  if (!email.toLowerCase().endsWith('.ac.jp')) {
+    return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみ登録できます' }
+  }
+  // 対応大学のドメインチェック
+  const emailDomain = email.toLowerCase().split('@')[1]
+  const { data: domainRows } = await supabase
+    .from('university_domains')
+    .select('university_id')
+    .eq('domain', emailDomain)
+    .limit(1)
+  if (!domainRows || domainRows.length === 0) {
+    return { error: 'お使いの大学はまだ対応していません。対応大学は順次追加予定です。' }
+  }
 
   // 退会済みメールアドレスのチェック
   const { data: banned } = await supabase
@@ -82,11 +81,10 @@ export async function signInWithEmail(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  // 一時的にドメイン制限を無効化（テスト用）
-  // // 大学メールアドレス（.ac.jp）のみログインを許可
-  // if (!email.toLowerCase().endsWith('.ac.jp')) {
-  //   return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみログインできます' }
-  // }
+  // 大学メールアドレス（.ac.jp）のみログインを許可
+  if (!email.toLowerCase().endsWith('.ac.jp')) {
+    return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみログインできます' }
+  }
 
   // 退会済みメールアドレスのチェック
   const { data: banned } = await supabase
