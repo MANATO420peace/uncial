@@ -10,7 +10,23 @@ interface Props {
 
 function ImageLightbox({ images, initialIndex, onClose }: { images: string[]; initialIndex: number; onClose: () => void }) {
   const [index, setIndex] = useState(initialIndex)
+  const [scale, setScale] = useState(1)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+
+  // タッチ状態
   const touchStartX = useRef<number | null>(null)
+  const lastTouches = useRef<React.Touch[]>([])
+  const lastScale = useRef(1)
+  const lastOffset = useRef({ x: 0, y: 0 })
+  const isDragging = useRef(false)
+
+  // 画像切り替え時にズームリセット
+  useEffect(() => {
+    setScale(1)
+    setOffset({ x: 0, y: 0 })
+    lastScale.current = 1
+    lastOffset.current = { x: 0, y: 0 }
+  }, [index])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -26,24 +42,69 @@ function ImageLightbox({ images, initialIndex, onClose }: { images: string[]; in
     }
   }, [images.length, onClose])
 
-  function handleTouchStart(e: React.TouchEvent) {
-    touchStartX.current = e.touches[0].clientX
+  function getTouchDist(touches: React.TouchList | Touch[]) {
+    const [a, b] = Array.from(touches)
+    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)
   }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    lastTouches.current = Array.from(e.touches) as unknown as React.Touch[]
+    if (e.touches.length === 1) {
+      touchStartX.current = e.touches[0].clientX
+      isDragging.current = false
+    }
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (e.touches.length === 2) {
+      // ピンチズーム
+      e.preventDefault()
+      const newDist = getTouchDist(e.touches)
+      const oldDist = getTouchDist(lastTouches.current as unknown as Touch[])
+      if (oldDist === 0) return
+      const ratio = newDist / oldDist
+      const newScale = Math.min(5, Math.max(1, lastScale.current * ratio))
+
+      // ピンチ中心のオフセット計算
+      const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - window.innerWidth / 2
+      const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - window.innerHeight / 2
+      const dx = cx - (cx / lastScale.current) * newScale
+      const dy = cy - (cy / lastScale.current) * newScale
+
+      setScale(newScale)
+      setOffset(o => ({ x: o.x - dx / newScale, y: o.y - dy / newScale }))
+      lastScale.current = newScale
+    } else if (e.touches.length === 1 && scale > 1) {
+      // ズーム中はパン
+      isDragging.current = true
+      const dx = e.touches[0].clientX - (lastTouches.current[0] as unknown as Touch).clientX
+      const dy = e.touches[0].clientY - (lastTouches.current[0] as unknown as Touch).clientY
+      setOffset(o => ({ x: o.x + dx / scale, y: o.y + dy / scale }))
+    }
+    lastTouches.current = Array.from(e.touches) as unknown as React.Touch[]
+  }
+
   function handleTouchEnd(e: React.TouchEvent) {
-    if (touchStartX.current === null) return
-    const diff = touchStartX.current - e.changedTouches[0].clientX
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) setIndex(i => Math.min(images.length - 1, i + 1))
-      else setIndex(i => Math.max(0, i - 1))
+    if (scale <= 1 && !isDragging.current && touchStartX.current !== null && e.touches.length === 0) {
+      const diff = touchStartX.current - e.changedTouches[0].clientX
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) setIndex(i => Math.min(images.length - 1, i + 1))
+        else setIndex(i => Math.max(0, i - 1))
+      }
     }
     touchStartX.current = null
+    isDragging.current = false
+    lastOffset.current = offset
   }
+
+  const isZoomed = scale > 1
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
-      onClick={onClose}
+      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center overflow-hidden"
+      onClick={isZoomed ? undefined : onClose}
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       {/* 閉じるボタン */}
@@ -55,7 +116,7 @@ function ImageLightbox({ images, initialIndex, onClose }: { images: string[]; in
       </button>
 
       {/* 枚数 */}
-      {images.length > 1 && (
+      {images.length > 1 && !isZoomed && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
           {index + 1} / {images.length}
         </div>
@@ -66,11 +127,18 @@ function ImageLightbox({ images, initialIndex, onClose }: { images: string[]; in
         src={images[index]}
         alt={`画像 ${index + 1}`}
         className="max-w-full max-h-full object-contain select-none"
+        style={{
+          transform: `scale(${scale}) translate(${offset.x}px, ${offset.y}px)`,
+          transition: scale === 1 ? 'transform 0.2s ease' : 'none',
+          cursor: isZoomed ? 'grab' : 'default',
+          touchAction: 'none',
+        }}
         onClick={e => e.stopPropagation()}
+        draggable={false}
       />
 
-      {/* 前へ */}
-      {index > 0 && (
+      {/* 前へ（ズーム中は非表示） */}
+      {index > 0 && !isZoomed && (
         <button
           className="absolute left-3 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
           onClick={e => { e.stopPropagation(); setIndex(i => i - 1) }}
@@ -79,8 +147,8 @@ function ImageLightbox({ images, initialIndex, onClose }: { images: string[]; in
         </button>
       )}
 
-      {/* 次へ */}
-      {index < images.length - 1 && (
+      {/* 次へ（ズーム中は非表示） */}
+      {index < images.length - 1 && !isZoomed && (
         <button
           className="absolute right-3 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
           onClick={e => { e.stopPropagation(); setIndex(i => i + 1) }}
