@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Share2, Check, QrCode, X, Download } from 'lucide-react'
-import { toast } from 'sonner'
+import { QrCode, X, Download } from 'lucide-react'
 import QRCode from 'qrcode'
 
 interface Props {
@@ -11,7 +10,6 @@ interface Props {
 }
 
 export function ProfileShareButton({ userId, nickname }: Props) {
-  const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -28,23 +26,6 @@ export function ProfileShareButton({ userId, nickname }: Props) {
     })
   }, [showQR, profileUrl])
 
-  async function handleShare() {
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: `${nickname}さんのプロフィール | unican`, url: profileUrl })
-        return
-      } catch { /* キャンセル */ }
-    }
-    try {
-      await navigator.clipboard.writeText(profileUrl)
-      setCopied(true)
-      toast.success('プロフィールURLをコピーしました')
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      toast.error('コピーに失敗しました')
-    }
-  }
-
   function handleDownloadQR() {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -56,24 +37,13 @@ export function ProfileShareButton({ userId, nickname }: Props) {
 
   return (
     <>
-      <div className="flex items-center gap-1.5">
-        {/* QRコードボタン */}
-        <button
-          onClick={() => setShowQR(true)}
-          className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label="QRコードを表示"
-        >
-          <QrCode className="h-4 w-4" />
-        </button>
-        {/* シェアボタン */}
-        <button
-          onClick={handleShare}
-          className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label="プロフィールをシェア"
-        >
-          {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
-        </button>
-      </div>
+      <button
+        onClick={() => setShowQR(true)}
+        className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        aria-label="QRコードを表示"
+      >
+        <QrCode className="h-4 w-4" />
+      </button>
 
       {/* QRモーダル */}
       {showQR && (
