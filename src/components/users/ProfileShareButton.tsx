@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { Share2, Check } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Share2, Check, QrCode, X, Download } from 'lucide-react'
 import { toast } from 'sonner'
+import QRCode from 'qrcode'
 
 interface Props {
   userId: string
@@ -11,21 +12,31 @@ interface Props {
 
 export function ProfileShareButton({ userId, nickname }: Props) {
   const [copied, setCopied] = useState(false)
+  const [showQR, setShowQR] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  const profileUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/user/${userId}`
+    : `https://www.uni-can.jp/user/${userId}`
+
+  useEffect(() => {
+    if (!showQR || !canvasRef.current) return
+    QRCode.toCanvas(canvasRef.current, profileUrl, {
+      width: 240,
+      margin: 2,
+      color: { dark: '#000000', light: '#ffffff' },
+    })
+  }, [showQR, profileUrl])
 
   async function handleShare() {
-    const url = `${window.location.origin}/user/${userId}`
-
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${nickname}さんのプロフィール | ユニキャン`, url })
+        await navigator.share({ title: `${nickname}さんのプロフィール | unican`, url: profileUrl })
         return
-      } catch {
-        // キャンセルや非対応の場合はコピーにフォールバック
-      }
+      } catch { /* キャンセル */ }
     }
-
     try {
-      await navigator.clipboard.writeText(url)
+      await navigator.clipboard.writeText(profileUrl)
       setCopied(true)
       toast.success('プロフィールURLをコピーしました')
       setTimeout(() => setCopied(false), 2000)
@@ -34,13 +45,77 @@ export function ProfileShareButton({ userId, nickname }: Props) {
     }
   }
 
+  function handleDownloadQR() {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const link = document.createElement('a')
+    link.download = `unican-${nickname}.png`
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+
   return (
-    <button
-      onClick={handleShare}
-      className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-      aria-label="プロフィールをシェア"
-    >
-      {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
-    </button>
+    <>
+      <div className="flex items-center gap-1.5">
+        {/* QRコードボタン */}
+        <button
+          onClick={() => setShowQR(true)}
+          className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="QRコードを表示"
+        >
+          <QrCode className="h-4 w-4" />
+        </button>
+        {/* シェアボタン */}
+        <button
+          onClick={handleShare}
+          className="h-9 w-9 flex items-center justify-center rounded-full border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          aria-label="プロフィールをシェア"
+        >
+          {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
+        </button>
+      </div>
+
+      {/* QRモーダル */}
+      {showQR && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-6"
+          onClick={() => setShowQR(false)}
+        >
+          <div
+            className="bg-background rounded-2xl p-6 flex flex-col items-center gap-4 shadow-2xl w-full max-w-xs"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div>
+                <p className="font-bold text-base">{nickname}</p>
+                <p className="text-xs text-muted-foreground">プロフィールQRコード</p>
+              </div>
+              <button
+                onClick={() => setShowQR(false)}
+                className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="bg-white p-3 rounded-xl">
+              <canvas ref={canvasRef} />
+            </div>
+
+            <p className="text-xs text-muted-foreground text-center">
+              スキャンしてプロフィールを開く
+            </p>
+
+            <button
+              onClick={handleDownloadQR}
+              className="flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              <Download className="h-4 w-4" />
+              QRコードを保存
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
