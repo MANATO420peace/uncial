@@ -52,7 +52,7 @@ export function ConversationList({ conversations, currentUserId }: Props) {
     <ul>
       {conversations.map((conv) => {
         const other = conv.user1?.id === currentUserId ? conv.user2 : conv.user1
-        if (!other) return null
+        const otherNickname = other?.nickname ?? '不明なユーザー'
         const hasUnread = conv.unread_count > 0
         return (
           <li key={conv.id}>
@@ -62,13 +62,13 @@ export function ConversationList({ conversations, currentUserId }: Props) {
             >
               <Avatar className="h-11 w-11 shrink-0">
                 <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                  {other.nickname[0]?.toUpperCase()}
+                  {otherNickname[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <span className={`text-sm truncate ${hasUnread ? 'font-bold' : 'font-semibold'}`}>
-                    {other.nickname}
+                    {otherNickname}
                   </span>
                   <span className="text-xs text-muted-foreground shrink-0">
                     {timeAgo(conv.last_message_at)}
