@@ -59,12 +59,19 @@ export function ProfileShareButton({ userId, nickname }: Props) {
     }
   }
 
+  function openPopup(url: string) {
+    const w = 600, h = 500
+    const left = window.screenX + (window.outerWidth - w) / 2
+    const top = window.screenY + (window.outerHeight - h) / 2
+    window.open(url, 'share', `width=${w},height=${h},left=${left},top=${top},scrollbars=yes`)
+  }
+
   function handleLineShare() {
-    window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SERVICE_URL)}`, '_blank')
+    openPopup(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SERVICE_URL)}`)
   }
 
   function handleXShare() {
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SERVICE_URL)}`, '_blank')
+    openPopup(`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SERVICE_URL)}`)
   }
 
   function handleDownloadQR() {
