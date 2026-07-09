@@ -18,7 +18,7 @@ function WelcomeMockup() {
       </div>
       <div className="text-[9px] tracking-[3px] text-white/30 uppercase">University Campus</div>
       <div className="px-3 py-1 rounded-full border border-[#63b3ed]/30 text-[#63b3ed] text-[10px]">
-        🎓 大学メール限定
+        大学メール限定
       </div>
       <div className="flex gap-1.5 mt-1">
         {[true,false,false,false,false,false].map((on, i) => (
@@ -35,7 +35,7 @@ function BoardMockup() {
       {/* header */}
       <div className="flex items-center px-3 py-2 border-b border-white/5">
         <span className="text-[11px] font-bold flex-1">掲示板</span>
-        <div className="w-5 h-5 rounded-full bg-white/8 flex items-center justify-center text-[9px]">✏️</div>
+        <div className="w-5 h-5 rounded-full bg-white/8 flex items-center justify-center text-[9px] text-white/60">＋</div>
       </div>
       {/* tabs */}
       <div className="flex border-b border-white/5 text-[9px]">
@@ -53,8 +53,8 @@ function BoardMockup() {
       </div>
       {/* posts */}
       {[
-        { tag:'楽単情報', title:'データサイエンス入門、出席さえすれば余裕でした', meta:'12分前 · 💬 8 · ❤️ 24' },
-        { tag:'テスト対策', title:'経営学のテスト、昨年の過去問ほぼそのまま出た', meta:'1時間前 · 💬 3 · ❤️ 11' },
+        { tag:'楽単情報', title:'データサイエンス入門、出席さえすれば余裕でした', meta:'12分前 · 返信 8 · いいね 24' },
+        { tag:'テスト対策', title:'経営学のテスト、昨年の過去問ほぼそのまま出た', meta:'1時間前 · 返信 3 · いいね 11' },
       ].map((p) => (
         <div key={p.tag} className="px-3 py-2 border-b border-white/[0.03]">
           <div className="text-[8px] text-[#63b3ed] mb-0.5">{p.tag}</div>
