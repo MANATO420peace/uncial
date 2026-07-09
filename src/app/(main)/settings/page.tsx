@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Heart, Bookmark, ChevronRight } from 'lucide-react'
+import { Heart, Bookmark, ChevronRight, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser, getUniversities } from '@/lib/actions/user'
 import { SettingsForm } from './SettingsForm'
@@ -50,6 +50,24 @@ export default async function SettingsPage() {
           <div className="flex-1">
             <p className="text-sm font-medium">保存した投稿</p>
             <p className="text-xs text-muted-foreground">ブックマークした投稿を確認</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      </div>
+
+      {/* 危険ゾーン */}
+      <div className="border-t pt-6 space-y-2">
+        <h2 className="font-semibold text-sm text-destructive uppercase tracking-wide mb-3">アカウント</h2>
+        <Link
+          href="/settings/delete-account"
+          className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-destructive/10 transition-colors"
+        >
+          <div className="h-8 w-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-destructive">アカウントを削除</p>
+            <p className="text-xs text-muted-foreground">退会してアカウントを完全に削除します</p>
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>

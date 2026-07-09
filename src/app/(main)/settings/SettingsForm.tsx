@@ -162,6 +162,39 @@ export function SettingsForm({ user, universities, email }: Props) {
           </div>
         </div>
 
+        <div className="space-y-3">
+          <Label>SNSリンク</Label>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground w-24 shrink-0">Instagram</span>
+              <Input
+                name="instagram_url"
+                defaultValue={user.instagram_url ?? ''}
+                placeholder="https://instagram.com/username"
+                type="url"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground w-24 shrink-0">X (Twitter)</span>
+              <Input
+                name="x_url"
+                defaultValue={user.x_url ?? ''}
+                placeholder="https://x.com/username"
+                type="url"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground w-24 shrink-0">TikTok</span>
+              <Input
+                name="tiktok_url"
+                defaultValue={user.tiktok_url ?? ''}
+                placeholder="https://tiktok.com/@username"
+                type="url"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center justify-between py-2 border rounded-lg px-3">
           <div>
             <p className="text-sm font-medium">非公開アカウント</p>

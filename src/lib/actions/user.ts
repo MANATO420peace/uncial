@@ -128,6 +128,9 @@ export async function updateProfile(formData: FormData) {
   const avatarUrl = formData.get('avatar_url') as string | null
   const isPrivate = formData.get('is_private') === 'true'
   const bio = (formData.get('bio') as string) || null
+  const instagram_url = (formData.get('instagram_url') as string) || null
+  const x_url = (formData.get('x_url') as string) || null
+  const tiktok_url = (formData.get('tiktok_url') as string) || null
 
   const { error } = await supabase
     .from('users')
@@ -138,6 +141,9 @@ export async function updateProfile(formData: FormData) {
       grade: (formData.get('grade') as string) || null,
       is_private: isPrivate,
       bio,
+      instagram_url,
+      x_url,
+      tiktok_url,
       ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
     })
     .eq('id', user.id)

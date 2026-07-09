@@ -10,7 +10,7 @@ const isConfigured =
   !process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('your_')
 
 interface Props {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; deleted?: string }>
 }
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -18,11 +18,16 @@ const ERROR_MESSAGES: Record<string, string> = {
   auth_error: '認証に失敗しました。もう一度お試しください',
 }
 
+const INFO_MESSAGES: Record<string, string> = {
+  deleted: 'アカウントを削除しました。ご利用ありがとうございました。',
+}
+
 const FEATURES = ['掲示板', 'フリマ', '時間割', 'DM'] as const
 
 export default async function LoginPage({ searchParams }: Props) {
-  const { error } = await searchParams
+  const { error, deleted } = await searchParams
   const errorMessage = error ? ERROR_MESSAGES[error] : null
+  const infoMessage = deleted ? INFO_MESSAGES['deleted'] : null
 
   return (
     <div className="space-y-8">
@@ -64,6 +69,11 @@ export default async function LoginPage({ searchParams }: Props) {
         backdrop-blur-sm shadow-xl dark:shadow-none p-6 space-y-4">
 
         {!isConfigured && <SetupBanner />}
+        {infoMessage && (
+          <div className="rounded-lg bg-green-500/10 border border-green-500/20 px-4 py-3 text-sm text-green-700 dark:text-green-400 text-center">
+            {infoMessage}
+          </div>
+        )}
         {errorMessage && (
           <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive text-center">
             {errorMessage}

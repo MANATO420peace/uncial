@@ -30,6 +30,16 @@ export async function signUpWithEmail(formData: FormData) {
   //   return { error: '現在は関西学院大学・関西大学・同志社大学・立命館大学・神戸大学のみ登録できます' }
   // }
 
+  // 退会済みメールアドレスのチェック
+  const { data: banned } = await supabase
+    .from('deleted_accounts')
+    .select('id')
+    .eq('email', email.toLowerCase())
+    .maybeSingle()
+  if (banned) {
+    return { error: 'このメールアドレスは退会済みのため、再登録できません' }
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -77,6 +87,16 @@ export async function signInWithEmail(formData: FormData) {
   // if (!email.toLowerCase().endsWith('.ac.jp')) {
   //   return { error: '大学のメールアドレス（〜@〜.ac.jp）でのみログインできます' }
   // }
+
+  // 退会済みメールアドレスのチェック
+  const { data: banned } = await supabase
+    .from('deleted_accounts')
+    .select('id')
+    .eq('email', email.toLowerCase())
+    .maybeSingle()
+  if (banned) {
+    return { error: 'このメールアドレスは退会済みのため、再登録・ログインはできません' }
+  }
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 

@@ -12,6 +12,7 @@ import { PostCard } from '@/components/posts/PostCard'
 import { ListingCard } from '@/components/posts/ListingCard'
 import { FollowRequestList } from '@/components/users/FollowRequestList'
 import { ProfileShareButton } from '@/components/users/ProfileShareButton'
+import { SnsLinks } from '@/components/users/SnsLinks'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -76,6 +77,12 @@ export default async function ProfilePage() {
         {user.bio && (
           <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{user.bio}</p>
         )}
+
+        <SnsLinks
+          instagram_url={user.instagram_url}
+          x_url={user.x_url}
+          tiktok_url={user.tiktok_url}
+        />
 
         <div className="flex flex-wrap gap-2 mt-2">
           {(user as { universities?: { name: string } }).universities?.name && (

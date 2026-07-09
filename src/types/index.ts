@@ -53,6 +53,9 @@ export interface User {
   avatar_url?: string | null
   is_private?: boolean
   bio?: string | null
+  instagram_url?: string | null
+  x_url?: string | null
+  tiktok_url?: string | null
   created_at: string
   universities?: University
 }

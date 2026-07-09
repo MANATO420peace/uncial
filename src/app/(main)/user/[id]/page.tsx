@@ -13,6 +13,7 @@ import { FollowButton } from '@/components/users/FollowButton'
 import { DMButton } from '@/components/users/DMButton'
 import { UserActionMenu } from '@/components/users/UserActionMenu'
 import { ProfileShareButton } from '@/components/users/ProfileShareButton'
+import { SnsLinks } from '@/components/users/SnsLinks'
 import { PostNotificationButton } from '@/components/users/PostNotificationButton'
 import { getPostNotificationStatus } from '@/lib/actions/postNotifications'
 
@@ -107,6 +108,12 @@ export default async function UserProfilePage({ params }: Props) {
         {profile.bio && (
           <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{profile.bio}</p>
         )}
+
+        <SnsLinks
+          instagram_url={(profile as { instagram_url?: string | null }).instagram_url}
+          x_url={(profile as { x_url?: string | null }).x_url}
+          tiktok_url={(profile as { tiktok_url?: string | null }).tiktok_url}
+        />
 
         <div className="flex flex-wrap gap-2 mt-2">
           {(profile as { universities?: { name: string } }).universities?.name && (
