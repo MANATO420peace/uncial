@@ -67,7 +67,13 @@ export function ProfileShareButton({ userId, nickname }: Props) {
   }
 
   function handleLineShare() {
-    openPopup(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SERVICE_URL)}`)
+    const text = `${SHARE_TEXT}\n${SERVICE_URL}`
+    const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent)
+    if (isMobile) {
+      window.location.href = `https://line.me/R/share?text=${encodeURIComponent(text)}`
+    } else {
+      openPopup(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(SERVICE_URL)}`)
+    }
   }
 
   function handleXShare() {
