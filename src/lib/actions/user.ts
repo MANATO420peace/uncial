@@ -68,10 +68,12 @@ export async function getUniversities() {
     .from('university_domains')
     .select('university_id, domain')
 
-  return unis.map(u => ({
-    ...u,
-    university_domains: domainRows?.filter(d => d.university_id === u.id).map(d => ({ domain: d.domain })) ?? [],
-  }))
+  return unis
+    .map(u => ({
+      ...u,
+      university_domains: domainRows?.filter(d => d.university_id === u.id).map(d => ({ domain: d.domain })) ?? [],
+    }))
+    .filter(u => u.university_domains.length > 0)
 }
 
 export async function getCurrentUser() {
