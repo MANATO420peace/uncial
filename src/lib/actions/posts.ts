@@ -14,7 +14,13 @@ export async function getBuySellEligibility() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { isUniversityEmail: false, hasAgreedTerms: false }
 
-  const isUniversityEmail = user.email?.endsWith('.ac.jp') ?? false
+  const emailDomain = user.email?.toLowerCase().split('@')[1] ?? ''
+  const { data: domainRow } = await supabase
+    .from('university_domains')
+    .select('university_id')
+    .eq('domain', emailDomain)
+    .limit(1)
+  const isUniversityEmail = !!domainRow && domainRow.length > 0
 
   const { data } = await supabase
     .from('users')
