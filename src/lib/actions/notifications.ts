@@ -85,7 +85,7 @@ export async function getNotifications() {
     .from('notifications')
     .select(`
       id, type, read_at, created_at,
-      actor:users!actor_id(id, nickname),
+      actor:users!actor_id(id, nickname, avatar_url),
       post:posts(id, title)
     `)
     .eq('user_id', user.id)

@@ -4,7 +4,7 @@ import { Bell, Heart, MessageSquare, UserPlus, Reply } from 'lucide-react'
 import { getNotifications, markAllNotificationsRead } from '@/lib/actions/notifications'
 import { FollowRequestActions } from '@/components/notifications/FollowRequestActions'
 import { timeAgo } from '@/lib/utils'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export const metadata: Metadata = { title: '通知' }
 
@@ -51,7 +51,7 @@ export default async function NotificationsPage() {
               type: keyof typeof TYPE_ICON
               read_at: string | null
               created_at: string
-              actor: { id: string; nickname: string } | null
+              actor: { id: string; nickname: string; avatar_url?: string | null } | null
               post: { id: string; title: string } | null
             }
             const Icon = TYPE_ICON[notif.type] ?? Bell
@@ -70,6 +70,7 @@ export default async function NotificationsPage() {
             const innerContent = (
               <div className="flex items-start gap-3 w-full">
                 <Avatar className="h-9 w-9 shrink-0">
+                  {!isAnonymous && <AvatarImage src={notif.actor?.avatar_url ?? undefined} />}
                   <AvatarFallback className="text-xs bg-muted">
                     {isAnonymous ? '?' : displayName[0]?.toUpperCase()}
                   </AvatarFallback>

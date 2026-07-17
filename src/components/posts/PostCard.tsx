@@ -7,7 +7,7 @@ import { Heart, MessageSquare, MapPin, Pencil, Trash2, ChevronRight } from 'luci
 import { BookmarkButton } from './BookmarkButton'
 import { ShareButton } from './ShareButton'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -122,6 +122,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
               onClick={e => { e.stopPropagation(); router.push(`/user/${post.user_id}`) }}
             >
               <Avatar className="h-9 w-9 shrink-0 ring-2 ring-transparent group-hover:ring-primary/30 transition-all">
+                <AvatarImage src={post.users?.avatar_url ?? undefined} />
                 <AvatarFallback className="text-xs font-bold bg-primary text-primary-foreground">
                   {initial}
                 </AvatarFallback>
