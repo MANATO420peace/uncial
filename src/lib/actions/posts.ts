@@ -171,7 +171,7 @@ export async function getPosts(filter: PostFilter = {}) {
     .from('posts')
     .select(`
       *,
-      users(id, nickname, university_id),
+      users(id, nickname, avatar_url, university_id),
       universities(id, name)
     `)
 
@@ -255,7 +255,7 @@ export async function getPost(id: string) {
     .from('posts')
     .select(`
       *,
-      users(id, nickname),
+      users(id, nickname, avatar_url),
       universities(id, name)
     `)
     .eq('id', id)
