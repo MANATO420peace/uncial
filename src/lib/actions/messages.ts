@@ -59,7 +59,7 @@ export async function getConversations() {
   ))]
   const { data: usersData } = await supabase
     .from('users')
-    .select('id, nickname')
+    .select('id, nickname, avatar_url')
     .in('id', otherUserIds)
 
   const usersMap = new Map((usersData ?? []).map(u => [u.id, u]))
@@ -85,8 +85,8 @@ export async function getConversations() {
       return {
         id: c.id,
         last_message_at: c.last_message_at,
-        user1: c.user1_id === user.id ? { id: user.id, nickname: '' } : other,
-        user2: c.user2_id === user.id ? { id: user.id, nickname: '' } : other,
+        user1: c.user1_id === user.id ? { id: user.id, nickname: '', avatar_url: null } : other,
+        user2: c.user2_id === user.id ? { id: user.id, nickname: '', avatar_url: null } : other,
         unread_count: unreadMap.get(c.id) ?? 0,
       }
     }),
@@ -125,8 +125,8 @@ export async function getMessages(conversationId: string) {
     .from('conversations')
     .select(`
       id,
-      user1:users!user1_id(id, nickname),
-      user2:users!user2_id(id, nickname)
+      user1:users!user1_id(id, nickname, avatar_url),
+      user2:users!user2_id(id, nickname, avatar_url)
     `)
     .eq('id', conversationId)
     .single()

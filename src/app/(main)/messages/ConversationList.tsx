@@ -4,15 +4,15 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { timeAgo } from '@/lib/utils'
 
 interface Conversation {
   id: string
   last_message_at: string
   unread_count: number
-  user1: { id: string; nickname: string } | null
-  user2: { id: string; nickname: string } | null
+  user1: { id: string; nickname: string; avatar_url?: string | null } | null
+  user2: { id: string; nickname: string; avatar_url?: string | null } | null
 }
 
 interface Props {
@@ -61,6 +61,7 @@ export function ConversationList({ conversations, currentUserId }: Props) {
               className="flex items-center gap-3 px-4 py-4 border-b hover:bg-muted/50 transition-colors"
             >
               <Avatar className="h-11 w-11 shrink-0">
+                <AvatarImage src={other?.avatar_url ?? undefined} />
                 <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
                   {otherNickname[0]?.toUpperCase()}
                 </AvatarFallback>

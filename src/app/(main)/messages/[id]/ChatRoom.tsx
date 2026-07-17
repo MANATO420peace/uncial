@@ -7,7 +7,7 @@ import { sendMessage } from '@/lib/actions/messages'
 import { uploadImages } from '@/lib/uploadImages'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { timeAgo } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 import { Send, ImageIcon, X } from 'lucide-react'
@@ -26,7 +26,7 @@ interface Message {
 interface Props {
   conversationId: string
   currentUserId: string
-  otherUser: { id: string; nickname: string }
+  otherUser: { id: string; nickname: string; avatar_url?: string | null }
 }
 
 export function ChatRoom({ conversationId, currentUserId, otherUser }: Props) {
@@ -172,6 +172,7 @@ export function ChatRoom({ conversationId, currentUserId, otherUser }: Props) {
             <div key={msg.id} className={cn('flex gap-2', isMe && 'flex-row-reverse')}>
               {!isMe && (
                 <Avatar className="h-8 w-8 shrink-0">
+                  <AvatarImage src={otherUser.avatar_url ?? undefined} />
                   <AvatarFallback className="text-xs bg-muted">
                     {otherUser.nickname[0]?.toUpperCase()}
                   </AvatarFallback>
