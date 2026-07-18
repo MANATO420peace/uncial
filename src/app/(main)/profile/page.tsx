@@ -27,7 +27,7 @@ export default async function ProfilePage() {
   const [postsResult, listingsResult, repliedPosts, followRequests, followStats] = await Promise.all([
     supabase
       .from('posts')
-      .select('*, universities(id, name)')
+      .select('*, users(id, nickname, avatar_url), universities(id, name)')
       .eq('user_id', user.id)
       .neq('category', 'buy_sell')
       .order('created_at', { ascending: false })
@@ -36,7 +36,7 @@ export default async function ProfilePage() {
       .catch(() => ({ data: [] })),
     supabase
       .from('posts')
-      .select('*, universities(id, name)')
+      .select('*, users(id, nickname, avatar_url), universities(id, name)')
       .eq('user_id', user.id)
       .eq('category', 'buy_sell')
       .order('created_at', { ascending: false })
