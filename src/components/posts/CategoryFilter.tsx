@@ -28,21 +28,24 @@ export function CategoryFilter() {
   }
 
   return (
-    <div className="flex gap-1.5 overflow-x-auto no-scrollbar px-4 py-2 border-b">
-      {ALL_CATEGORIES.map(({ value, label }) => (
-        <button
-          key={value}
-          onClick={() => handleSelect(value)}
-          className={cn(
-            'flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors',
-            current === value
-              ? 'bg-foreground text-background'
-              : 'bg-muted text-muted-foreground hover:bg-muted/80'
-          )}
-        >
-          {label}
-        </button>
-      ))}
+    <div className="relative border-b">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2">
+        {ALL_CATEGORIES.map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => handleSelect(value)}
+            className={cn(
+              'flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors',
+              current === value
+                ? 'bg-foreground text-background'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" aria-hidden="true" />
     </div>
   )
 }

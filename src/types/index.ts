@@ -26,7 +26,7 @@ export const POST_CATEGORY_LABELS: Record<PostCategory, string> = {
 export const POST_CATEGORY_COLORS: Record<PostCategory, string> = {
   chat: 'bg-slate-500',
   course: 'bg-blue-600',
-  test_homework: 'bg-red-600',
+  test_homework: 'bg-rose-600',
   circle: 'bg-purple-600',
   part_time: 'bg-orange-500',
   seminar: 'bg-cyan-600',

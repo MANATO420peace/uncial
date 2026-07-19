@@ -116,13 +116,13 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
   return (
     <>
     <article
-      className="mx-3 my-3 rounded-2xl bg-card border border-border/60 shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-150 [&:active:not(:has(*:active))]:scale-[0.98] cursor-pointer overflow-hidden"
+      className="mx-3 my-3 rounded-2xl bg-card border border-border/60 dark:border-white/10 shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-150 [&:active:not(:has(*:active))]:scale-[0.98] cursor-pointer overflow-hidden"
       onClick={() => router.push(`/post/${post.id}`)}
     >
       <div className="p-4">
 
         {/* ── ヘッダー: アバター + 投稿者情報 + カテゴリバッジ ── */}
-        <div className="flex items-center gap-2.5 mb-3">
+        <div className="flex items-center gap-2.5 mb-2.5">
           {!isAnon && post.user_id ? (
             /* 投稿者エリア全体をタップ可能なボタンに */
             <button
@@ -136,7 +136,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 text-left">
-                <p className="text-sm font-semibold leading-tight truncate text-primary group-hover:underline underline-offset-2">
+                <p className="text-sm font-medium leading-tight truncate text-primary group-hover:underline underline-offset-2">
                   {authorName}
                 </p>
                 <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
