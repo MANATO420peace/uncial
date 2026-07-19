@@ -101,7 +101,7 @@ export function Header({ user }: Props) {
 
             <button
               onClick={() => setDialogOpen(true)}
-              className="h-9 w-9 flex items-center justify-center rounded-full bg-black/8 text-black hover:bg-black/15 dark:bg-white/20 dark:text-white dark:hover:bg-white/30 transition-colors ml-1"
+              className="h-9 w-9 flex items-center justify-center rounded-full bg-black/10 text-black hover:bg-black/15 dark:bg-white/25 dark:text-white dark:hover:bg-white/30 transition-colors ml-1"
               aria-label="投稿する"
             >
               <Plus className="h-4 w-4" />
