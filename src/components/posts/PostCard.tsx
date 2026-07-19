@@ -148,7 +148,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
             /* 匿名の場合はリンクなし */
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <Avatar className="h-9 w-9 shrink-0">
-                <AvatarFallback className="text-xs font-bold bg-muted text-muted-foreground">
+                <AvatarFallback className="text-xs font-bold bg-muted/60 text-muted-foreground ring-1 ring-border">
                   匿
                 </AvatarFallback>
               </Avatar>
@@ -270,7 +270,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
         )}
 
         {/* ── フッター: いいね / コメント / アクション ── */}
-        <div className="flex items-center gap-5 mt-3 pt-3 border-t border-border/50">
+        <div className="flex items-center gap-5 mt-3 pt-3 border-t border-border/30 dark:border-border/40">
           {/* いいね */}
           <button
             className={cn(
