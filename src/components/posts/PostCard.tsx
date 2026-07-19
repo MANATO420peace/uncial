@@ -108,7 +108,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
   return (
     <>
     <article
-      className="mx-3 my-2.5 rounded-2xl bg-card border border-border/60 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
+      className="mx-3 my-2.5 rounded-2xl bg-card border border-border/60 shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-150 [&:active:not(:has(*:active))]:scale-[0.98] cursor-pointer overflow-hidden"
       onClick={() => router.push(`/post/${post.id}`)}
     >
       <div className="p-4">
@@ -118,7 +118,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
           {!isAnon && post.user_id ? (
             /* 投稿者エリア全体をタップ可能なボタンに */
             <button
-              className="flex items-center gap-2.5 min-w-0 flex-1 -mx-1 px-1 py-0.5 rounded-xl hover:bg-primary/8 active:bg-primary/12 transition-colors group"
+              className="flex items-center gap-2.5 min-w-0 flex-1 -mx-1 px-1 py-0.5 rounded-xl hover:bg-primary/8 active:bg-primary/12 active:scale-[0.98] transition-[background-color,transform] duration-75 group"
               onClick={e => { e.stopPropagation(); router.push(`/user/${post.user_id}`) }}
             >
               <Avatar className="h-9 w-9 shrink-0 ring-2 ring-transparent group-hover:ring-primary/30 transition-all">
@@ -266,7 +266,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
           {/* いいね */}
           <button
             className={cn(
-              'flex items-center gap-1.5 transition-colors',
+              'flex items-center gap-1.5 transition-[color,transform] duration-75 active:scale-[0.90]',
               liked ? 'text-rose-500' : 'text-muted-foreground hover:text-rose-400'
             )}
             onClick={handleLike}
