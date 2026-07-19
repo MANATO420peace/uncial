@@ -1,5 +1,7 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { ShoppingBag, ChevronRight } from 'lucide-react'
 import { getPosts } from '@/lib/actions/posts'
 import { getFollowingPosts } from '@/lib/actions/follow'
 import { getCurrentUser, getSuggestedUsers } from '@/lib/actions/user'
@@ -43,6 +45,17 @@ export default async function HomePage({ searchParams }: Props) {
         </div>
         {tab !== 'following' && (
           <>
+            <Link
+              href="/buy-sell"
+              className="mx-3 my-2 px-4 py-3 flex items-center gap-3 rounded-xl border border-border/60 bg-muted/40 dark:bg-muted/30 hover:bg-muted/60 dark:hover:bg-muted/50 active:bg-muted/70 active:scale-[0.99] transition-[background-color,transform] duration-75"
+            >
+              <ShoppingBag className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold leading-tight text-foreground">フリマ</p>
+                <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 truncate">教科書・家具・日用品などを探す</p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+            </Link>
             <Suspense fallback={null}><CategoryFilter /></Suspense>
             <Suspense fallback={null}><SortTabs /></Suspense>
           </>
