@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Heart, MessageSquare, MapPin, Pencil, Trash2, ChevronRight } from 'lucide-react'
@@ -46,6 +46,8 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
   const [liked, setLiked] = useState(initialState.liked)
   const [likesCount, setLikesCount] = useState(initialState.count)
   const [isLiking, setIsLiking] = useState(false)
+  const [heartAnim, setHeartAnim] = useState(false)
+  const heartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // 他端末・他ユーザーのいいねをリアルタイムで受信
   useEffect(() => {
@@ -87,6 +89,12 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
     const newLiked = !liked
     setLiked(newLiked)
     setLikesCount(c => Math.max(0, c + (newLiked ? 1 : -1)))
+    if (newLiked) {
+      if (heartTimerRef.current) clearTimeout(heartTimerRef.current)
+      setHeartAnim(false)
+      requestAnimationFrame(() => setHeartAnim(true))
+      heartTimerRef.current = setTimeout(() => setHeartAnim(false), 300)
+    }
     try {
       const result = await toggleLike(post.id)
       const finalLiked = (result && 'liked' in result && result.liked !== undefined) ? result.liked : newLiked
@@ -275,8 +283,9 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
           >
             <Heart
               className={cn(
-                'h-4 w-4 transition-all',
-                liked ? 'fill-rose-500 text-rose-500 scale-110' : ''
+                'h-4 w-4 transition-[color,fill] duration-75',
+                liked ? 'fill-rose-500 text-rose-500' : '',
+                heartAnim && 'like-pop'
               )}
             />
             <span className="text-xs font-semibold">{likesCount}</span>
