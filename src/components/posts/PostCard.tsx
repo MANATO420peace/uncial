@@ -116,7 +116,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
   return (
     <>
     <article
-      className="mx-3 my-2.5 rounded-2xl bg-card border border-border/60 shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-150 [&:active:not(:has(*:active))]:scale-[0.98] cursor-pointer overflow-hidden"
+      className="mx-3 my-3 rounded-2xl bg-card border border-border/60 shadow-sm hover:shadow-md transition-[box-shadow,transform] duration-150 [&:active:not(:has(*:active))]:scale-[0.98] cursor-pointer overflow-hidden"
       onClick={() => router.push(`/post/${post.id}`)}
     >
       <div className="p-4">
@@ -233,7 +233,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
         )}
 
         {/* ── タイトル ── */}
-        <div className="flex items-start justify-between gap-1 mb-1.5">
+        <div className="flex items-start justify-between gap-1 mb-2">
           <h2 className="font-bold text-sm leading-normal tracking-tight line-clamp-2 flex-1">
             {post.title}
           </h2>
