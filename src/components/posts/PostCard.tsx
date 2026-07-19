@@ -155,7 +155,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
 
           <Badge
             className={cn(
-              'text-[10px] px-1.5 py-0 h-4 text-white border-0 rounded-sm shrink-0',
+              'text-[11px] px-2 py-0 h-5 text-white border-0 rounded shrink-0',
               POST_CATEGORY_COLORS[post.category]
             )}
           >
