@@ -129,7 +129,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
               className="flex items-center gap-2.5 min-w-0 flex-1 -mx-1 px-1 py-0.5 rounded-xl hover:bg-primary/8 active:bg-primary/12 active:scale-[0.98] transition-[background-color,transform] duration-75 group"
               onClick={e => { e.stopPropagation(); router.push(`/user/${post.user_id}`) }}
             >
-              <Avatar className="h-9 w-9 shrink-0 ring-2 ring-transparent group-hover:ring-primary/30 transition-all">
+              <Avatar className="h-9 w-9 shrink-0 ring-2 ring-transparent group-hover:ring-primary/30 transition-[box-shadow] duration-150">
                 <AvatarImage src={post.users?.avatar_url ?? undefined} />
                 <AvatarFallback className="text-xs font-bold bg-primary text-primary-foreground">
                   {initial}
