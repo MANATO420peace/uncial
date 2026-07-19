@@ -57,13 +57,16 @@ export function BottomNav({ unreadDmCount = 0 }: Props) {
               key={href}
               href={href}
               className={cn(
-                'flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl transition-colors',
+                'flex flex-col items-center gap-0.5 px-2 py-2 rounded-xl transition-[color,transform] duration-100 active:scale-[0.96]',
                 active
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <div className="relative">
+              <div className={cn(
+                'relative flex items-center justify-center w-10 h-7 rounded-xl transition-colors duration-100',
+                active && 'bg-primary/10'
+              )}>
                 <Icon className={cn('h-5 w-5', active && 'fill-current')} strokeWidth={active ? 2.5 : 2} />
                 {showBadge && (
                   <span className="absolute -top-1 -right-1.5 min-w-[14px] h-[14px] flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] font-bold px-0.5 leading-none">
@@ -71,7 +74,7 @@ export function BottomNav({ unreadDmCount = 0 }: Props) {
                   </span>
                 )}
               </div>
-              <span className="text-[9px] font-medium">{label}</span>
+              <span className={cn('text-[9px]', active ? 'font-semibold' : 'font-medium')}>{label}</span>
             </Link>
           )
         })}
