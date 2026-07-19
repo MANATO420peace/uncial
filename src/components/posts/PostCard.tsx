@@ -270,7 +270,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
         )}
 
         {/* ── フッター: いいね / コメント / アクション ── */}
-        <div className="flex items-center gap-5 mt-2.5 pt-3 border-t border-border/30 dark:border-border/40">
+        <div className="flex items-center gap-5 mt-3 pt-3 border-t border-border/30 dark:border-border/40">
           {/* いいね */}
           <button
             className={cn(
