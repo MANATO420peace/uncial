@@ -226,7 +226,7 @@ export function PostCard({ post, isOwner = false, currentUserId }: Props) {
 
         {/* ── タイトル ── */}
         <div className="flex items-start justify-between gap-1 mb-1.5">
-          <h2 className="font-bold text-sm leading-snug line-clamp-2 flex-1">
+          <h2 className="font-bold text-sm leading-normal tracking-tight line-clamp-2 flex-1">
             {post.title}
           </h2>
           <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5 opacity-50" />
